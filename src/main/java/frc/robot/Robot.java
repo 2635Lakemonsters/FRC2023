@@ -124,14 +124,14 @@ public class Robot extends TimedRobot {
   private void driveWithJoystick(boolean fieldRelative) {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
-    final var xSpeed =
+    final var xPower =
         m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY(), 0.02))
             * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because
     // we want a positive value when we pull to the left. Xbox controllers
     // return positive values when you pull to the right by default.
-    final var ySpeed =
+    final var yPower =
         m_robotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getX(), 0.02))
             * DrivetrainSubsystem.kMaxSpeed;
 
@@ -144,6 +144,6 @@ public class Robot extends TimedRobot {
         m_robotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.leftJoystick.getX(), 0.02))
             * DrivetrainSubsystem.kMaxAngularSpeed;
 
-    m_robotContainer.m_drivetrainSubsystem.drive(xSpeed, ySpeed, rot, fieldRelative);
+    m_robotContainer.m_drivetrainSubsystem.drive(xPower, yPower, rot, fieldRelative);
   }
 }

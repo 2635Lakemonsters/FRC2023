@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.SerialPort;
 // import org.frcteam2910.common.math.Rotation2;
 
 public final class NavX extends Gyroscope {
-    private final AHRS navX;
+    private static AHRS navX;
 
     public NavX(SPI.Port port) {
         this(port, (byte) 200);
@@ -43,6 +43,14 @@ public final class NavX extends Gyroscope {
         // System.out.println("getRotation2d: " + getAxis(Axis.YAW));
         // had to invert the get axis to fir the relative feild velocity comands after a 90 degree rotation
         return Rotation2d.fromRadians(-getAxis(Axis.YAW));
+    }
+
+    public static double getRawAccelX() {
+        return navX.getRawAccelX();
+    }
+
+    public static double getRawGyroY() {
+        return navX.getRawGyroY();
     }
 
     @Override

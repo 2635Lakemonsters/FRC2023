@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.commands.FeedForwardBalancingCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -29,6 +30,7 @@ public class RobotContainer extends TimedRobot {
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
+  private final FeedForwardBalancingCommand m_feedForwardBalancingCommand = new FeedForwardBalancingCommand(m_drivetrainSubsystem);
 
   public RobotContainer() {
     configureBindings();
@@ -37,9 +39,11 @@ public class RobotContainer extends TimedRobot {
   private void configureBindings() {
     // Create button
     Trigger recalibrateButton = new JoystickButton(rightJoystick, Constants.CALIBRATE_BUTTON);
+    Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
+    balancingButton.onTrue(m_feedForwardBalancingCommand);
   }
 
     public Command getAutonomousCommand() {

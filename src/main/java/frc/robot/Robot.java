@@ -4,10 +4,17 @@
 
 package frc.robot;
 
+import javax.print.attribute.standard.MediaSize.NA;
+
+import com.kauailabs.navx.frc.AHRS;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.commands.FeedForwardBalancingCommand;
+import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -92,6 +99,13 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
     m_robotContainer.m_drivetrainSubsystem.m_backRight.updateSwerveTable(); //2 analog ID
     driveWithJoystick(true);
+
+    SmartDashboard.putNumber("x error", FeedForwardBalancingCommand.xError());
+    SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
+    SmartDashboard.putNumber("y gyro", NavX.getRawGyroY());
+    SmartDashboard.putNumber("kXAccel", m_robotContainer.rightJoystick.getY() / NavX.getRawAccelX());
+    // kXAccel pose to hold pose is 0.48
+    // 1.0 will move it back at a mid rate
   }
 
   @Override
@@ -125,7 +139,7 @@ public class Robot extends TimedRobot {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xPower =
-        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY(), 0.02))
+        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.1 * NavX.getRawAccelX(), 0.02))
             * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because

@@ -4,11 +4,14 @@
 
 package frc.robot;
 
+import java.util.Calendar;
+
 import javax.print.attribute.standard.MediaSize.NA;
 
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.FeedForwardBalancingCommand;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -78,6 +82,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
     driveWithJoystick(false);
     m_robotContainer.m_drivetrainSubsystem.updateOdometry();
+    NavX.updateXAccelFiltered();
   }
 
   @Override
@@ -92,8 +97,14 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called periodically during operator control. */
+
+  private long last_time;
   @Override
   public void teleopPeriodic() {
+
+    Calendar calendar = Calendar.getInstance();
+    //Returns current time in millis
+      
     m_robotContainer.m_drivetrainSubsystem.m_frontLeft.updateSwerveTable(); // 0 analog ID 
     m_robotContainer.m_drivetrainSubsystem.m_frontRight.updateSwerveTable(); // 3 analog ID
     m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
@@ -102,10 +113,31 @@ public class Robot extends TimedRobot {
 
     SmartDashboard.putNumber("x error", FeedForwardBalancingCommand.xError());
     SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
+    SmartDashboard.putNumber("y accel", NavX.getRawAccelY());
+    SmartDashboard.putNumber("z accel", NavX.getRawAccelZ());
+    SmartDashboard.putNumber("x gyro", NavX.getRawGyroX());
     SmartDashboard.putNumber("y gyro", NavX.getRawGyroY());
+    SmartDashboard.putNumber("z gyro", NavX.getRawGyroZ());
     SmartDashboard.putNumber("kXAccel", m_robotContainer.rightJoystick.getY() / NavX.getRawAccelX());
+    SmartDashboard.putNumber("kRoll", m_robotContainer.rightJoystick.getY() / NavX.getRoll());
+    SmartDashboard.putNumber("kGyro Y", m_robotContainer.rightJoystick.getY() / NavX.getRawGyroY());
+    SmartDashboard.putNumber("navX pitch", NavX.getPitch());
+    SmartDashboard.putNumber("navX roll", NavX.getRoll());
+    SmartDashboard.putNumber("navX yaw", NavX.getYaw());
+    SmartDashboard.putNumber("k * raw gyro y", 0.5 * NavX.getRawGyroY());
+    SmartDashboard.putNumber("kPitch", m_robotContainer.rightJoystick.getY() / NavX.getPitch());
+
+    BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
+    SmartDashboard.putNumber("RoboRio x accel", rioAccel.getX());
+    SmartDashboard.putNumber("RoboRio y accel", rioAccel.getY());
+    SmartDashboard.putNumber("RoboRio z accel", rioAccel.getZ());
+
+    // SmartDashboard.putNumber("clock cycle", calendar.getTimeInMillis() - last_time);
     // kXAccel pose to hold pose is 0.48
     // 1.0 will move it back at a mid rate
+
+    NavX.updateXAccelFiltered();
+    last_time = calendar.getTimeInMillis();
   }
 
   @Override
@@ -139,7 +171,10 @@ public class Robot extends TimedRobot {
     // Get the x speed. We are inverting this because Xbox controllers return
     // negative values when we push forward.
     final var xPower =
-        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.1 * NavX.getRawAccelX(), 0.02))
+        // m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + (0.014) * NavX.getRoll(), 0.02))
+        //        * DrivetrainSubsystem.kMaxSpeed;
+        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.3 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY(), 0.02))
+        //    + 1.3 * NavX.getXAccelFiltered()
             * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because

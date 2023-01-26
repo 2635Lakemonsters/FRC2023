@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.SerialPort;
 
 public final class NavX extends Gyroscope {
     private static AHRS navX;
+    private static double xAccelFiltered = 0.0;
+    private static final double kFilterX = 0.2;
 
     public NavX(SPI.Port port) {
         this(port, (byte) 200);
@@ -33,6 +35,14 @@ public final class NavX extends Gyroscope {
         navX.reset();
     }
 
+    public static void updateXAccelFiltered() {
+        xAccelFiltered = kFilterX * navX.getRawAccelX() + (1.0 - kFilterX) * xAccelFiltered;
+    }
+
+    public static double getXAccelFiltered() {
+        return xAccelFiltered;
+    }
+
     @Override
     public Rotation2d getUnadjustedAngle() {
         // System.out.println("getUnadjustedAngle: " + getAxis(Axis.YAW));
@@ -45,12 +55,40 @@ public final class NavX extends Gyroscope {
         return Rotation2d.fromRadians(-getAxis(Axis.YAW));
     }
 
+    public static double getPitch() {
+        return navX.getPitch();
+    }
+
+    public static double getRoll() {
+        return navX.getRoll();
+    }
+
+    public static double getYaw() {
+        return navX.getYaw();
+    }
+
     public static double getRawAccelX() {
         return navX.getRawAccelX();
     }
 
+    public static double getRawAccelY() {
+        return navX.getRawAccelY();
+    }
+
+    public static double getRawAccelZ() {
+        return navX.getRawAccelZ();
+    }
+
+    public static double getRawGyroX() {
+        return navX.getRawGyroX();
+    }
+
     public static double getRawGyroY() {
         return navX.getRawGyroY();
+    }
+
+    public static double getRawGyroZ() {
+        return navX.getRawGyroZ();
     }
 
     @Override

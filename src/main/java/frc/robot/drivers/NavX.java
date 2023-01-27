@@ -12,7 +12,9 @@ import edu.wpi.first.wpilibj.SerialPort;
 public final class NavX extends Gyroscope {
     private static AHRS navX;
     private static double xAccelFiltered = 0.0;
-    private static final double kFilterX = 0.2;
+    private static final double kFilterX = 0.05;
+    private static double yGyroFiltered = 0.0;
+    private static final double kFilterGyro = 0.15;
 
     public NavX(SPI.Port port) {
         this(port, (byte) 200);
@@ -41,6 +43,14 @@ public final class NavX extends Gyroscope {
 
     public static double getXAccelFiltered() {
         return xAccelFiltered;
+    }
+
+    public static void updateYGyroFiltered() {
+        yGyroFiltered = kFilterGyro * navX.getRawGyroY() + (1.0 - kFilterGyro) * yGyroFiltered;
+    }
+
+    public static double getYGyroFiltered() {
+        return yGyroFiltered;
     }
 
     @Override

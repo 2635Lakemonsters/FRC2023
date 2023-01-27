@@ -173,8 +173,7 @@ public class Robot extends TimedRobot {
     final var xPower =
         // m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + (0.014) * NavX.getRoll(), 0.02))
         //        * DrivetrainSubsystem.kMaxSpeed;
-        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.3 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY(), 0.02))
-        //    + 1.3 * NavX.getXAccelFiltered()
+        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.3 * NavX.getXAccelFiltered() - 0.005 * NavX.getYGyroFiltered(), 0.02))
             * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed. We are inverting this because

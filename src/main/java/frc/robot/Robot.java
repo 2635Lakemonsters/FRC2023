@@ -10,6 +10,7 @@ import javax.print.attribute.standard.MediaSize.NA;
 
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.FeedForwardBalancingCommand;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
@@ -30,7 +32,7 @@ import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  private RobotContainer m_robotContainer;
+  public RobotContainer m_robotContainer;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -80,7 +82,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    driveWithJoystick(false);
+    SwerveDriveCommand(RobotContainer.m_drivetrainSubsystem,2);
     m_robotContainer.m_drivetrainSubsystem.updateOdometry();
     NavX.updateXAccelFiltered();
   }
@@ -94,6 +96,7 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    
   }
 
   /** This function is called periodically during operator control. */
@@ -109,7 +112,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivetrainSubsystem.m_frontRight.updateSwerveTable(); // 3 analog ID
     m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
     m_robotContainer.m_drivetrainSubsystem.m_backRight.updateSwerveTable(); //2 analog ID
-    driveWithJoystick(true);
 
     SmartDashboard.putNumber("x error", FeedForwardBalancingCommand.xError());
     SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
@@ -140,6 +142,9 @@ public class Robot extends TimedRobot {
     last_time = calendar.getTimeInMillis();
   }
 
+  private void SwerveDriveCommand(DrivetrainSubsystem mDrivetrainsubsystem, int i) {
+  }
+
   @Override
   public void testInit() {
     // Cancels all running commands at the start of test mode.
@@ -166,32 +171,4 @@ public class Robot extends TimedRobot {
   /** This function is called periodically whilst in simulation. */
   @Override
   public void simulationPeriodic() {}
-
-  private void driveWithJoystick(boolean fieldRelative) {
-    // Get the x speed. We are inverting this because Xbox controllers return
-    // negative values when we push forward.
-    final var xPower =
-        // m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + (0.014) * NavX.getRoll(), 0.02))
-        //        * DrivetrainSubsystem.kMaxSpeed;
-        m_robotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getY() + 1.3 * NavX.getXAccelFiltered() - 0.005 * NavX.getYGyroFiltered(), 0.02))
-            * DrivetrainSubsystem.kMaxSpeed;
-
-    // Get the y speed or sideways/strafe speed. We are inverting this because
-    // we want a positive value when we pull to the left. Xbox controllers
-    // return positive values when you pull to the right by default.
-    final var yPower =
-        m_robotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.rightJoystick.getX(), 0.02))
-            * DrivetrainSubsystem.kMaxSpeed;
-
-    // Get the rate of angular rotation. We are inverting this because we want a
-    // positive value when we pull to the left (remember, CCW is positive in
-    // mathematics). Xbox controllers return positive values when you pull to
-    // the right by default.
-    final var rot =
-    //must be positive to read accuate joystick yaw
-        m_robotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(m_robotContainer.leftJoystick.getX(), 0.02))
-            * DrivetrainSubsystem.kMaxAngularSpeed;
-
-    m_robotContainer.m_drivetrainSubsystem.drive(xPower, yPower, rot, fieldRelative);
-  }
 }

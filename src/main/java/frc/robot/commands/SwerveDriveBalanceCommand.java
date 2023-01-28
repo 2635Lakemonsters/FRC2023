@@ -4,23 +4,17 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
+import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.SwerveModule;
 
-public class FeedForwardBalancingCommand extends CommandBase {
-  
+public class SwerveDriveBalanceCommand extends CommandBase {
+
   private static DrivetrainSubsystem m_drivetrainSubsystem;
-  private static SwerveModule m_swerveModule;
-  private static double initX;
 
-  /** Creates a new FeedForwardBalancingCommand. */
-  public FeedForwardBalancingCommand(DrivetrainSubsystem drivetrainSubsystem) {
+  /** Creates a new SwerveDriveBalanceCommand. */
+  public SwerveDriveBalanceCommand(DrivetrainSubsystem drivetrainSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrainSubsystem = drivetrainSubsystem;
     addRequirements(m_drivetrainSubsystem);
@@ -28,19 +22,15 @@ public class FeedForwardBalancingCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    initX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    xError();
-  }
-
-  public static double xError() {
-    double xError = (m_drivetrainSubsystem.m_odometry.getPoseMeters().getX()) - initX;
-    return xError;
+    // set the x power commanded
+    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY() + 1.6 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY());
+    DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
+    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
   }
 
   // Called once the command ends or is interrupted.

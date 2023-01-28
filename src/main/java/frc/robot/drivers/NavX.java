@@ -14,7 +14,7 @@ public final class NavX extends Gyroscope {
     private static double xAccelFiltered = 0.0;
     private static final double kFilterX = 0.05;
     private static double yGyroFiltered = 0.0;
-    private static final double kFilterGyro = 0.15;
+    private static final double kFilterGyro = 0.1;
 
     public NavX(SPI.Port port) {
         this(port, (byte) 200);

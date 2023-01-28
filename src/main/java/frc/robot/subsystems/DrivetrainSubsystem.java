@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -13,12 +14,15 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
+import frc.robot.commands.SwerveDriveBalanceCommand;
+import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
     // public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxSpeed = 0.3;
+    public static final double kMaxSpeed = 0.4;
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
@@ -70,13 +74,45 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   /** Creates a new DrivetrianSubsystem. */
   public DrivetrainSubsystem() {
-    System.out.println(m_gyro.getRotation2d());
     m_gyro.calibrate();
-    System.out.println(m_gyro.getRotation2d());
+  }
+
+  private static double xPowerCommanded = 0;
+  private static double yPowerCommanded = 0;
+  private static double rotCommanded = 0;
+
+  // three setters here and then call the setteres from the sd execute
+  public static void setXPowerCommanded(double xPower) {
+    xPowerCommanded = xPower;
+  }
+
+  public static void setYPowerCommanded(double yPower) {
+    yPowerCommanded = yPower;
+  }
+
+  public static void setRotCommanded(double rot) {
+    rotCommanded = rot;
   }
 
   @Override
   public void periodic() {
+    // Get the x speed
+    final var xPower =
+      RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.02))
+        * DrivetrainSubsystem.kMaxSpeed;
+
+    // Get the y speed or sideways/strafe speed
+    final var yPower =
+      RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.02))
+        * DrivetrainSubsystem.kMaxSpeed;
+
+    // Get the rate of angular rotation
+    final var rot =
+    //must be positive to read accuate joystick yaw
+      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.02))
+        * DrivetrainSubsystem.kMaxAngularSpeed;
+
+    RobotContainer.m_drivetrainSubsystem.drive(xPower, yPower, rot, true);
     // This method will be called once per scheduler run
     updateOdometry();
   }

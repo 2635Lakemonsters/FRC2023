@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.FeedForwardBalancingCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -113,7 +112,6 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
     m_robotContainer.m_drivetrainSubsystem.m_backRight.updateSwerveTable(); //2 analog ID
 
-    SmartDashboard.putNumber("x error", FeedForwardBalancingCommand.xError());
     SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
     SmartDashboard.putNumber("y accel", NavX.getRawAccelY());
     SmartDashboard.putNumber("z accel", NavX.getRawAccelZ());

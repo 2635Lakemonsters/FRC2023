@@ -12,6 +12,9 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class SwerveNoMoveCommand extends CommandBase {
 
   private static DrivetrainSubsystem m_drivetrainSubsystem;
+  private double targetPoseX;
+  private double initPoseY;
+
 
   /** Creates a new SwerveNoMoveCommand. */
   public SwerveNoMoveCommand(DrivetrainSubsystem drivetrainSubsystem) {
@@ -22,15 +25,31 @@ public class SwerveNoMoveCommand extends CommandBase {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    targetPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
+    initPoseY = m_drivetrainSubsystem.m_odometry.getPoseMeters().getY();
+    System.out.println("targetPoseX: " + targetPoseX);
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double currentPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
+    double delta = targetPoseX - currentPoseX;
+    System.out.println("delta: " + delta);
+    System.out.println("currentPoseX: " + currentPoseX);
+
     // set the x power commanded
-    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY() + 0.8 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY());
-    DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
-    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
+    final double gain = 4.0;
+    final double range = 2.0;
+    double lockPose = gain * delta;
+    // System.out.println(lockPose);
+    lockPose = Math.min(Math.max(lockPose, -range), range); //clip to range of -4, 4
+    // System.out.println(lockPose);
+    DrivetrainSubsystem.setXPowerCommanded(lockPose + 0.6 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY());
+    // DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
+    // DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
   }
 
   // Called once the command ends or is interrupted.

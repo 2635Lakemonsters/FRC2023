@@ -17,7 +17,6 @@ import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer extends TimedRobot {
-
   // Joysticks
   public final static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
   public final static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
@@ -44,9 +43,9 @@ public class RobotContainer extends TimedRobot {
   private void configureBindings() {
     // Create button
     Trigger recalibrateButton = new JoystickButton(rightJoystick, Constants.CALIBRATE_BUTTON);
+    Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
-    Trigger nonBalancingButton = new JoystickButton(rightJoystick, 9);
-    Trigger stationaryButton = new JoystickButton(rightJoystick, 10);
+    Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);

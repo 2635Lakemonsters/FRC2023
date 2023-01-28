@@ -25,7 +25,7 @@ public class SwerveNoMoveCommand extends CommandBase {
   @Override
   public void initialize() {
     targetPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
-    System.out.println("targetPoseX: " + targetPoseX);
+    // System.out.println("targetPoseX: " + targetPoseX);
 
   }
 
@@ -34,19 +34,15 @@ public class SwerveNoMoveCommand extends CommandBase {
   public void execute() {
     double currentPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
     double delta = targetPoseX - currentPoseX;
-    System.out.println("delta: " + delta);
-    System.out.println("currentPoseX: " + currentPoseX);
+    // System.out.println("delta: " + delta);
+    // System.out.println("currentPoseX: " + currentPoseX);
 
     // set the x power commanded
     final double gain = 4.0;
     final double range = 2.0;
     double lockPose = gain * delta;
-    // System.out.println(lockPose);
-    lockPose = Math.min(Math.max(lockPose, -range), range); //clip to range of -4, 4
-    // System.out.println(lockPose);
+    lockPose = Math.min(Math.max(lockPose, -range), range); //clip to range of -2, 2
     DrivetrainSubsystem.setXPowerCommanded(lockPose + 0.6 * NavX.getXAccelFiltered() - 0.005 * NavX.getRawGyroY());
-    // DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
-    // DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
   }
 
   // Called once the command ends or is interrupted.

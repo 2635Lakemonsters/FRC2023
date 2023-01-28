@@ -62,6 +62,7 @@ public final class Constants {
   public static final int RIGHT_JOYSTICK_CHANNEL = 1;
   public static final int LEFT_JOYSTICK_CHANNEL = 0;
   public static final int CALIBRATE_BUTTON = 7;
-  public static final int BALANCING_BUTTON = 8;
-
+  public static final int NORMAL_MODE = 8;
+  public static final int BALANCING_BUTTON = 9;
+  public static final int HOLD_STILL_BUTTON = 10;
 }

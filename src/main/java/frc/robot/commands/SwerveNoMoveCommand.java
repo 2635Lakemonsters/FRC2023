@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -13,7 +12,6 @@ public class SwerveNoMoveCommand extends CommandBase {
 
   private static DrivetrainSubsystem m_drivetrainSubsystem;
   private double targetPoseX;
-  private double initPoseY;
 
 
   /** Creates a new SwerveNoMoveCommand. */
@@ -27,7 +25,6 @@ public class SwerveNoMoveCommand extends CommandBase {
   @Override
   public void initialize() {
     targetPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
-    initPoseY = m_drivetrainSubsystem.m_odometry.getPoseMeters().getY();
     System.out.println("targetPoseX: " + targetPoseX);
 
   }

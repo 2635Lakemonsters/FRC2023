@@ -9,17 +9,12 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
 import frc.robot.Constants;
 
@@ -33,8 +28,8 @@ public class SwerveModule {
 
   private double turningMotorOffset;
 
-  private final PIDController m_drivePIDController =
-      new PIDController(0.005, 0, 0);
+  // private final PIDController m_drivePIDController =
+  //     new PIDController(0.005, 0, 0);
 
   private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
@@ -50,13 +45,8 @@ public class SwerveModule {
       int driveMotorChannel,
       int turningMotorChannel,
       int analogEncoderPort,
-      double turningMotorOffset,
-      int moduleID  //ID for what swerve module it is
+      double turningMotorOffset
       ) {
-      
-    NetworkTable swerveTable = NetworkTableInstance.getDefault().getTable("swerve");
-    
-    t_turningEncoder = swerveTable.getEntry("turningEncoder_" + moduleID);
 
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);

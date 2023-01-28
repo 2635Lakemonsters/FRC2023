@@ -11,15 +11,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ResetSwerveGyroCommand;
-import frc.robot.commands.SwerveDriveBalanceCommand;
+import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import frc.robot.subsystems.SwerveModule;
 
 public class RobotContainer extends TimedRobot {
-
-  public int mode;
 
   // Joysticks
   public final static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
@@ -36,7 +33,7 @@ public class RobotContainer extends TimedRobot {
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
-  private final SwerveDriveBalanceCommand m_swerveDriveBalanceCommand = new SwerveDriveBalanceCommand(m_drivetrainSubsystem);
+  private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
 
   public RobotContainer() {

@@ -9,12 +9,12 @@ import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-public class SwerveDriveBalanceCommand extends CommandBase {
+public class SwerveAutoBalanceCommand extends CommandBase {
 
   private static DrivetrainSubsystem m_drivetrainSubsystem;
 
   /** Creates a new SwerveDriveBalanceCommand. */
-  public SwerveDriveBalanceCommand(DrivetrainSubsystem drivetrainSubsystem) {
+  public SwerveAutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrainSubsystem = drivetrainSubsystem;
     addRequirements(m_drivetrainSubsystem);

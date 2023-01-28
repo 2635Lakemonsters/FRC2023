@@ -4,23 +4,13 @@
 
 package frc.robot;
 
-import java.util.Calendar;
-
-import javax.print.attribute.standard.MediaSize.NA;
-
-import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -32,6 +22,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   public RobotContainer m_robotContainer;
+  private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -82,7 +73,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {
     SwerveDriveCommand(RobotContainer.m_drivetrainSubsystem,2);
-    m_robotContainer.m_drivetrainSubsystem.updateOdometry();
+    RobotContainer.m_drivetrainSubsystem.updateOdometry();
     NavX.updateXAccelFiltered();
   }
 
@@ -100,17 +91,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
 
-  private long last_time;
   @Override
   public void teleopPeriodic() {
-
-    Calendar calendar = Calendar.getInstance();
     //Returns current time in millis
-      
-    m_robotContainer.m_drivetrainSubsystem.m_frontLeft.updateSwerveTable(); // 0 analog ID 
-    m_robotContainer.m_drivetrainSubsystem.m_frontRight.updateSwerveTable(); // 3 analog ID
-    m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
-    m_robotContainer.m_drivetrainSubsystem.m_backRight.updateSwerveTable(); //2 analog ID
 
     SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
     SmartDashboard.putNumber("y accel", NavX.getRawAccelY());
@@ -118,16 +101,14 @@ public class Robot extends TimedRobot {
     SmartDashboard.putNumber("x gyro", NavX.getRawGyroX());
     SmartDashboard.putNumber("y gyro", NavX.getRawGyroY());
     SmartDashboard.putNumber("z gyro", NavX.getRawGyroZ());
-    SmartDashboard.putNumber("kXAccel", m_robotContainer.rightJoystick.getY() / NavX.getRawAccelX());
-    SmartDashboard.putNumber("kRoll", m_robotContainer.rightJoystick.getY() / NavX.getRoll());
-    SmartDashboard.putNumber("kGyro Y", m_robotContainer.rightJoystick.getY() / NavX.getRawGyroY());
+    SmartDashboard.putNumber("kXAccel", RobotContainer.rightJoystick.getY() / NavX.getRawAccelX());
+    SmartDashboard.putNumber("kRoll", RobotContainer.rightJoystick.getY() / NavX.getRoll());
+    SmartDashboard.putNumber("kGyro Y", RobotContainer.rightJoystick.getY() / NavX.getRawGyroY());
     SmartDashboard.putNumber("navX pitch", NavX.getPitch());
     SmartDashboard.putNumber("navX roll", NavX.getRoll());
     SmartDashboard.putNumber("navX yaw", NavX.getYaw());
     SmartDashboard.putNumber("k * raw gyro y", 0.5 * NavX.getRawGyroY());
-    SmartDashboard.putNumber("kPitch", m_robotContainer.rightJoystick.getY() / NavX.getPitch());
-
-    BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
+    SmartDashboard.putNumber("kPitch", RobotContainer.rightJoystick.getY() / NavX.getPitch());
     SmartDashboard.putNumber("RoboRio x accel", rioAccel.getX());
     SmartDashboard.putNumber("RoboRio y accel", rioAccel.getY());
     SmartDashboard.putNumber("RoboRio z accel", rioAccel.getZ());
@@ -137,7 +118,6 @@ public class Robot extends TimedRobot {
     // 1.0 will move it back at a mid rate
 
     NavX.updateXAccelFiltered();
-    last_time = calendar.getTimeInMillis();
   }
 
   private void SwerveDriveCommand(DrivetrainSubsystem mDrivetrainsubsystem, int i) {
@@ -151,16 +131,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {
-    m_robotContainer.m_drivetrainSubsystem.m_frontLeft.updateSwerveTable(); // 0 analog ID 
-    m_robotContainer.m_drivetrainSubsystem.m_frontRight.updateSwerveTable(); // 3 analog ID
-    m_robotContainer.m_drivetrainSubsystem.m_backLeft.updateSwerveTable(); // 1 analog ID
-    m_robotContainer.m_drivetrainSubsystem.m_backRight.updateSwerveTable(); //2 analog ID
-    System.out.println("front left table ang: " + m_robotContainer.m_drivetrainSubsystem.m_frontLeft.t_turningEncoder.getDouble(-1));
-    System.out.println("front right table ang: " + m_robotContainer.m_drivetrainSubsystem.m_frontRight.t_turningEncoder.getDouble(-1));
-    System.out.println("back left table ang: " + m_robotContainer.m_drivetrainSubsystem.m_backLeft.t_turningEncoder.getDouble(-1));
-    System.out.println("back right table ang: " + m_robotContainer.m_drivetrainSubsystem.m_backRight.t_turningEncoder.getDouble(-1));
-  }
+  public void testPeriodic() {}
 
   /** This function is called once when the robot is first started up. */
   @Override

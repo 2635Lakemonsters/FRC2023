@@ -10,10 +10,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.commands.ClawCloseCommand;
+import frc.robot.commands.ClawOpenCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
+import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class RobotContainer extends TimedRobot {
@@ -27,13 +30,16 @@ public class RobotContainer extends TimedRobot {
   public static final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
 
   // Subsystems
-  public final static DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
+  public static final ClawPneumaticSubsystem m_clawPneumaticSubsystem = new ClawPneumaticSubsystem();
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
+  private final ClawCloseCommand m_clawCloseCommand = new ClawCloseCommand(m_clawPneumaticSubsystem);
+  private final ClawOpenCommand m_clawOpenCommand = new ClawOpenCommand(m_clawPneumaticSubsystem);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -46,12 +52,15 @@ public class RobotContainer extends TimedRobot {
     Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
     Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
+    Trigger pneumaticButton = new JoystickButton(leftJoystick, 0);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
     balancingButton.onTrue(m_swerveDriveBalanceCommand);
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
+    pneumaticButton.onTrue(m_clawCloseCommand);
+    pneumaticButton.onTrue(m_clawOpenCommand);
   }
 
     public Command getAutonomousCommand() {

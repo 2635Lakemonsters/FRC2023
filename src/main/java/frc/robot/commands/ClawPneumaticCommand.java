@@ -7,12 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 
-public class ClawCloseCommand extends CommandBase {
+public class ClawPneumaticCommand extends CommandBase {
   ClawPneumaticSubsystem m_clawPneumaticSubsystem;
   public boolean isClosed;
 
   /** Creates a new IntakePneumaticCommand. */
-  public ClawCloseCommand(ClawPneumaticSubsystem clawPneumaticSubsystem) {
+  public ClawPneumaticCommand(ClawPneumaticSubsystem clawPneumaticSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_clawPneumaticSubsystem = clawPneumaticSubsystem;
     addRequirements(m_clawPneumaticSubsystem);
@@ -21,10 +21,10 @@ public class ClawCloseCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // System.out.println("intakePneumaticCommandOut INITIALIZE");
     isClosed = m_clawPneumaticSubsystem.isClosed();
-    // System.out.println(isExtended);
-    if(!isClosed){ // if retracted then extend
+    if(isClosed) { //if closed then open
+      m_clawPneumaticSubsystem.grabberOpen();
+    } else if(!isClosed) { // if open then close
       m_clawPneumaticSubsystem.grabberClose();
     }
   }

@@ -15,28 +15,28 @@ package frc.robot;
 public final class Constants {
 
     // FRONT LEFT
-    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 8; 
+    public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; 
     public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER = 0; 
-    public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 7; 
-    public static final double FRONT_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(77);
+    public static final int DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR = 2; 
+    public static final double FRONT_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(-10);
 
     // FRONT RIGHT
-    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 4; 
-    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 3;
-    public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 3;
-    public static final double FRONT_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(165);
+    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR = 3; 
+    public static final int DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER = 1;
+    public static final int DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR = 4;
+    public static final double FRONT_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(21);
 
     // BACK LEFT
-    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 6; 
-    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 1;
-    public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 5; 
-    public static final double BACK_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(208);
+    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 5; 
+    public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 2;
+    public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 6; 
+    public static final double BACK_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(160);
 
     // BACK RIGHT
-    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 2;
-    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 2;
-    public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 1; 
-    public static final double BACK_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(200);
+    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 7;
+    public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 3;
+    public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 8; 
+    public static final double BACK_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(87);
 
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
@@ -63,6 +63,8 @@ public final class Constants {
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
     // buttons
+    public static final int CLAW_PNEUMATIC_BUTTON = 1;
+    public static final int ARM_PNEUMATIC_BUTTON = 1;
     public static final int CALIBRATE_BUTTON = 7;
     public static final int NORMAL_MODE = 8;
     public static final int BALANCING_BUTTON = 9;
@@ -70,7 +72,7 @@ public final class Constants {
 
     // pneumatic channels
     public static final int CLOSE_CHANNEL = 0;
-    public static final int OPEN_CHANNEL = 0;
-    public static final int EXTEND_CHANNEL = 0;
-    public static final int RETRACT_CHANNEL = 0;
+    public static final int OPEN_CHANNEL = 1;
+    public static final int EXTEND_CHANNEL = 6;
+    public static final int RETRACT_CHANNEL = 7;
 }

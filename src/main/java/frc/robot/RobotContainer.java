@@ -54,8 +54,8 @@ public class RobotContainer extends TimedRobot {
     Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
     Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
-    Trigger clawPneumaticButton = new JoystickButton(leftJoystick, 0);
-    Trigger armPneumaticButton = new JoystickButton(leftJoystick, 0);
+    Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
+    Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);

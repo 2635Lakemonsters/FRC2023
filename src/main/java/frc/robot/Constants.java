@@ -69,6 +69,7 @@ public final class Constants {
     public static final int NORMAL_MODE = 8;
     public static final int BALANCING_BUTTON = 9;
     public static final int HOLD_STILL_BUTTON = 10;
+    public static final int APRILTAG_BUTTON = 5;
 
     // pneumatic channels
     public static final int CLOSE_CHANNEL = 0;

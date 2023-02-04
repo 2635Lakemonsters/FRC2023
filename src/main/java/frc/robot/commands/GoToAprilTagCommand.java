@@ -5,26 +5,36 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import com.google.gson.Gson;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class GoToAprilTagCommand extends CommandBase {
 
-  private static final String testJson = "{\"ax\": -36.0, \"ay\": 15.0, \"az\": 39.0}";
-  
-  private Gson testGson = new Gson();
+  private DrivetrainSubsystem m_drivetrainSubsystem;
+  private double currentDeg;
+  private double errorDeg;
 
   /** Creates a new GoToAprilTagCommand. */
-  public GoToAprilTagCommand() {
+  public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_drivetrainSubsystem = drivetrainSubsystem;
+
+    addRequirements(m_drivetrainSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    currentDeg = m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees();
+    errorDeg = 180 - currentDeg;
+    System.out.println(errorDeg);
+    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX() + errorDeg * 0.5);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -33,6 +43,6 @@ public class GoToAprilTagCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }

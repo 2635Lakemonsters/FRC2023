@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.ClawPneumaticCommand;
+import frc.robot.commands.GoToAprilTagCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -42,6 +43,7 @@ public class RobotContainer extends TimedRobot {
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
   private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
+  private final GoToAprilTagCommand m_goToAprilTagCommand = new GoToAprilTagCommand(m_drivetrainSubsystem);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -56,7 +58,7 @@ public class RobotContainer extends TimedRobot {
     Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-
+    Trigger goToAprilTagCommand = new JoystickButton(leftJoystick, Constants.APRILTAG_BUTTON);
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
     balancingButton.onTrue(m_swerveDriveBalanceCommand);
@@ -64,6 +66,7 @@ public class RobotContainer extends TimedRobot {
     stationaryButton.onTrue(m_swerveNoMoveCommand);
     clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     armPneumaticButton.onTrue(m_armPneumaticCommand);
+    goToAprilTagCommand.onTrue(m_goToAprilTagCommand);
   }
 
     public Command getAutonomousCommand() {

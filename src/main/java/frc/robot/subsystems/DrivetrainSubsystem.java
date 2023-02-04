@@ -48,7 +48,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   
     private final NavX m_gyro = new NavX(SPI.Port.kMXP);
   
-    private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+    private final  SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation,
       m_frontRightLocation, 
       m_backLeftLocation, 

@@ -4,17 +4,28 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
+
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -48,7 +59,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   
     private final NavX m_gyro = new NavX(SPI.Port.kMXP);
   
-    private final  SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
+    private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation,
       m_frontRightLocation, 
       m_backLeftLocation, 
@@ -147,6 +158,92 @@ public class DrivetrainSubsystem extends SubsystemBase {
           m_backLeft.getPosition(),
           m_backRight.getPosition()
         });
+  }
+
+  /** Get pose from odometry field **/
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+
+  public SwerveDriveKinematics getSwerveDriveKinematics() {
+    return m_kinematics; 
+  }
+
+  /** zeroes drivetrain odometry **/
+  public void zeroOdometry() {
+    SwerveModulePosition[] initSwerveModulePos = {new SwerveModulePosition(), 
+                                                  new SwerveModulePosition(),
+                                                  new SwerveModulePosition(),
+                                                  new SwerveModulePosition()};
+
+    this.m_odometry.resetPosition(new Rotation2d(), initSwerveModulePos, new Pose2d());
+  }
+
+  /** THIS FUNCTION IS NOT DONE
+   * 
+   * resets drivetrain odometry to given swervemodule positions **/
+  public void resetOdometry(Pose2d pose) {
+    SwerveModulePosition[] initSwerveModulePos = {new SwerveModulePosition(), 
+                                                  new SwerveModulePosition(),
+                                                  new SwerveModulePosition(),
+                                                  new SwerveModulePosition()};
+
+    this.m_odometry.resetPosition(pose.getRotation(), initSwerveModulePos, pose);
+  }
+
+  // /** sets swerve drive module states **/
+  // public SwerveModuleState[] setDesiredStates() {
+  //   SwerveModuleState[] sms = {m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState()};
+  //   return sms;
+  // }
+
+  /**
+   * Sets the swerve ModuleStates.
+   *
+   * @param desiredStates The desired SwerveModule states.
+   */
+  public void setDesiredStates(ChassisSpeeds cs) {
+    SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, 4); //Constants.kMaxSpeedMetersPerSecond);
+    m_frontLeft.setDesiredState(desiredStates[0]);
+    m_frontRight.setDesiredState(desiredStates[1]);
+    m_backLeft.setDesiredState(desiredStates[2]);
+    m_backRight.setDesiredState(desiredStates[3]);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    ChassisSpeeds chassisSpeeds = m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState());
+    return chassisSpeeds;
+  }
+
+  /** Follows PathPlanner trajectory. Used in auto sequences.
+   * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
+   * 
+   * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
+   * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be zeroed at the start of the command sequence.
+  **/
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath) {
+    InstantCommand ic = new InstantCommand(() -> {
+        // Reset odometry for the first path you run during auto
+        if(isFirstPath){
+          this.resetOdometry(traj.getInitialHolonomicPose());
+        }
+      });
+
+    PPSwerveControllerCommand c = new PPSwerveControllerCommand(
+      traj, 
+      this::getPose, 
+      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(0.0, 0.0, 0.0), 
+      this::setDesiredStates, 
+      isFirstPath, 
+      null
+    );
+
+    return new SequentialCommandGroup(ic, c);
   }
 
   

@@ -6,11 +6,14 @@ package frc.robot;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ArmPneumaticCommand;
+import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.GoToAprilTagCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
@@ -44,6 +47,7 @@ public class RobotContainer extends TimedRobot {
   private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
   private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
   private final GoToAprilTagCommand m_goToAprilTagCommand = new GoToAprilTagCommand(m_drivetrainSubsystem);
+  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -69,7 +73,22 @@ public class RobotContainer extends TimedRobot {
     goToAprilTagCommand.onTrue(m_goToAprilTagCommand);
   }
 
-    public Command getAutonomousCommand() {
-        return null;
-    }
+    /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
+  public SendableChooser<Command> getAutonomousCommand() {
+    // An ExampleCommand will run in autonomous
+
+    SendableChooser<Command> m_autoChooser = new SendableChooser<>();
+    m_autoChooser.setDefaultOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
+
+    // create other options in SmartDashBoard
+    m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Rotation 180", m_autonomousCommands.RotatePath(m_drivetrainSubsystem));
+    SmartDashboard.putData("Auto Chooser", m_autoChooser);
+
+    return m_autoChooser; 
+  }
 }

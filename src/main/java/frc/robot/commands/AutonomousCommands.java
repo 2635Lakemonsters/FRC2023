@@ -10,15 +10,22 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** Add your docs here. */
 public class AutonomousCommands extends CommandBase {
-    public Command OutAndBackPath(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Out and Back Path", new PathConstraints(1, 1));
+    public Command OutPath(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Out Path", new PathConstraints(0.1, 0.1));
         Command c = drivetrainSubsystem.followTrajectoryCommand(traj, true);
         return c;
+    }
+
+    public Command DoNothing() {
+        return null;
+    }
+
+    public Command RotatePath(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Rotation Testing", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
     }
 }

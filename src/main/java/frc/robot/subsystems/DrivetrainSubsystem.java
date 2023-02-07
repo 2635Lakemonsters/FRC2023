@@ -19,7 +19,6 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,13 +29,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class DrivetrainSubsystem extends SubsystemBase {
 
     // public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxSpeed = 0.4;
+    public static final double kMaxSpeed = 0.2;
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
-    public final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-    public final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-    public final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-    public final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+    public final Translation2d m_frontLeftLocation = new Translation2d(0.318, 0.444);
+    public final Translation2d m_frontRightLocation = new Translation2d(0.318, -0.444);
+    public final Translation2d m_backLeftLocation = new Translation2d(-0.318, 0.444);
+    public final Translation2d m_backRightLocation = new Translation2d(-0.318, -0.444);
 
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 
@@ -102,18 +101,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     // Get the x speed
     final var xPower =
-      RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.02))
+      RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
         * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed
     final var yPower =
-      RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.02))
+      RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
         * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the rate of angular rotation
     final var rot =
     //must be positive to read accuate joystick yaw
-      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.02))
+      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.1))
         * DrivetrainSubsystem.kMaxAngularSpeed;
 
     RobotContainer.m_drivetrainSubsystem.drive(xPower, yPower, rot, true);
@@ -200,7 +199,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * Sets the swerve ModuleStates.
    *
-   * @param desiredStates The desired SwerveModule states.
+   * @param desiredStates The desired SwerveModule states as a ChassisSpeeds object
    */
   public void setDesiredStates(ChassisSpeeds cs) {
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
@@ -228,7 +227,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     InstantCommand ic = new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         if(isFirstPath){
-          this.resetOdometry(traj.getInitialHolonomicPose());
+          this.zeroOdometry();
+          // this.resetOdometry(traj.getInitialHolonomicPose());
         }
       });
 
@@ -240,10 +240,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
       new PIDController(0.0, 0.0, 0.0), 
       this::setDesiredStates, 
       isFirstPath, 
-      null
+      this
     );
 
     return new SequentialCommandGroup(ic, c);
+  }
+
+  /** Follows PathPlanner trajectory. Used in auto sequences.
+   * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
+   * 
+   * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
+  **/
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+    PPSwerveControllerCommand c = new PPSwerveControllerCommand(
+      traj, 
+      this::getPose, 
+      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(0.0, 0.0, 0.0), 
+      this::setDesiredStates, 
+      this
+    );
+
+    return c;
   }
 
   

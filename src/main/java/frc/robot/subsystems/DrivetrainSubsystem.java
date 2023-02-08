@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class DrivetrainSubsystem extends SubsystemBase {
 
     // public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxSpeed = 0.2;
+    public static final double kMaxSpeed = 0.5;
     public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final Translation2d m_frontLeftLocation = new Translation2d(0.318, 0.444);

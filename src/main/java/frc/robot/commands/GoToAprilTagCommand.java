@@ -9,11 +9,19 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class GoToAprilTagCommand extends CommandBase {
-
+  private double ThetaOne;
+  private double ThetaTwo;
+  private double ThetaThree;
+  private double dc;
+  private double delX;
+  private double delY;
+  private double lambda;
   private DrivetrainSubsystem m_drivetrainSubsystem;
-  private double currentDeg;
-  private double errorDeg;
-
+  private double x;
+  private double z;
+  private double l;
+  private double dfl;
+  
   /** Creates a new GoToAprilTagCommand. */
   public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -25,15 +33,21 @@ public class GoToAprilTagCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ThetaOne = Math.atan(x/(z+l/2));
+    ThetaThree = 90-(ThetaOne+ThetaTwo);
+    dc = Math.sqrt(Math.pow(x, 2)+Math.pow(z+(l/2), 2));
+    delX = dc*Math.cos(ThetaThree);
+    lambda = dc*Math.sin(ThetaThree);
+    delY = lambda-(dfl+(l/2));
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    currentDeg = m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees();
-    errorDeg = 180 - currentDeg;
-    System.out.println(errorDeg);
-    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX() + errorDeg * 0.5);
+    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY());
+    DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
+    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
   }
 
   // Called once the command ends or is interrupted.

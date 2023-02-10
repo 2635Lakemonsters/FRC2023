@@ -14,18 +14,48 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** Add your docs here. */
 public class AutonomousCommands extends CommandBase {
+    public Command DoNothing() {
+        return null;
+    }
+
     public Command OutPath(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Out Path", new PathConstraints(0.1, 0.1));
         Command c = drivetrainSubsystem.followTrajectoryCommand(traj, true);
         return c;
     }
 
-    public Command DoNothing() {
-        return null;
-    }
-
     public Command RotatePath(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Rotation Testing", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command BottomScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Bottom score twice engage", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command MidScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score twice engage", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command TopScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Top score twice engage", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command ScoreTopGrab(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Score top grab engage", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command ScoreMidGrab(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Score mid grab engage", new PathConstraints(0.02, 0.05));
+        return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    public Command ScoreBottomGrab(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Score bottom grab engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj);
     }
 }

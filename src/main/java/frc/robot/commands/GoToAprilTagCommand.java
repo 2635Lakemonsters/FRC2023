@@ -9,9 +9,9 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class GoToAprilTagCommand extends CommandBase {
-  private double ThetaOne;
-  private double ThetaTwo;
-  private double ThetaThree;
+  private double thetaOne;
+  private double thetaTwo;
+  private double thetaThree;
   private double dc;
   private double delX;
   private double delY;
@@ -20,7 +20,7 @@ public class GoToAprilTagCommand extends CommandBase {
   private double x;
   private double z;
   private double l;
-  private double dfl;
+  private double dfo;
   
   /** Creates a new GoToAprilTagCommand. */
   public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem) {
@@ -33,13 +33,12 @@ public class GoToAprilTagCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    ThetaOne = Math.atan(x/(z+l/2));
-    ThetaThree = 90-(ThetaOne+ThetaTwo);
-    dc = Math.sqrt(Math.pow(x, 2)+Math.pow(z+(l/2), 2));
-    delX = dc*Math.cos(ThetaThree);
-    lambda = dc*Math.sin(ThetaThree);
-    delY = lambda-(dfl+(l/2));
-
+    thetaOne = Math.atan(x / (z + l / 2));
+    thetaThree = 90 - (thetaOne + thetaTwo);
+    dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z + (l / 2), 2));
+    delX = dc * Math.cos(thetaThree);
+    lambda = dc * Math.sin(thetaThree);
+    delY = lambda - (dfo + (l / 2));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

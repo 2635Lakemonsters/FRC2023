@@ -26,6 +26,12 @@ public class Robot extends TimedRobot {
   private SendableChooser<Command> m_autoChooser; 
   private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
 
+  public static int circularBufferSize = 50;
+  public static int bufferSlotNumber = 0;
+  public static double[] time;
+  public static double[] angle;
+  boolean autoHappened; 
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -34,6 +40,9 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    time = new double[circularBufferSize]; 
+    angle =  new double[circularBufferSize];
+    autoHappened = false;
 
     m_robotContainer = new RobotContainer();
     m_autoChooser = m_robotContainer.getAutonomousCommand();

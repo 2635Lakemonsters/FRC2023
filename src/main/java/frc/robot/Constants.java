@@ -76,4 +76,8 @@ public final class Constants {
     public static final int OPEN_CHANNEL = 1;
     public static final int EXTEND_CHANNEL = 6;
     public static final int RETRACT_CHANNEL = 7;
+
+    // VISION CONSTANTS
+    public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds
+
 }

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
+import frc.robot.drivers.Gyroscope;
 import frc.robot.drivers.NavX;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
@@ -265,5 +266,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return c;
   }
 
-  
+  public Gyroscope getGyroscope() {
+    return m_gyro;
+  }  
 }

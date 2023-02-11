@@ -49,7 +49,7 @@ public class RobotContainer extends TimedRobot {
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
   private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
-  private final GoToAprilTagCommand m_goToAprilTagCommand = new GoToAprilTagCommand(m_drivetrainSubsystem);
+  private final GoToAprilTagCommand m_goToAprilTagCommand = new GoToAprilTagCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
 
   public RobotContainer() {

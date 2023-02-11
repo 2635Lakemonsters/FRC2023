@@ -66,7 +66,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     
     public void data() {
         Gson gson = new Gson();
-        NetworkTableEntry entry = monsterVision.getEntry("ObjectTracker - " + source);
+        NetworkTableEntry entry = monsterVision.getEntry("ObjectTracker-" + source);
         if(entry==null) {
             return;
         }
@@ -135,14 +135,18 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     /** Returns closest AprilTag */
     public VisionObject getClosestAprilTag() {
-
+        VisionObject object = getClosestObject("tag");
+        if (object == null) {
+            return null; 
+        }
+        return object;
     }
 
     /** Returns whether closest cone/cube to the gripper if close enough to pick up */
     public boolean isGripperCloseEnough() {
-        int min = 0;
-        int radius = 0;
-        if(radius > min){//requires radius, not sure how to get radius though
+        double min = 0;//calibrate min
+        double radius = foundObjects[0].r;
+        if(radius > min){
             return true;
         }
         else{
@@ -177,7 +181,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         // System.out.println("LINE 122!!!!!!!!!!!!!!");
         List<VisionObject> filteredResult = Arrays.asList(foundObjects)
             .stream()
-            .filter(vo -> vo.objectLabel.equals(objectLabel) && vo.confidence > .40)
+            .filter(vo -> vo.objectLabel.contains(objectLabel) && vo.confidence > .40)//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
             .collect(Collectors.toList());
 
         VisionObject filteredArray[] = new VisionObject[filteredResult.size()];

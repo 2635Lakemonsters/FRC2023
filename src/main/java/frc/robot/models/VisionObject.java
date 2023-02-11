@@ -21,15 +21,18 @@ public class VisionObject {
     public double x;
     public double y;
     public double z;
+    public double r;
     public double confidence;
     
 
-    public VisionObject(String objectType, double x, double y, double z)
+    public VisionObject(String objectType, double x, double y, double z, double r)
     {
         this.objectLabel = objectType;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.r = r;
+
     }
 
     public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation)
@@ -79,7 +82,8 @@ public class VisionObject {
         return Integer.valueOf(objectLabel.substring(objectLabel.indexOf(" "),objectLabel.length()-1));
 
     }
-        /** Returns FIELD centric coordinates of the Robot*/
+    
+    /** Returns FIELD centric coordinates of the Robot*/
     public Translation2d getFieldXY() {
         Translation2d FieldXY = new Translation2d(x,z);
         return FieldXY;

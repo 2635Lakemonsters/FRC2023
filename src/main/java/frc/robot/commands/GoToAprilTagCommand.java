@@ -6,9 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
+import frc.robot.models.VisionObject;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 public class GoToAprilTagCommand extends CommandBase {
+  private DrivetrainSubsystem m_drivetrainSubsystem;
+  private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
+  private VisionObject aprilTagData;
   private double thetaOne;
   private double thetaTwo;
   private double thetaThree;
@@ -16,16 +21,14 @@ public class GoToAprilTagCommand extends CommandBase {
   private double delX;
   private double delY;
   private double lambda;
-  private DrivetrainSubsystem m_drivetrainSubsystem;
-  private double x;
-  private double z;
   private double l;
   private double dfo;
   
   /** Creates a new GoToAprilTagCommand. */
-  public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem) {
+  public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrainSubsystem = drivetrainSubsystem;
+    m_objectTrackerSubsystemChassis = objectTrackerSubsystemChassis;
 
     addRequirements(m_drivetrainSubsystem);
   }
@@ -33,9 +36,15 @@ public class GoToAprilTagCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    thetaOne = Math.atan(x / (z + l / 2));
+    m_objectTrackerSubsystemChassis.data();
+    aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
+
+    double x = aprilTagData.x;
+    double z = aprilTagData.z;
+    
+    thetaOne = Math.atan(x / z);
     thetaThree = 90 - (thetaOne + thetaTwo);
-    dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z + (l / 2), 2));
+    dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2));
     delX = dc * Math.cos(thetaThree);
     lambda = dc * Math.sin(thetaThree);
     delY = lambda - (dfo + (l / 2));

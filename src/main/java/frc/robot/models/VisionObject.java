@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.util.CircularBuffer;
 import frc.robot.Constants;
 import frc.robot.Robot;
+// import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
-
 import edu.wpi.first.wpilibj.Timer;
 
 public class VisionObject {
@@ -24,7 +24,6 @@ public class VisionObject {
         this.z = z;
     }
 
-    /** Motion compensation (latency reduction) - method commented out for now */ 
     public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation)
     {
         Constants.OBJECT_DETECTION_LATENCY = SmartDashboard.getNumber("Object detection latency", 0.217);
@@ -51,8 +50,6 @@ public class VisionObject {
 
             if (Robot.time[indexOfInterest] < targetTime) {
                 theta = drivetrainSubsystem.getGyroscope().getAngle().getRadians() - Robot.angle[Robot.bufferSlotNumber] ;
-                // theta = drivetrainSubsystem.getGyroscope().getUnadjustedAngle() - Robot.angle[Robot.bufferSlotNumber] ;
-
                 break;
             }
         }

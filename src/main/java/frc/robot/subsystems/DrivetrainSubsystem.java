@@ -266,7 +266,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     return c;
   }
 
-  public Gyroscope getGyroscope() {
-    return m_gyro;
-  }  
+  public NavX getGyroscope() {
+    return m_gyro; 
+  }
+
+  
 }

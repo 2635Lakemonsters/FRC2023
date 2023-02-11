@@ -13,22 +13,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 import com.google.gson.Gson;
 
+//import edu.wpi.first.networktables.EntryListenerFlags;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.models.VisionObject;
 
 
 public class ObjectTrackerSubsystem extends SubsystemBase {
-	NetworkTable monsterVision; 
+	  NetworkTable monsterVision; 
     VisionObject[] foundObjects; 
     private String jsonString;
 
     // rotation matrix
     private double cameraTilt = 20.0 * Math.PI / 180.0; 
-    private double[] cameraOffset = {0.0, 18.25, 9.0}; // goes {x, y, z} in CAMERA coordinates where z is forward on the bot, y is up
+    private double[] cameraOffset = {0.0, 18.25, 9.0}; // goes {x, y, z}
 
     private double sinTheta = Math.sin(cameraTilt);
     private double cosTheta = Math.cos(cameraTilt);
@@ -46,7 +48,6 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         // }, 
         // EntryListenerFlags.kNew | EntryListenerFlags.kUpdate);          
     }
-    
     
     
     public void data() {

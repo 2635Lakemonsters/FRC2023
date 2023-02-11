@@ -1,6 +1,8 @@
 package frc.robot.models;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.CircularBuffer;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -9,7 +11,13 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import edu.wpi.first.wpilibj.Timer;
 
 public class VisionObject {
-    public String objectLabel; // red or blue cargo
+    public String objectLabel;
+    /**
+     * One of the following:
+     * tag[family]: ID number (ex. "tag16h5: 28")
+     * cone
+     * cube
+     */
     public double x;
     public double y;
     public double z;
@@ -65,7 +73,24 @@ public class VisionObject {
         // z = newZ;
         // x = newX;
     }
-};
+
+    /** Return ID of AprilTag on field */
+    public int getAprilTagID() {
+        return Integer.valueOf(objectLabel.substring(objectLabel.indexOf(" "),objectLabel.length()-1));
+
+    }
+        /** Returns FIELD centric coordinates of the Robot*/
+    public Translation2d getFieldXY() {
+        Translation2d FieldXY = new Translation2d(x,z);
+        return FieldXY;
+    }
+
+    /** Returns robot's heading (angle bot needs to rotate to to be pointing at the apriltag) */
+    public Rotation2d getHeadingOffset() {
+        Rotation2d HeadingOffset = new Rotation2d(x,z);
+        return HeadingOffset;
+    }
+}
 
 
 

@@ -23,6 +23,7 @@ import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 public class RobotContainer extends TimedRobot {
   // Joysticks
@@ -38,6 +39,8 @@ public class RobotContainer extends TimedRobot {
   public static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
   public static final ClawPneumaticSubsystem m_clawPneumaticSubsystem = new ClawPneumaticSubsystem();
   public static final ArmPneumaticSubsystem m_armPneumaticSubsystem = new ArmPneumaticSubsystem();
+  public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
+  public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);

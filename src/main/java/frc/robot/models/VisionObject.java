@@ -25,8 +25,7 @@ public class VisionObject {
     public double confidence;
     
 
-    public VisionObject(String objectType, double x, double y, double z, double r)
-    {
+    public VisionObject(String objectType, double x, double y, double z, double r) {
         this.objectLabel = objectType;
         this.x = x;
         this.y = y;
@@ -35,8 +34,7 @@ public class VisionObject {
 
     }
 
-    public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation)
-    {
+    public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation) {
         Constants.OBJECT_DETECTION_LATENCY = SmartDashboard.getNumber("Object detection latency", 0.217);
         /*
         if (compensateTranslation) {

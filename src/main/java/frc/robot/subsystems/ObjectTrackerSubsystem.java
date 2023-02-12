@@ -112,6 +112,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         if (objects == null || objects.length == 0) {
             return null; 
         }
+        // This assumes they are sorted by distance, is this done in getObjectsOfType()?
         return objects[0];
     }
 
@@ -120,6 +121,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         if (objects == null || objects.length == 0) {
             return null; 
         }
+        // This assumes they are sorted by distance, is this done in getObjectsOfType()?
         return objects[1];
     }
 
@@ -132,9 +134,19 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         return object;
     }
 
-    /** Returns whether closest cone/cube to the gripper if close enough to pick up */
+    /** 
+     * Returns whether closest cone/cube to the gripper if close enough to pick up 
+     * 
+     * Is this only for the blob detector on the arm, or does this use the forward looking camera
+     * as well?  May need annother function for isGripperOnTarget() for when we are approaching 
+     * a cone / cube which is on the ground, since when the gripper is picking up something on the 
+     * ground, it's radius could be close enough... but not aligned with pick-up location since 
+     * it is at the top of the field of view and the camera is pointing down at the ground.
+     * 
+     * TODO: is the radius for pickup different for cones and cubes?
+     */
     public boolean isGripperCloseEnough() {
-        double min = 0;//calibrate min
+        double min = 0; // TODO: calibrate min
         double radius = foundObjects[0].r;
         if(radius > min){
             return true;
@@ -165,6 +177,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     }
 
+    // TODO: potentially sort results by distance?
     public VisionObject[] getObjectsOfType(String objectLabel) {
         if (foundObjects == null || foundObjects.length == 0)
             return null;

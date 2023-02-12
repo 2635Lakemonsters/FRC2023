@@ -24,6 +24,13 @@ public class VisionObject {
     public double confidence;
     
 
+    /** 
+     * Document what these are... these are vision frame axes and radius for blob?
+     * @param x
+     * @param y
+     * @param z 
+     * @param r 
+    */
     public VisionObject(String objectType, double x, double y, double z, double r) {
         this.objectLabel = objectType;
         this.x = x;
@@ -31,6 +38,7 @@ public class VisionObject {
         this.z = z;
         this.r = r;
 
+        // TODO: add confidence?
     }
 
     public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation) {
@@ -79,13 +87,16 @@ public class VisionObject {
     }
     
     /** Returns FIELD centric coordinates of the Robot*/
+    // does this return field-centric coordinates of the robot, or of the Vision object?
     public Translation2d getFieldXY() {
+        // style comment: fieldXY instead of FieldXY since it is not a class.
         Translation2d FieldXY = new Translation2d(x,z);
         return FieldXY;
     }
 
     /** Returns robot's heading (angle bot needs to rotate to to be pointing at the apriltag) */
     public Rotation2d getHeadingOffset() {
+        // style comment: headingOffset instead of HeadingOffset since it is not a class.
         Rotation2d HeadingOffset = new Rotation2d(x,z);
         return HeadingOffset;
     }

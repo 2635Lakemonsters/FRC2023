@@ -22,7 +22,7 @@ public class GoToAprilTagCommand extends CommandBase {
   private double delY;
   private double lambda;
   private double l;
-  private double dfo;
+  private double dfo = 0.36; //meters
   
   /** Creates a new GoToAprilTagCommand. */
   public GoToAprilTagCommand(DrivetrainSubsystem drivetrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis) {
@@ -43,10 +43,12 @@ public class GoToAprilTagCommand extends CommandBase {
     double z = aprilTagData.z;
     
     thetaOne = Math.atan(x / z);
+    thetaTwo = 0;
     thetaThree = 90 - (thetaOne + thetaTwo);
     dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2));
-    delX = dc * Math.cos(thetaThree);
     lambda = dc * Math.sin(thetaThree);
+
+    delX = dc * Math.cos(thetaThree);
     delY = lambda - (dfo + (l / 2));
   }
 

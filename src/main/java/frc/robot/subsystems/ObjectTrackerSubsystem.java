@@ -1,30 +1,20 @@
 package frc.robot.subsystems;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.opencv.core.RotatedRect;
-
 import com.google.gson.Gson;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-//import edu.wpi.first.networktables.EntryListenerFlags;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.models.VisionObject;
 
 
@@ -178,14 +168,12 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     public VisionObject[] getObjectsOfType(String objectLabel) {
         if (foundObjects == null || foundObjects.length == 0)
             return null;
-        // System.out.println("LINE 122!!!!!!!!!!!!!!");
         List<VisionObject> filteredResult = Arrays.asList(foundObjects)
             .stream()
             .filter(vo -> vo.objectLabel.contains(objectLabel) && vo.confidence > .40)//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
             .collect(Collectors.toList());
 
         VisionObject filteredArray[] = new VisionObject[filteredResult.size()];
-        // System.out.println(filteredResult.size());
         return filteredResult.toArray(filteredArray);
 
     }

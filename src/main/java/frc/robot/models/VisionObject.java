@@ -3,7 +3,6 @@ package frc.robot.models;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.util.CircularBuffer;
 import frc.robot.Constants;
 import frc.robot.Robot;
 // import frc.robot.subsystems.DrivetrainSubsystem;
@@ -63,16 +62,14 @@ public class VisionObject {
             }
         }
         
-        //System.out.println("theta: " + theta); 
-
         double cosTheta = Math.cos(theta);
         double sinTheta = Math.sin(theta);
 
         double newZ = z * cosTheta - x * sinTheta;
         double newX = z * sinTheta + x * cosTheta;
 
-        // z = newZ;
-        // x = newX;
+        z = newZ;
+        x = newX;
     }
 
     /** Return ID of AprilTag on field */

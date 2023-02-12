@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.GoToAprilTagCommand;
+import frc.robot.commands.GoScoreCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -49,7 +49,10 @@ public class RobotContainer extends TimedRobot {
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
   private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
-  private final GoToAprilTagCommand m_goToAprilTagCommand = new GoToAprilTagCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
+  private final GoScoreCommand m_scoreConeTopLeft = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_LEFT_CONE);
+  private final GoScoreCommand m_scoreConeMidLeft = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_LEFT_CONE);
+  private final GoScoreCommand m_scoreConeTopRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_RIGHT_CONE);
+  private final GoScoreCommand m_scoreConeMidRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_RIGHT_CONE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
 
   public RobotContainer() {
@@ -65,7 +68,11 @@ public class RobotContainer extends TimedRobot {
     Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-    Trigger goToAprilTagCommand = new JoystickButton(leftJoystick, Constants.APRILTAG_BUTTON);
+    Trigger scoreConeTopLeft = new JoystickButton(leftJoystick, Constants.TOP_LEFT_CONE);
+    Trigger scoreConeMidLeft = new JoystickButton(leftJoystick, Constants.MID_LEFT_CONE);
+    Trigger scoreConeTopRight = new JoystickButton(leftJoystick, Constants.TOP_RIGHT_CONE);
+    Trigger scoreConeMidRight = new JoystickButton(leftJoystick, Constants.MID_RIGHT_CONE);
+
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
     balancingButton.onTrue(m_swerveDriveBalanceCommand);
@@ -73,7 +80,10 @@ public class RobotContainer extends TimedRobot {
     stationaryButton.onTrue(m_swerveNoMoveCommand);
     clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     armPneumaticButton.onTrue(m_armPneumaticCommand);
-    goToAprilTagCommand.onTrue(m_goToAprilTagCommand);
+    scoreConeTopLeft.onTrue(m_scoreConeTopLeft);
+    scoreConeMidLeft.onTrue(m_scoreConeMidLeft);
+    scoreConeTopRight.onTrue(m_scoreConeTopRight);
+    scoreConeMidRight.onTrue(m_scoreConeMidRight);
   }
 
     /**

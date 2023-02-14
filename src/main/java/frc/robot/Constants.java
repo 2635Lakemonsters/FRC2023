@@ -74,6 +74,8 @@ public final class Constants {
     public static final int MID_LEFT_CONE = 3;
     public static final int TOP_RIGHT_CONE = 6;
     public static final int MID_RIGHT_CONE = 4;
+    public static final int TOP_CUBE = 0;
+    public static final int MID_CUBE = 180;
 
     // pneumatic channels
     public static final int CLOSE_CHANNEL = 0;

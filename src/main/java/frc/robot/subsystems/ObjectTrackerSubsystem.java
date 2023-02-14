@@ -134,7 +134,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     /** Returns whether closest cone/cube to the gripper if close enough to pick up */
     public boolean isGripperCloseEnough() {
-        double min = 0;//calibrate min
+        double min = 0;//calibrate min dist and feild of veiw pose for correct pickup
         double radius = foundObjects[0].r;
         if(radius > min){
             return true;

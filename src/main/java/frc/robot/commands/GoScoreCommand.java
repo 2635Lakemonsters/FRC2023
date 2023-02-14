@@ -41,7 +41,7 @@ public class GoScoreCommand extends CommandBase {
     double z = aprilTagData.z;
     
     double thetaOne = Math.atan(x / z);
-    double thetaTwo = 0;
+    double thetaTwo = targetPoseR - m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getRadians();
     double thetaThree = 90 - (thetaOne + thetaTwo);
     double dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2));
     double lambda = dc * Math.sin(thetaThree);
@@ -68,7 +68,7 @@ public class GoScoreCommand extends CommandBase {
     // set the max power
     final double gainT = 4.0;
     final double range = 2.0;
-    final double gainR = 2.0;
+    final double gainR = 0.6;
 
     double lockPoseX = gainT * deltaX;
     lockPoseX = Math.min(Math.max(lockPoseX, -range), range); //clip to range of -2, 2
@@ -87,8 +87,7 @@ public class GoScoreCommand extends CommandBase {
     } else if (scoringPose == 4 || scoringPose == 6) {
       DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getX() + lockPoseX); //add or subtrack the offset depending on what the robot perceives is adding or subtracting on the feild
       DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getY() + lockPoseY);
-    } else if (scoringPose == 10 || scoringPose == 11) { 
-      System.out.println("FIX ME! MIDDLE SCORING");
+    } else if (scoringPose == 0 || scoringPose == 180) { 
       DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getX() + lockPoseX);
       DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getY() + lockPoseY);
     }

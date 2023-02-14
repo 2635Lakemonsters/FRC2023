@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.commands.ArmPneumaticCommand;
@@ -53,6 +54,8 @@ public class RobotContainer extends TimedRobot {
   private final GoScoreCommand m_scoreConeMidLeft = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_LEFT_CONE);
   private final GoScoreCommand m_scoreConeTopRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_RIGHT_CONE);
   private final GoScoreCommand m_scoreConeMidRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_RIGHT_CONE);
+  private final GoScoreCommand m_scoreCubeTop = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_CUBE);
+  private final GoScoreCommand m_scoreCubeMid = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
 
   public RobotContainer() {
@@ -72,6 +75,8 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreConeMidLeft = new JoystickButton(leftJoystick, Constants.MID_LEFT_CONE);
     Trigger scoreConeTopRight = new JoystickButton(leftJoystick, Constants.TOP_RIGHT_CONE);
     Trigger scoreConeMidRight = new JoystickButton(leftJoystick, Constants.MID_RIGHT_CONE);
+    POVButton scoreCubeTop = new POVButton(rightJoystick, 0);
+    POVButton scoreCubeMid = new POVButton(rightJoystick, 180);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
@@ -84,6 +89,8 @@ public class RobotContainer extends TimedRobot {
     scoreConeMidLeft.onTrue(m_scoreConeMidLeft);
     scoreConeTopRight.onTrue(m_scoreConeTopRight);
     scoreConeMidRight.onTrue(m_scoreConeMidRight);
+    scoreCubeTop.onTrue(m_scoreCubeTop);
+    scoreCubeMid.onTrue(m_scoreCubeMid);
   }
 
     /**

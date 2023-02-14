@@ -59,7 +59,7 @@ public class GoScoreCommand extends CommandBase {
     double currentPoseX = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
     double deltaX = targetPoseX - currentPoseX;
 
-    double currentPoseY = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
+    double currentPoseY = m_drivetrainSubsystem.m_odometry.getPoseMeters().getY();
     double deltaY = targetPoseY - currentPoseY;
 
     double currentRot = m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getRadians();

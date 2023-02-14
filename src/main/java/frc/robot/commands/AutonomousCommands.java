@@ -10,12 +10,22 @@ import com.pathplanner.lib.PathPlannerTrajectory;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 /** Add your docs here. */
 public class AutonomousCommands extends CommandBase {
     public Command DoNothing() {
         return null;
+    }
+
+    public void PrintNTDataString(){
+        RobotContainer.m_objectTrackerSubsystemChassis.data();
+        RobotContainer.m_objectTrackerSubsystemGripper.data();
+        System.out.println(RobotContainer.m_objectTrackerSubsystemChassis.getClosestObject("cube"));
+        System.out.println(RobotContainer.m_objectTrackerSubsystemGripper.getClosestObject("cube"));
+        System.out.println(RobotContainer.m_objectTrackerSubsystemChassis.getClosestAprilTag());
     }
 
     public Command OutPath(DrivetrainSubsystem drivetrainSubsystem) {

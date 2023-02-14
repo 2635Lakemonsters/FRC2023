@@ -20,7 +20,7 @@ import frc.robot.models.VisionObject;
 
 public class ObjectTrackerSubsystem extends SubsystemBase {
 	NetworkTable monsterVision; 
-    VisionObject[] foundObjects; 
+    public VisionObject[] foundObjects; 
     private String jsonString;
     private String source;
 

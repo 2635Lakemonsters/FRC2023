@@ -17,6 +17,7 @@ import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.GoScoreCommand;
+import frc.robot.commands.PrintGetXCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
@@ -57,6 +58,7 @@ public class RobotContainer extends TimedRobot {
   private final GoScoreCommand m_scoreCubeTop = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_CUBE);
   private final GoScoreCommand m_scoreCubeMid = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
+  private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -75,8 +77,9 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreConeMidLeft = new JoystickButton(leftJoystick, Constants.MID_LEFT_CONE);
     Trigger scoreConeTopRight = new JoystickButton(leftJoystick, Constants.TOP_RIGHT_CONE);
     Trigger scoreConeMidRight = new JoystickButton(leftJoystick, Constants.MID_RIGHT_CONE);
-    POVButton scoreCubeTop = new POVButton(rightJoystick, 0);
-    POVButton scoreCubeMid = new POVButton(rightJoystick, 180);
+    POVButton scoreCubeTop = new POVButton(rightJoystick, Constants.TOP_CUBE);
+    POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
+    Trigger printGetX = new JoystickButton(leftJoystick, 10);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
@@ -91,6 +94,7 @@ public class RobotContainer extends TimedRobot {
     scoreConeMidRight.onTrue(m_scoreConeMidRight);
     scoreCubeTop.onTrue(m_scoreCubeTop);
     scoreCubeMid.onTrue(m_scoreCubeMid);
+    printGetX.onTrue(m_printGetXCommand);
   }
 
     /**

@@ -89,6 +89,10 @@ public class VisionObject {
         Rotation2d HeadingOffset = new Rotation2d(x,z);
         return HeadingOffset;
     }
+
+    public String toString() {
+        return "" + x + '\n' + y + '\n' + z + '\n' + r + '\n' + confidence;
+    }
 }
 
 

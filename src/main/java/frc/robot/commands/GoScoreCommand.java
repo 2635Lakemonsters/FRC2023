@@ -19,6 +19,7 @@ public class GoScoreCommand extends CommandBase {
   private double dfo = 0.36; //meters
   private double targetPoseX;
   private double targetPoseY;
+  private double targetPoseR = 0;
   private int scoringPose;
   
   /** Creates a new GoScoreCommand. */
@@ -61,21 +62,34 @@ public class GoScoreCommand extends CommandBase {
     double currentPoseY = m_drivetrainSubsystem.m_odometry.getPoseMeters().getX();
     double deltaY = targetPoseY - currentPoseY;
 
-    // set the max power
-    final double gain = 4.0;
-    final double range = 2.0;
+    double currentRot = m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getRadians();
+    double deltaR = targetPoseR - currentRot;
 
-    double lockPoseX = gain * deltaX;
+    // set the max power
+    final double gainT = 4.0;
+    final double range = 2.0;
+    final double gainR = 2.0;
+
+    double lockPoseX = gainT * deltaX;
     lockPoseX = Math.min(Math.max(lockPoseX, -range), range); //clip to range of -2, 2
 
-    double lockPoseY = gain * deltaY;
+    double lockPoseY = gainT * deltaY;
     lockPoseY = Math.min(Math.max(lockPoseY, -range), range); //clip to range of -2, 2
+
+    double lockRot = gainR * deltaR;
+    lockRot = Math.min(Math.max(lockPoseY, -range), range); //clip to range of -2, 2
+
+    DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX() + lockRot);
 
     if (scoringPose == 5 || scoringPose == 3) {
       DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getX() + lockPoseX); //add or subtrack the offset depending on what the robot perceives is adding or subtracting on the feild
       DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getY() + lockPoseY);
     } else if (scoringPose == 4 || scoringPose == 6) {
       DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getX() + lockPoseX); //add or subtrack the offset depending on what the robot perceives is adding or subtracting on the feild
+      DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getY() + lockPoseY);
+    } else if (scoringPose == 10 || scoringPose == 11) { 
+      System.out.println("FIX ME! MIDDLE SCORING");
+      DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getX() + lockPoseX);
       DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getY() + lockPoseY);
     }
   }

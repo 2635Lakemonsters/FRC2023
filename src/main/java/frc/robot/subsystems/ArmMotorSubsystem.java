@@ -14,18 +14,22 @@ public class ArmMotorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
   public static double calculatePower(double targetPose){
-    
-    
     double currentPose = /*Get current pose */ 0;
     double delta = targetPose-currentPose;
-    double gain = 4.0;
-    double range = 2.0;
-    double lockPose = gain*delta;
 
-    return 0;
+    final double gain = 4.0;
+    final double range = 2.0;
+    double lockPose = gain * delta;
+
+    lockPose = Math.min(Math.max(lockPose, -range), range);
+
+    return lockPose;
   }
-  public void setMotorPower(double power){
+  
+  public void setMotorPower(double targetPose){
     /*Set Voltage in this method*/
+    double power = calculatePower(targetPose);
   }
 }

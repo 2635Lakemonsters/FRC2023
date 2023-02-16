@@ -7,16 +7,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmMotorSubsystem;
+import frc.robot.subsystems.ArmPneumaticSubsystem;
 
 public class ControlScoringCommands extends CommandBase {
+
+  private ArmPneumaticSubsystem m_armPneumaticSubsystem;
+  private int m_buttonNum;
+  private boolean m_returnToDock;
+
   /** Creates a new ControlScoringCommands. */
-  private int buttonNum;
-  private boolean returnToDock;
-  public ControlScoringCommands(int buttonNum, boolean returnToDock) {
+  public ControlScoringCommands(ArmPneumaticSubsystem armPneumaticSubsystem, int buttonNum, boolean returnToDock) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.buttonNum = buttonNum;
-    this.returnToDock = returnToDock;
+    m_buttonNum = buttonNum;
+    m_returnToDock = returnToDock;
+    m_armPneumaticSubsystem = armPneumaticSubsystem;
    
+    addRequirements(armPneumaticSubsystem);
   }
 
   // Called when the command is initially scheduled.
@@ -26,48 +32,37 @@ public class ControlScoringCommands extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(buttonNum == 5 || buttonNum == 6 || buttonNum == 0){
-      //top arm position command
+    if(m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0){
+      // top arm position command
       new SequentialCommandGroup(
-        ArmMotorSubsystem.calculatePower(20),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand()
+        new ArmPneumaticCommand(m_armPneumaticSubsystem)
       );
-    }
-    else if(buttonNum == 3 || buttonNum == 4|| buttonNum == 180){
-      //middle arm position command
+    } else if(m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180){
+      // middle arm position command
       new SequentialCommandGroup(
-        ArmMotorSubsystem.calculatePower(20),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
         ArmMotorSubsystem.setMotorPower(20),
-        new ArmPneumaticCommand()
+        new ArmPneumaticCommand(m_armPneumaticSubsystem)
       );
-    }
-    else if(returnToDock && buttonNum == 20){
+    } else if(m_returnToDock && m_buttonNum == 20){
+      // going back to the docked pose
       new SequentialCommandGroup(
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(),
-        ArmMotorSubsystem.setMotorPower(),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(),
-        ArmMotorSubsystem.setMotorPower(),
-        new ArmPneumaticCommand(),
-        ArmMotorSubsystem.calculatePower(),
-        ArmMotorSubsystem.setMotorPower()
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
+        ArmMotorSubsystem.setMotorPower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
+        ArmMotorSubsystem.setMotorPower(20),
+        new ArmPneumaticCommand(m_armPneumaticSubsystem),
+        ArmMotorSubsystem.setMotorPower(20)
       );      
     }
-
   }
 
 

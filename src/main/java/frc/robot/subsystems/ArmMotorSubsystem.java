@@ -4,9 +4,16 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ArmMotorSubsystem extends SubsystemBase {
+
+  private TalonFX armMotor = new TalonFX(0); //figure out the devie number
+  private TalonFXControlMode controlMode;
+
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {}
 
@@ -15,21 +22,20 @@ public class ArmMotorSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public static double calculatePower(double targetPose){
-    double currentPose = /*Get current pose */ 0;
-    double delta = targetPose-currentPose;
+  public double calculatePower(double targetPose) { // target encoder pose
+    double currentPose = 0; // Get current encoder pose 
+    double delta = targetPose - currentPose;
 
     final double gain = 4.0;
     final double range = 2.0;
-    double lockPose = gain * delta;
+    double motorPower = gain * delta;
+    motorPower = Math.min(Math.max(motorPower, -range), range);
 
-    lockPose = Math.min(Math.max(lockPose, -range), range);
-
-    return lockPose;
+    return motorPower;
   }
   
-  public void setMotorPower(double targetPose){
+  public void setMotorPower(double motorPower) {
     /*Set Voltage in this method*/
-    double power = calculatePower(targetPose);
+    armMotor.set(controlMode, motorPower);
   }
 }

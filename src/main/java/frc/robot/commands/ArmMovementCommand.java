@@ -28,7 +28,12 @@ public class ArmMovementCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_armMotorSubsystem.setMotorPower(m_targetPose);
+    double motorPower = m_armMotorSubsystem.calculatePower(m_targetPose);
+    if (motorPower == 0) {
+      // end the loop
+    } else {
+      m_armMotorSubsystem.setMotorPower(motorPower);
+    }
   }
 
   // Called once the command ends or is interrupted.

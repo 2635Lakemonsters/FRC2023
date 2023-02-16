@@ -29,8 +29,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 public class DrivetrainSubsystem extends SubsystemBase {
 
     // public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public static final double kMaxSpeed = 0.5;
-    public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
+    public final double kMaxSpeed = 0.5;
+    public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final Translation2d m_frontLeftLocation = new Translation2d(0.318, 0.444);
     public final Translation2d m_frontRightLocation = new Translation2d(0.318, -0.444);
@@ -102,20 +102,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Get the x speed
     final var xPower =
       RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-        * DrivetrainSubsystem.kMaxSpeed;
+        * this.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed
     final var yPower =
       RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-        * DrivetrainSubsystem.kMaxSpeed;
+        * this.kMaxSpeed;
 
     // Get the rate of angular rotation
     final var rot =
     //must be positive to read accuate joystick yaw
       RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.1))
-        * DrivetrainSubsystem.kMaxAngularSpeed;
+        * this.kMaxAngularSpeed;
 
-    RobotContainer.m_drivetrainSubsystem.drive(xPower, yPower, rot, true);
+    this.drive(xPower, yPower, rot, true);
     // This method will be called once per scheduler run
     updateOdometry();
   }

@@ -76,6 +76,7 @@ public final class Constants {
     public static final int MID_RIGHT_CONE = 4;
     public static final int TOP_CUBE = 0;
     public static final int MID_CUBE = 180;
+    public static final int DOCKING_BUTTON_NUMBER = 20;
 
     // pneumatic channels
     public static final int CLOSE_CHANNEL = 0;

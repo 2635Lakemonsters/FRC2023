@@ -13,15 +13,18 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.GoScoreCommand;
+import frc.robot.commands.FullScoringCommand;
+import frc.robot.commands.GoToScorePoseCommand;
 import frc.robot.commands.PrintGetXCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
+import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -43,6 +46,8 @@ public class RobotContainer extends TimedRobot {
   public static final ArmPneumaticSubsystem m_armPneumaticSubsystem = new ArmPneumaticSubsystem();
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
+  public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
+
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
@@ -51,12 +56,12 @@ public class RobotContainer extends TimedRobot {
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
   private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
-  private final GoScoreCommand m_scoreConeTopLeft = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_LEFT_CONE);
-  private final GoScoreCommand m_scoreConeMidLeft = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_LEFT_CONE);
-  private final GoScoreCommand m_scoreConeTopRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_RIGHT_CONE);
-  private final GoScoreCommand m_scoreConeMidRight = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_RIGHT_CONE);
-  private final GoScoreCommand m_scoreCubeTop = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.TOP_CUBE);
-  private final GoScoreCommand m_scoreCubeMid = new GoScoreCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.MID_CUBE);
+  private final FullScoringCommand m_autoScoreTopLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_LEFT_CONE);
+  private final FullScoringCommand m_autoScoreMidLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_LEFT_CONE);
+  private final FullScoringCommand m_autoScoreTopRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_RIGHT_CONE);
+  private final FullScoringCommand m_autoScoreMidRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_RIGHT_CONE);
+  private final FullScoringCommand m_autoScoreTopCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_CUBE);
+  private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
 
@@ -88,12 +93,12 @@ public class RobotContainer extends TimedRobot {
     stationaryButton.onTrue(m_swerveNoMoveCommand);
     clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     armPneumaticButton.onTrue(m_armPneumaticCommand);
-    scoreConeTopLeft.onTrue(m_scoreConeTopLeft);
-    scoreConeMidLeft.onTrue(m_scoreConeMidLeft);
-    scoreConeTopRight.onTrue(m_scoreConeTopRight);
-    scoreConeMidRight.onTrue(m_scoreConeMidRight);
-    scoreCubeTop.onTrue(m_scoreCubeTop);
-    scoreCubeMid.onTrue(m_scoreCubeMid);
+    scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
+    scoreConeMidLeft.onTrue(m_autoScoreMidLeft);
+    scoreConeTopRight.onTrue(m_autoScoreTopRight);
+    scoreConeMidRight.onTrue(m_autoScoreMidRight);
+    scoreCubeTop.onTrue(m_autoScoreTopCube);
+    scoreCubeMid.onTrue(m_autoScoreMidCube);
     printGetX.onTrue(m_printGetXCommand);
   }
 

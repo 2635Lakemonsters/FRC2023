@@ -10,7 +10,7 @@ import frc.robot.models.VisionObject;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 
-public class GoScoreCommand extends CommandBase {
+public class GoToScorePoseCommand extends CommandBase {
   private DrivetrainSubsystem m_drivetrainSubsystem;
   private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
   private VisionObject aprilTagData;
@@ -23,7 +23,7 @@ public class GoScoreCommand extends CommandBase {
   private int scoringPose;
   
   /** Creates a new GoScoreCommand. */
-  public GoScoreCommand(DrivetrainSubsystem drivetrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, int scoringPose) {
+  public GoToScorePoseCommand(DrivetrainSubsystem drivetrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, int scoringPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrainSubsystem = drivetrainSubsystem;
     m_objectTrackerSubsystemChassis = objectTrackerSubsystemChassis;

@@ -14,7 +14,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-  public double calculatePower(double targetPose){
+  public static double calculatePower(double targetPose){
     
     
     double currentPose = /*Get current pose */ 0;
@@ -25,7 +25,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
     return 0;
   }
-  public void setMotorPower(){
+  public void setMotorPower(double power){
     /*Set Voltage in this method*/
   }
 }

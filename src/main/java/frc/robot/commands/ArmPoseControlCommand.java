@@ -36,7 +36,7 @@ public class ArmPoseControlCommand extends CommandBase {
 
   // Called every time the scheduler runs while the command is scheduled.
   //
-  // You could possibly refine this, but transitioning between these 7 states sequentially in either 
+  // You could possibly refine this and define other poses, but transitioning between these 7 states sequentially in either 
   // way should keep us from violating the rules.  Please review / validate that this is the case.
   // Pose 0 - Pneumatic 0 - starting pose
   // Pose 1 - Pneumatic 0 - pickup from human next to april command

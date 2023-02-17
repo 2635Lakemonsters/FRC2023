@@ -14,6 +14,7 @@ package frc.robot.subsystems;
     /** Creates a new CompressorSubsystem. */
     private DoubleSolenoid doubleSolenoid;
 
+    // Consider having a arm subsystem command which manages the transition from one arm pose to another.
     public ArmPneumaticSubsystem() {
       // define the constants in the constants folder
       doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.EXTEND_CHANNEL, Constants.RETRACT_CHANNEL);

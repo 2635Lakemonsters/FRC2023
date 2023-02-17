@@ -16,8 +16,8 @@ public class ArmPoseControlCommand extends CommandBase {
   private boolean m_returnToDock;
   TopScoringArmMovementCommand m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   MidScoringArmMovementCommand m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  FromTopReturnHomeCommand m_fromTopReturnHomeCommand = new FromTopReturnHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  FromMidReturnHomeCommand m_fromMidReturnHomeCommand = new FromMidReturnHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  FromTopToHomeCommand m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  FromMidToHomeCommand m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
 
   /** Creates a new ControlScoringCommands. */
   public ArmPoseControlCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, int buttonNum, boolean returnToDock) {

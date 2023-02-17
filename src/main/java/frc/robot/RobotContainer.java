@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;

@@ -11,9 +11,9 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class FromMidReturnHomeCommand extends SequentialCommandGroup {
+public class FromMidToHomeCommand extends SequentialCommandGroup {
   /** Creates a new TopScoringArmMovementCommand. */
-  public FromMidReturnHomeCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
+  public FromMidToHomeCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     

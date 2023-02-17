@@ -37,12 +37,14 @@ public class ArmPoseControlCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
-      // top arm position command
-      m_topScoringArmMovementCommand.execute();
-    } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
-      // middle arm position command
-      m_midScoringArmMovementCommand.execute();
+    if (!m_returnToDock) {
+      if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
+        // top arm position command
+        m_topScoringArmMovementCommand.execute();
+      } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
+        // middle arm position command
+        m_midScoringArmMovementCommand.execute();
+      } 
     } else if (m_returnToDock){
       if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
         // going back to the home pose from top scoring

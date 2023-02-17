@@ -13,12 +13,14 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.FullScoringCommand;
 import frc.robot.commands.PrintGetXCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
+import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
@@ -61,6 +63,7 @@ public class RobotContainer extends TimedRobot {
   private final FullScoringCommand m_autoScoreTopCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_CUBE);
   private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
+  private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
 
   public RobotContainer() {
@@ -76,12 +79,13 @@ public class RobotContainer extends TimedRobot {
     Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-    Trigger scoreConeTopLeft = new JoystickButton(leftJoystick, Constants.TOP_LEFT_CONE);
-    Trigger scoreConeMidLeft = new JoystickButton(leftJoystick, Constants.MID_LEFT_CONE);
-    Trigger scoreConeTopRight = new JoystickButton(leftJoystick, Constants.TOP_RIGHT_CONE);
-    Trigger scoreConeMidRight = new JoystickButton(leftJoystick, Constants.MID_RIGHT_CONE);
+    Trigger scoreConeTopLeft = new JoystickButton(rightJoystick, Constants.TOP_LEFT_CONE);
+    Trigger scoreConeMidLeft = new JoystickButton(rightJoystick, Constants.MID_LEFT_CONE);
+    Trigger scoreConeTopRight = new JoystickButton(rightJoystick, Constants.TOP_RIGHT_CONE);
+    Trigger scoreConeMidRight = new JoystickButton(rightJoystick, Constants.MID_RIGHT_CONE);
     POVButton scoreCubeTop = new POVButton(rightJoystick, Constants.TOP_CUBE);
     POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
+    Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
     Trigger printGetX = new JoystickButton(leftJoystick, 10);
 
     // Set commmands to button
@@ -98,6 +102,7 @@ public class RobotContainer extends TimedRobot {
     scoreCubeTop.onTrue(m_autoScoreTopCube);
     scoreCubeMid.onTrue(m_autoScoreMidCube);
     printGetX.onTrue(m_printGetXCommand);
+    returnToDock.onTrue(m_returnToDockCommand);
   }
 
     /**

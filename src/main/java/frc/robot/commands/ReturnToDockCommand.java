@@ -11,19 +11,15 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class DockingArmMovementCommand extends SequentialCommandGroup {
-  /** Creates a new TopScoringArmMovementCommand. */
-  public DockingArmMovementCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
+public class ReturnToDockCommand extends SequentialCommandGroup {
+  /** Creates a new ReturnToDockCommand. */
+  public ReturnToDockCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem),
       new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem),
-      new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem),
-      new ArmMovementCommand(armMotorSubsystem, 20)
+      new ArmPneumaticCommand(armPneumaticSubsystem)
     );
   }
 }

@@ -11,7 +11,6 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
-import frc.robot.Constants;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -27,7 +26,7 @@ public class FullScoringCommand extends SequentialCommandGroup {
         new ArmPoseControlCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber, false)
       ),
       new ClawPneumaticCommand(clawPneumaticSubsystem),
-      new ArmPoseControlCommand(armPneumaticSubsystem, armMotorSubsystem, Constants.DOCKING_BUTTON_NUMBER , true)
+      new ArmPoseControlCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber , true)
     );
   }
 }

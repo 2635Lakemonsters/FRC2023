@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
@@ -19,11 +20,10 @@ public class TopScoringArmMovementCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem),
-      new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem),
-      new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem)
+      new ParallelCommandGroup(
+        new ArmPneumaticCommand(armPneumaticSubsystem),
+        new ArmMovementCommand(armMotorSubsystem, 20)
+      )
     );
   }
 }

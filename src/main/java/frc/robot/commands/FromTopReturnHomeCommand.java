@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
@@ -11,13 +12,17 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MidScoringArmMovementCommand extends SequentialCommandGroup {
+public class FromTopReturnHomeCommand extends SequentialCommandGroup {
   /** Creates a new TopScoringArmMovementCommand. */
-  public MidScoringArmMovementCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
+  public FromTopReturnHomeCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     
     addCommands(
+      new ParallelCommandGroup(
+        new ArmPneumaticCommand(armPneumaticSubsystem),
+        new ArmMovementCommand(armMotorSubsystem, 20)
+      ),
       new ArmMovementCommand(armMotorSubsystem, 20)
     );
   }

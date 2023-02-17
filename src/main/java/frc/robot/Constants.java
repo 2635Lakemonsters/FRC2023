@@ -77,7 +77,7 @@ public final class Constants {
     public static final int TOP_CUBE = 0;
     public static final int MID_CUBE = 180;
 
-    public static final int DOCKING_BUTTON_NUMBER = 20; //made up just for code reasons
+    public static final int DOCKING_BUTTON_NUMBER = 4; //made up just for code reasons
 
     // pneumatic channels
     public static final int CLOSE_CHANNEL = 0;

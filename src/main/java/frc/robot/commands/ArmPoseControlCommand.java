@@ -5,7 +5,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -17,7 +16,8 @@ public class ArmPoseControlCommand extends CommandBase {
   private boolean m_returnToDock;
   TopScoringArmMovementCommand m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   MidScoringArmMovementCommand m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  DockingArmMovementCommand m_dockingArmMovementCommand = new DockingArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  FromTopReturnHomeCommand m_fromTopReturnHomeCommand = new FromTopReturnHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  FromMidReturnHomeCommand m_fromMidReturnHomeCommand = new FromMidReturnHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
 
   /** Creates a new ControlScoringCommands. */
   public ArmPoseControlCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, int buttonNum, boolean returnToDock) {
@@ -37,15 +37,20 @@ public class ArmPoseControlCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0){
+    if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
       // top arm position command
       m_topScoringArmMovementCommand.execute();
-    } else if(m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180){
+    } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
       // middle arm position command
       m_midScoringArmMovementCommand.execute();
-    } else if(m_returnToDock && m_buttonNum == Constants.DOCKING_BUTTON_NUMBER){
-      // going back to the docked pose
-      m_dockingArmMovementCommand.execute();
+    } else if (m_returnToDock){
+      if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
+        // going back to the home pose from top scoring
+        m_fromTopReturnHomeCommand.execute();
+      } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
+        // going back to the home pose from mid scoring
+        m_fromMidReturnHomeCommand.execute();
+      }
     }
   }
 

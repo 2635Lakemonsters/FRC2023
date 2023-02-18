@@ -30,9 +30,9 @@ public class ArmMovementCommand extends CommandBase {
   public void execute() {
     double motorPower = m_armMotorSubsystem.calculatePower(m_targetPose);
     if (motorPower == 0) {
-      // end the loop
+      // have the power be the power calculated from the feed forward subsystem
     } else {
-      m_armMotorSubsystem.setMotorPower(motorPower);
+      m_armMotorSubsystem.setMotorPower(motorPower); 
     }
   }
 

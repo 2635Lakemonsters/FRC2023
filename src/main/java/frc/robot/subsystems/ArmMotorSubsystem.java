@@ -8,10 +8,11 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class ArmMotorSubsystem extends SubsystemBase {
 
-  private TalonFX armMotor = new TalonFX(0); //figure out the devie number
+  private TalonFX armMotor = new TalonFX(Constants.TALON_CHANNEL);
   private TalonFXControlMode controlMode;
 
   /** Creates a new ArmMotorSubsystem. */

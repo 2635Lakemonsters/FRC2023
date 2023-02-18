@@ -77,13 +77,16 @@ public final class Constants {
     public static final int TOP_CUBE = 0;
     public static final int MID_CUBE = 180;
 
-    public static final int DOCKING_BUTTON_NUMBER = 4; //made up just for code reasons
+    public static final int DOCKING_BUTTON_NUMBER = 4;
 
     // pneumatic channels
-    public static final int CLOSE_CHANNEL = 0;
-    public static final int OPEN_CHANNEL = 1;
-    public static final int EXTEND_CHANNEL = 6;
-    public static final int RETRACT_CHANNEL = 7;
+    public static final int CLOSE_CHANNEL = 8;
+    public static final int OPEN_CHANNEL = 5;
+    public static final int EXTEND_CHANNEL = 7;
+    public static final int RETRACT_CHANNEL = 9;
+
+    // motor id
+    public static final int TALON_CHANNEL = 21;
 
     // VISION CONSTANTS
     public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds

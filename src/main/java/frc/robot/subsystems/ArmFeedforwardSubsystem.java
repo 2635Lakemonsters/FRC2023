@@ -18,4 +18,13 @@ public class ArmFeedforwardSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
+  public double calculateFeedforward() {
+    // calculates the feedforward based on the angle of the arm
+    // get current encoder pose
+    // figure out the arm pnuematic pose
+    // get the change in the angle if the pnuematic is activated or if its not
+    // return the velocity necessary to keep it where its at
+    return 0.0;
+  }
 }

@@ -15,6 +15,7 @@ public class ArmPneumaticCommand extends CommandBase {
   public ArmPneumaticCommand(ArmPneumaticSubsystem armPneumaticSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_armPneumaticSubsystem = armPneumaticSubsystem;
+    
     addRequirements(m_armPneumaticSubsystem);
   }
 

@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
@@ -34,6 +35,9 @@ public class RobotContainer extends TimedRobot {
   public final static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
   public final static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
 
+  // Pneumatic Control Module
+  public static final PneumaticsControlModule m_pneumaticHub = new PneumaticsControlModule(15);
+
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   public static final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   public static final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -41,8 +45,8 @@ public class RobotContainer extends TimedRobot {
 
   // Subsystems
   public static final DrivetrainSubsystem m_drivetrainSubsystem = new DrivetrainSubsystem();
-  public static final ClawPneumaticSubsystem m_clawPneumaticSubsystem = new ClawPneumaticSubsystem();
   public static final ArmPneumaticSubsystem m_armPneumaticSubsystem = new ArmPneumaticSubsystem();
+  public static final ClawPneumaticSubsystem m_clawPneumaticSubsystem = new ClawPneumaticSubsystem();
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
   public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();

@@ -59,7 +59,7 @@ public final class Constants {
     public static final int kOperatorControllerPort = 1;
 
     // joystick channels
-    public static final int RIGHT_JOYSTICK_CHANNEL = 1;
+    public static final int RIGHT_JOYSTICK_CHANNEL = 2;
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
     // buttons
@@ -80,10 +80,10 @@ public final class Constants {
     public static final int DOCKING_BUTTON_NUMBER = 4;
 
     // pneumatic channels
-    public static final int CLOSE_CHANNEL = 8;
+    public static final int CLOSE_CHANNEL = 1;
     public static final int OPEN_CHANNEL = 5;
     public static final int EXTEND_CHANNEL = 7;
-    public static final int RETRACT_CHANNEL = 9;
+    public static final int RETRACT_CHANNEL = 0;
 
     // motor id
     public static final int TALON_CHANNEL = 21;

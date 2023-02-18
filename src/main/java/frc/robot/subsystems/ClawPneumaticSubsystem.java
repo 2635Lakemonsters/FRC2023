@@ -6,9 +6,9 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 public class ClawPneumaticSubsystem extends SubsystemBase {
   /** Creates a new CompressorSubsystem. */
@@ -16,7 +16,7 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
 
   public ClawPneumaticSubsystem() {
     // define the constants in the constants folder
-    doubleSolenoid = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, Constants.CLOSE_CHANNEL, Constants.OPEN_CHANNEL);
+    doubleSolenoid = RobotContainer.m_pneumaticHub.makeDoubleSolenoid(Constants.CLOSE_CHANNEL, Constants.OPEN_CHANNEL);
 
     doubleSolenoid.set(kOff);
   }

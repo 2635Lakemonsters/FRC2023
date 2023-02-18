@@ -6,7 +6,8 @@ package frc.robot.subsystems;
 
   import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
   import edu.wpi.first.wpilibj.DoubleSolenoid;
-  import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
   import frc.robot.Constants;
 import frc.robot.RobotContainer;
 
@@ -22,7 +23,7 @@ import frc.robot.RobotContainer;
     }
   
     public boolean isExtended() {
-      if (doubleSolenoid.get() == kReverse) {
+      if (doubleSolenoid.get() == Value.kReverse) {
         return true;
       } else {
         return false;
@@ -30,11 +31,11 @@ import frc.robot.RobotContainer;
     
     }
     public void armExtend() {
-	  	doubleSolenoid.set(kForward);
+	  	doubleSolenoid.set(Value.kForward);
 
 	  }
 	  public void armRetract() {
-	  	doubleSolenoid.set(kReverse);
+	  	doubleSolenoid.set(Value.kReverse);
 	  }
 
     @Override

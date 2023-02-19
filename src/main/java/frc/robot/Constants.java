@@ -80,6 +80,7 @@ public final class Constants {
     public static final int DOCKING_BUTTON_NUMBER = 4;
 
     // pneumatic channels
+    public static final int PNEUMATIC_HUB_CANID = 15;
     public static final int CLOSE_CHANNEL = 1;
     public static final int OPEN_CHANNEL = 5;
     public static final int EXTEND_CHANNEL = 7;

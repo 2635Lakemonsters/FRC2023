@@ -22,7 +22,7 @@ public class ArmPneumaticCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isExtended = m_armPneumaticSubsystem.isExtended();
+    isExtended = m_armPneumaticSubsystem.getIsExtended();
     if(isExtended) { // if extended then retract
       m_armPneumaticSubsystem.armRetract();
     } else if(!isExtended) { // if retracted then extend

@@ -21,7 +21,7 @@ public class ClawPneumaticCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isClosed = m_clawPneumaticSubsystem.isClosed();
+    isClosed = m_clawPneumaticSubsystem.getIsClosed();
     if(isClosed) { //if closed then open
       m_clawPneumaticSubsystem.grabberOpen();
     } else if(!isClosed) { // if open then close

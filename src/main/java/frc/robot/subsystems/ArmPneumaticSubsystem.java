@@ -14,28 +14,26 @@ import frc.robot.RobotContainer;
   public class ArmPneumaticSubsystem extends SubsystemBase {
     /** Creates a new CompressorSubsystem. */
     private DoubleSolenoid doubleSolenoid;
+    private boolean isExtended;
 
     public ArmPneumaticSubsystem() {
       // define the constants in the constants folder
       doubleSolenoid = RobotContainer.m_pneumaticHub.makeDoubleSolenoid(Constants.EXTEND_CHANNEL, Constants.RETRACT_CHANNEL);
-
-      doubleSolenoid.set(kOff);
+      isExtended = false;
     }
   
-    public boolean isExtended() {
-      if (doubleSolenoid.get() == Value.kReverse) {
-        return true;
-      } else {
-        return false;
-      }
-    
+    public boolean getIsExtended() {
+      return isExtended;
     }
+
     public void armExtend() {
 	  	doubleSolenoid.set(Value.kForward);
-
+      isExtended = true;
 	  }
+
 	  public void armRetract() {
 	  	doubleSolenoid.set(Value.kReverse);
+      isExtended = false;
 	  }
 
     @Override

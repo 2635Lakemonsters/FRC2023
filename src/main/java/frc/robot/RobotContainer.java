@@ -12,9 +12,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
 import edu.wpi.first.wpilibj.PneumaticsControlModule;
+import frc.robot.commands.ArmFeedforwardCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
@@ -25,6 +27,7 @@ import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
+import frc.robot.subsystems.ArmFeedforwardSubsystem;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -39,6 +42,9 @@ public class RobotContainer extends TimedRobot {
   // Pneumatic Control Module
   public static final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB_CANID);
 
+  // Arm Encoder
+  public static final AnalogEncoder encoder = new AnalogEncoder(Constants.ARM_ENCODER_ID);
+
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   public static final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   public static final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
@@ -51,6 +57,7 @@ public class RobotContainer extends TimedRobot {
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
   public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
+  public static final ArmFeedforwardSubsystem m_armFeedforwardSubsystem = new ArmFeedforwardSubsystem(m_armMotorSubsystem, m_armPneumaticSubsystem);
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
@@ -68,6 +75,7 @@ public class RobotContainer extends TimedRobot {
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
+  private final ArmFeedforwardCommand m_armFeedforwardCommand = new ArmFeedforwardCommand(m_armMotorSubsystem);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -90,6 +98,7 @@ public class RobotContainer extends TimedRobot {
     POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
     Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
     Trigger printGetX = new JoystickButton(leftJoystick, 10);
+    Trigger armFeedforward = new JoystickButton(leftJoystick, 5);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
@@ -106,6 +115,7 @@ public class RobotContainer extends TimedRobot {
     scoreCubeMid.onTrue(m_autoScoreMidCube);
     printGetX.onTrue(m_printGetXCommand);
     returnToDock.onTrue(m_returnToDockCommand);
+    armFeedforward.onTrue(m_armFeedforwardCommand);
   }
 
     /**

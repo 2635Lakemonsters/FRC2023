@@ -135,23 +135,23 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     //Returns current time in millis
 
-    SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
-    SmartDashboard.putNumber("y accel", NavX.getRawAccelY());
-    SmartDashboard.putNumber("z accel", NavX.getRawAccelZ());
-    SmartDashboard.putNumber("x gyro", NavX.getRawGyroX());
-    SmartDashboard.putNumber("y gyro", NavX.getRawGyroY());
-    SmartDashboard.putNumber("z gyro", NavX.getRawGyroZ());
-    SmartDashboard.putNumber("kXAccel", RobotContainer.rightJoystick.getY() / NavX.getRawAccelX());
-    SmartDashboard.putNumber("kRoll", RobotContainer.rightJoystick.getY() / NavX.getRoll());
-    SmartDashboard.putNumber("kGyro Y", RobotContainer.rightJoystick.getY() / NavX.getRawGyroY());
-    SmartDashboard.putNumber("navX pitch", NavX.getPitch());
-    SmartDashboard.putNumber("navX roll", NavX.getRoll());
-    SmartDashboard.putNumber("navX yaw", NavX.getYaw());
-    SmartDashboard.putNumber("k * raw gyro y", 0.5 * NavX.getRawGyroY());
-    SmartDashboard.putNumber("kPitch", RobotContainer.rightJoystick.getY() / NavX.getPitch());
-    SmartDashboard.putNumber("RoboRio x accel", rioAccel.getX());
-    SmartDashboard.putNumber("RoboRio y accel", rioAccel.getY());
-    SmartDashboard.putNumber("RoboRio z accel", rioAccel.getZ());
+    // SmartDashboard.putNumber("x accel", NavX.getRawAccelX());
+    // SmartDashboard.putNumber("y accel", NavX.getRawAccelY());
+    // SmartDashboard.putNumber("z accel", NavX.getRawAccelZ());
+    // SmartDashboard.putNumber("x gyro", NavX.getRawGyroX());
+    // SmartDashboard.putNumber("y gyro", NavX.getRawGyroY());
+    // SmartDashboard.putNumber("z gyro", NavX.getRawGyroZ());
+    // SmartDashboard.putNumber("kXAccel", RobotContainer.rightJoystick.getY() / NavX.getRawAccelX());
+    // SmartDashboard.putNumber("kRoll", RobotContainer.rightJoystick.getY() / NavX.getRoll());
+    // SmartDashboard.putNumber("kGyro Y", RobotContainer.rightJoystick.getY() / NavX.getRawGyroY());
+    // SmartDashboard.putNumber("navX pitch", NavX.getPitch());
+    // SmartDashboard.putNumber("navX roll", NavX.getRoll());
+    // SmartDashboard.putNumber("navX yaw", NavX.getYaw());
+    // SmartDashboard.putNumber("k * raw gyro y", 0.5 * NavX.getRawGyroY());
+    // SmartDashboard.putNumber("kPitch", RobotContainer.rightJoystick.getY() / NavX.getPitch());
+    // SmartDashboard.putNumber("RoboRio x accel", rioAccel.getX());
+    // SmartDashboard.putNumber("RoboRio y accel", rioAccel.getY());
+    // SmartDashboard.putNumber("RoboRio z accel", rioAccel.getZ());
 
     // SmartDashboard.putNumber("clock cycle", calendar.getTimeInMillis() - last_time);
     // kXAccel pose to hold pose is 0.48

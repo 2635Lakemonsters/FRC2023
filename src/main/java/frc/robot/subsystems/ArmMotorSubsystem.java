@@ -47,29 +47,29 @@ public class ArmMotorSubsystem extends SubsystemBase {
     armMotor.set(ControlMode.PercentOutput, motorPower);
   }
 
-  public void setPose(double pose) {
+  public void setPose(double poseTarget) {
     loopCtr++;
 
+    double theta = 360.0 * (RobotContainer.encoder.getValue() - RobotContainer.m_armEncoderOffset) / 2577.0;      // TODO: why isnt this 4095?
+
     double alpha = ArmPneumaticSubsystem.getIsExtended() ? 116.3 : 80.3;
-    // pose = RobotContainer.encoder.getDistance() - RobotContainer.m_armEncoderOffset;
-    double fPO = (pose - alpha + 90.0);
+    double fPO = (theta - alpha + 90.0);
 
-    final double gain = 0.2;
+    final double gain = 0.11;
     double motorPower = gain * Math.sin(Math.toRadians(fPO));
-
-    double encoderVolts = RobotContainer.encoder.getVoltage() / RobotController.getVoltage5V() * 360;
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
     if (loopCtr % 50 == 0) {
-      System.out.println(pose);
+      // System.out.println(pose);
       System.out.println("Motor Power = " + motorPower);
-      System.out.println("Angle = " + fPO);
-      System.out.println("Get voltage = " + RobotContainer.encoder.getVoltage());
-      System.out.println("5 volts = " + RobotController.getVoltage5V());
-      System.out.println("Encoder Volts = " + encoderVolts);
+      // System.out.println("Angle = " + fPO);
+      // System.out.println("Get voltage = " + RobotContainer.encoder.getVoltage());
+      // System.out.println("5 volts = " + RobotController.getVoltage5V());
+      // System.out.println("Encoder Volts = " + encoderVolts);
+      System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
 
-    // armMotor.set(ControlMode.PercentOutput, -motorPower);
+    armMotor.set(ControlMode.PercentOutput, -motorPower);
   }
  }

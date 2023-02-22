@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+// import com.revrobotics.AnalogInput;
+
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -43,7 +46,7 @@ public class RobotContainer extends TimedRobot {
   public static final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB_CANID);
 
   // Arm Encoder
-  public static final AnalogEncoder encoder = new AnalogEncoder(Constants.ARM_ENCODER_ID);
+  public static final AnalogInput encoder = new AnalogInput(Constants.ARM_ENCODER_ID);
   public static final double m_armEncoderOffset = 109.3 - 180.0;
   
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.

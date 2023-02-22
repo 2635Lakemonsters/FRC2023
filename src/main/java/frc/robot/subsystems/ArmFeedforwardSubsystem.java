@@ -29,15 +29,15 @@ public class ArmFeedforwardSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public double calculateFeedforward() {
-    // calculates the feedforward based on the angle of the arm
-    // get current encoder pose
-    // figure out the arm pnuematic pose
-    // get the change in the angle if the pnuematic is activated or if its not
-    // return the velocity necessary to keep it where its at
-    double feedforward = m_armMotorSubsystem.calculatePower(RobotContainer.encoder.get());
-    return feedforward;
-  }
+  // public double calculateFeedforward() {
+  //   calculates the feedforward based on the angle of the arm
+  //   get current encoder pose
+  //   figure out the arm pnuematic pose
+  //   get the change in the angle if the pnuematic is activated or if its not
+  //   return the velocity necessary to keep it where its at
+  //   double feedforward = m_armMotorSubsystem.calculatePower(RobotContainer.encoder.get());
+  //   return feedforward;
+  // }
 
   public void setFeedforward(double armfeedforward) {
     // armMotor.set(ControlMode.Position, RobotContainer.encoder.get(), DemandType.ArbitraryFeedForward, Math.cos((RobotContainer.encoder.get()) / 4096 * 360 * 0.165));

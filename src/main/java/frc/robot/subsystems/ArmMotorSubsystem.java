@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -30,7 +31,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   }
 
   public double calculatePower(double targetPose) { // target encoder pose
-    double currentPose = RobotContainer.encoder.get(); // Get current encoder pose 
+    double currentPose = RobotContainer.encoder.getVoltage(); // Get current encoder pose 
     double delta = targetPose - currentPose;
 
     final double gain = 2.0;
@@ -50,18 +51,23 @@ public class ArmMotorSubsystem extends SubsystemBase {
     loopCtr++;
 
     double alpha = ArmPneumaticSubsystem.getIsExtended() ? 116.3 : 80.3;
-    pose = RobotContainer.encoder.getDistance() - RobotContainer.m_armEncoderOffset;
+    // pose = RobotContainer.encoder.getDistance() - RobotContainer.m_armEncoderOffset;
     double fPO = (pose - alpha + 90.0);
 
     final double gain = 0.2;
     double motorPower = gain * Math.sin(Math.toRadians(fPO));
 
+    double encoderVolts = RobotContainer.encoder.getVoltage() / RobotController.getVoltage5V() * 360;
+
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
-    if (loopCtr%50 == 0) {
+    if (loopCtr % 50 == 0) {
       System.out.println(pose);
       System.out.println("Motor Power = " + motorPower);
       System.out.println("Angle = " + fPO);
+      System.out.println("Get voltage = " + RobotContainer.encoder.getVoltage());
+      System.out.println("5 volts = " + RobotController.getVoltage5V());
+      System.out.println("Encoder Volts = " + encoderVolts);
     }
 
     // armMotor.set(ControlMode.PercentOutput, -motorPower);

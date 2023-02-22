@@ -57,18 +57,18 @@ public class ArmMotorSubsystem extends SubsystemBase {
     // TODO: move magic #'s to Constants
 
     if (ArmPneumaticSubsystem.getIsExtended()) {
-      alpha = 116.3;
-      lowerLimit = 50;
-      upperLimit = 360;
+      alpha = Constants.ARM_EXTENDED_ALPHA;
+      lowerLimit = Constants.ARM_EXTENDED_LOWER_LIMIT;
+      upperLimit = Constants.ARM_EXTENDED_UPPER_LIMIT;
     } else {
-      alpha = 80.3;
-      lowerLimit = 25;
-      upperLimit = 335;
+      alpha = Constants.ARM_RETRACTED_ALPHA;
+      lowerLimit = Constants.ARM_RETRACTED_LOWER_LIMIT;
+      upperLimit = Constants.ARM_RETRACTED_UPPER_LIMIT;
     }
 
     poseTarget = MathUtil.clamp(poseTarget, lowerLimit, upperLimit);
 
-    double theta = 360.0 * (RobotContainer.encoder.getValue() - RobotContainer.m_armEncoderOffset) / 4096.0;
+    double theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;
     while (theta < 0)
       theta += 360.0;
     theta %= 360.0;
@@ -78,10 +78,10 @@ public class ArmMotorSubsystem extends SubsystemBase {
       fPO += 360.0;
     fPO %= 360.0;
 
-    final double gain = -0.09;
+    final double gain = Constants.ARM_MOTOR_GAIN;
     double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));
 
-    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, poseTarget), -0.2, 0.2);
+    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, poseTarget), Constants.FB_LOWER_LIMIT, Constants.FB_UPPER_LIMIT);
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
@@ -91,6 +91,6 @@ public class ArmMotorSubsystem extends SubsystemBase {
       System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
 
-      // armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
+    // armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
   }
  }

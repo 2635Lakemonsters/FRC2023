@@ -86,6 +86,21 @@ public final class Constants {
     public static final int EXTEND_CHANNEL = 7;
     public static final int RETRACT_CHANNEL = 0;
 
+    // arm motor constants
+    public static final double ARM_EXTENDED_ALPHA = 116.3;
+    public static final double ARM_EXTENDED_LOWER_LIMIT = 50;
+    public static final double ARM_EXTENDED_UPPER_LIMIT = 360;
+
+    public static final double ARM_RETRACTED_ALPHA = 80.3;
+    public static final double ARM_RETRACTED_LOWER_LIMIT = 25;
+    public static final double ARM_RETRACTED_UPPER_LIMIT = 335;
+
+    public static final double FB_UPPER_LIMIT = 0.2;
+    public static final double FB_LOWER_LIMIT = -0.2;
+
+    public static final double ARM_MOTOR_GAIN = -0.09;
+    public static final double ARM_ENCODER_OFFSET = 2224;
+
     // enconder id
     public static final int ARM_ENCODER_ID = 7;
 

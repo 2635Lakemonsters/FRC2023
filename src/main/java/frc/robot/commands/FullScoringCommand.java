@@ -23,10 +23,10 @@ public class FullScoringCommand extends SequentialCommandGroup {
     addCommands(
       new ParallelCommandGroup(
         new GoToScorePoseCommand(drivetrainSubsystem, objectTrackerSubsystemChassis, buttonNumber),
-        new ArmPoseControlCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber, false)
+        new ArmPoseSelectorCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber, false)
       ),
       new ClawPneumaticCommand(clawPneumaticSubsystem),
-      new ArmPoseControlCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber , true)
+      new ArmPoseSelectorCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber , true)
     );
   }
 }

@@ -5,7 +5,8 @@
 package frc.robot.subsystems;
 
   import edu.wpi.first.wpilibj.DoubleSolenoid;
-  import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
   import edu.wpi.first.wpilibj2.command.SubsystemBase;
   import frc.robot.Constants;
   import frc.robot.RobotContainer;
@@ -17,8 +18,13 @@ package frc.robot.subsystems;
 
     public ArmPneumaticSubsystem() {
       // define the constants in the constants folder
-      doubleSolenoid = RobotContainer.m_pneumaticHub.makeDoubleSolenoid(Constants.EXTEND_CHANNEL, Constants.RETRACT_CHANNEL);
-      isExtended = false;
+      // doubleSolenoid = RobotContainer.m_pneumaticHub.makeDoubleSolenoid(Constants.EXTEND_CHANNEL, Constants.RETRACT_CHANNEL);
+      doubleSolenoid = new DoubleSolenoid(
+        Constants.PNEUMATIC_HUB_CANID, 
+        PneumaticsModuleType.CTREPCM, 
+        Constants.EXTEND_CHANNEL, 
+        Constants.RETRACT_CHANNEL);
+        isExtended = false;
     }
   
     public static boolean getIsExtended() {

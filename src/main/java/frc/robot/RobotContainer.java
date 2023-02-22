@@ -43,11 +43,11 @@ public class RobotContainer extends TimedRobot {
   public final static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
 
   // Pneumatic Control Module
-  public static final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB_CANID);
+  //public static final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB_CANID);
 
   // Arm Encoder
   public static final AnalogInput encoder = new AnalogInput(Constants.ARM_ENCODER_ID);
-  public static final double m_armEncoderOffset = 109.3 - 180.0;
+  public static final double m_armEncoderOffset = 669;
   
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   public static final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);

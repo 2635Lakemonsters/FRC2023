@@ -13,7 +13,7 @@ package frc.robot.subsystems;
   public class ArmPneumaticSubsystem extends SubsystemBase {
     /** Creates a new CompressorSubsystem. */
     private DoubleSolenoid doubleSolenoid;
-    private boolean isExtended;
+    private static boolean isExtended;
 
     public ArmPneumaticSubsystem() {
       // define the constants in the constants folder
@@ -21,7 +21,7 @@ package frc.robot.subsystems;
       isExtended = false;
     }
   
-    public boolean getIsExtended() {
+    public static boolean getIsExtended() {
       return isExtended;
     }
 

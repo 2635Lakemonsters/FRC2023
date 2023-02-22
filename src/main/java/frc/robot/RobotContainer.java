@@ -44,7 +44,8 @@ public class RobotContainer extends TimedRobot {
 
   // Arm Encoder
   public static final AnalogEncoder encoder = new AnalogEncoder(Constants.ARM_ENCODER_ID);
-
+  public static final double m_armEncoderOffset = 109.3 - 180.0;
+  
   // Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
   public static final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
   public static final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);

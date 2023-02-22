@@ -17,8 +17,10 @@ import frc.robot.RobotContainer;
 public class ArmMotorSubsystem extends SubsystemBase {
 
   public TalonFX armMotor = new TalonFX(Constants.TALON_CHANNEL);
+  private static final double kFilterArm = 0.1;
+  private static double armPOFiltered = 0;
+  private static long loopCtr = 0;
   
-
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {}
 
@@ -45,16 +47,23 @@ public class ArmMotorSubsystem extends SubsystemBase {
   }
 
   public void setPose(double pose) {
-    double currentPose = RobotContainer.encoder.get(); // Get current encoder pose 
-    double delta = pose - currentPose;
+    loopCtr++;
 
-    final double gain = 1.4;
-    final double range = 0.10;
-    double motorPower = gain * delta;
-    SmartDashboard.putNumber("pre cut motor power", motorPower);
-    motorPower = Math.min(Math.max(motorPower, -range), range);
-    SmartDashboard.putNumber("post cut motor power", motorPower);
+    double alpha = ArmPneumaticSubsystem.getIsExtended() ? 116.3 : 80.3;
+    pose = RobotContainer.encoder.getDistance() - RobotContainer.m_armEncoderOffset;
+    double fPO = (pose - alpha + 90.0);
 
-    armMotor.set(ControlMode.PercentOutput, -motorPower);
+    final double gain = 0.2;
+    double motorPower = gain * Math.sin(Math.toRadians(fPO));
+
+    // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
+    // System.out.println(armPOFiltered);
+    if (loopCtr%50 == 0) {
+      System.out.println(pose);
+      System.out.println("Motor Power = " + motorPower);
+      System.out.println("Angle = " + fPO);
+    }
+
+    // armMotor.set(ControlMode.PercentOutput, -motorPower);
   }
  }

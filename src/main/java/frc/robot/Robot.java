@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
+    RobotContainer.encoder.setDistancePerRotation(360.0);
   }
 
   /**

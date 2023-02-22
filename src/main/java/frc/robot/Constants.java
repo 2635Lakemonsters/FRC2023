@@ -87,7 +87,7 @@ public final class Constants {
     public static final int RETRACT_CHANNEL = 0;
 
     // enconder id
-    public static final int ARM_ENCODER_ID = 5;
+    public static final int ARM_ENCODER_ID = 7;
 
     // motor id
     public static final int TALON_CHANNEL = 21;

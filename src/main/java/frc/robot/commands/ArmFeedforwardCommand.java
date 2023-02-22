@@ -15,6 +15,8 @@ public class ArmFeedforwardCommand extends CommandBase {
 
   private ArmMotorSubsystem m_armMotorSubsystem;
   private double feedforward;
+  private static long loopCtr = 0;
+
 
   /** Creates a new ArmFeedforwardCommand. */
   public ArmFeedforwardCommand(ArmMotorSubsystem armMotorSubsystem) {
@@ -33,7 +35,13 @@ public class ArmFeedforwardCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_armMotorSubsystem.setPose(feedforward);
+    loopCtr++;
+
+    double val = -RobotContainer.rightJoystick.getRawAxis(3);
+    double angle = (val+1.0)*180.0;
+    if (loopCtr % 50 == 0)
+      System.out.println("Angle = " + angle);  
+    m_armMotorSubsystem.setPose(angle);
   }
 
   // Called once the command ends or is interrupted.

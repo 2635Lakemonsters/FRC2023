@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,6 +23,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   private static final double kFilterArm = 0.1;
   private static double armPOFiltered = 0;
   private static long loopCtr = 0;
+  PIDController pid = new PIDController(0.005, 0.0, 0.0);
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {}
@@ -49,27 +52,45 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
   public void setPose(double poseTarget) {
     loopCtr++;
+    double upperLimit, lowerLimit, alpha;
 
-    double theta = 360.0 * (RobotContainer.encoder.getValue() - RobotContainer.m_armEncoderOffset) / 2577.0;      // TODO: why isnt this 4095?
+    // TODO: move magic #'s to Constants
 
-    double alpha = ArmPneumaticSubsystem.getIsExtended() ? 116.3 : 80.3;
-    double fPO = (theta - alpha + 90.0);
+    if (ArmPneumaticSubsystem.getIsExtended()) {
+      alpha = 116.3;
+      lowerLimit = 50;
+      upperLimit = 360;
+    } else {
+      alpha = 80.3;
+      lowerLimit = 25;
+      upperLimit = 335;
+    }
 
-    final double gain = 0.11;
-    double motorPower = gain * Math.sin(Math.toRadians(fPO));
+    poseTarget = MathUtil.clamp(poseTarget, lowerLimit, upperLimit);
+
+    double theta = 360.0 * (RobotContainer.encoder.getValue() - RobotContainer.m_armEncoderOffset) / 4096.0;
+    while (theta < 0)
+      theta += 360.0;
+    theta %= 360.0;
+
+    double fPO = (theta + alpha - 90.0);
+    while (fPO < 0)
+      fPO += 360.0;
+    fPO %= 360.0;
+
+    final double gain = -0.09;
+    double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));
+
+    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, poseTarget), -0.2, 0.2);
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
     if (loopCtr % 50 == 0) {
-      // System.out.println(pose);
-      System.out.println("Motor Power = " + motorPower);
-      // System.out.println("Angle = " + fPO);
-      // System.out.println("Get voltage = " + RobotContainer.encoder.getVoltage());
-      // System.out.println("5 volts = " + RobotController.getVoltage5V());
-      // System.out.println("Encoder Volts = " + encoderVolts);
+      System.out.print("FF Motor Power = " + ffMotorPower);
+      System.out.println("   FB Motor Power = " + fbMotorPower);
       System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
 
-    armMotor.set(ControlMode.PercentOutput, -motorPower);
+      // armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
   }
  }

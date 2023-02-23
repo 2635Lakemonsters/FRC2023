@@ -86,6 +86,13 @@ public final class Constants {
     public static final int EXTEND_CHANNEL = 7;
     public static final int RETRACT_CHANNEL = 0;
 
+    // arm angle positions
+    public static final int HOME_ARM_ANGLE = 331;
+    public static final int TOP_SCORING_ANGLE = 202;
+    public static final int MID_SCORING_ANGLE = 268;
+    public static final int BOTTOM_SCORING_ANGLE = 326;
+    public static final int PICKING_UP_ANGLE = 302;
+
     // arm motor constants
     public static final double ARM_EXTENDED_ALPHA = 116.3;
     public static final double ARM_EXTENDED_LOWER_LIMIT = 50;

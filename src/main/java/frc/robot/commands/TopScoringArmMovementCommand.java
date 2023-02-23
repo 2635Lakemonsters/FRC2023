@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -18,11 +19,13 @@ public class TopScoringArmMovementCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
+    // TODO: figure out the mid angle
+
     addCommands(
       new ArmMovementCommand(armMotorSubsystem, 20),
       new ParallelCommandGroup(
         new ArmPneumaticCommand(armPneumaticSubsystem),
-        new ArmMovementCommand(armMotorSubsystem, 20)
+        new ArmMovementCommand(armMotorSubsystem, Constants.TOP_SCORING_ANGLE)
       )
     );
   }

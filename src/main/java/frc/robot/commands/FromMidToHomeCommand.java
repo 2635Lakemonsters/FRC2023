@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -18,7 +19,7 @@ public class FromMidToHomeCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, 20)
+      new ArmMovementCommand(armMotorSubsystem, Constants.HOME_ARM_ANGLE)
     );
   }
 }

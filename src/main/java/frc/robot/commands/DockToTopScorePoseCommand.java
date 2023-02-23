@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -18,7 +19,7 @@ public class DockToTopScorePoseCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem),
-      new ArmMovementCommand(armMotorSubsystem, 20)
+      new ArmMovementCommand(armMotorSubsystem, Constants.TOP_SCORING_ANGLE)
     );
   }
 }

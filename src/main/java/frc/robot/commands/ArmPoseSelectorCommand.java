@@ -31,7 +31,6 @@ public class ArmPoseSelectorCommand extends CommandBase {
     m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
     m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
     m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  
    
     addRequirements(armPneumaticSubsystem);
   }

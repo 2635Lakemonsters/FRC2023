@@ -15,16 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import frc.robot.commands.ArmFeedforwardCommand;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.FullScoringCommand;
-import frc.robot.commands.PrintGetXCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
@@ -75,9 +71,7 @@ public class RobotContainer extends TimedRobot {
   private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
-  private final ArmMovementCommand m_ArmMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
-  private final ArmFeedforwardCommand m_armFeedforwardCommand = new ArmFeedforwardCommand(m_armMotorSubsystem);
+  private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -99,8 +93,7 @@ public class RobotContainer extends TimedRobot {
     POVButton scoreCubeTop = new POVButton(rightJoystick, Constants.TOP_CUBE);
     POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
     Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
-    Trigger printGetX = new JoystickButton(leftJoystick, 10);
-    Trigger armFeedforward = new JoystickButton(leftJoystick, 5);
+    Trigger armMovement = new JoystickButton(leftJoystick, 5);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
@@ -115,9 +108,8 @@ public class RobotContainer extends TimedRobot {
     scoreConeMidRight.onTrue(m_autoScoreMidRight);
     scoreCubeTop.onTrue(m_autoScoreTopCube);
     scoreCubeMid.onTrue(m_autoScoreMidCube);
-    printGetX.onTrue(m_printGetXCommand);
     returnToDock.onTrue(m_returnToDockCommand);
-    armFeedforward.onTrue(m_ArmMovementCommand);
+    armMovement.onTrue(m_armMovementCommand);
   }
 
     /**

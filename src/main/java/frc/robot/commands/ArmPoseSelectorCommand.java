@@ -14,10 +14,10 @@ public class ArmPoseSelectorCommand extends CommandBase {
   private ArmMotorSubsystem m_armMotorSubsystem;
   private int m_buttonNum;
   private boolean m_returnToDock;
-  TopScoringArmMovementCommand m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  MidScoringArmMovementCommand m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  FromTopToHomeCommand m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-  FromMidToHomeCommand m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  TopScoringArmMovementCommand m_topScoringArmMovementCommand;
+  MidScoringArmMovementCommand m_midScoringArmMovementCommand;
+  FromTopToHomeCommand m_fromTopReturnHomeCommand;
+  FromMidToHomeCommand m_fromMidReturnHomeCommand;
 
   /** Creates a new ControlScoringCommands. */
   public ArmPoseSelectorCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, int buttonNum, boolean returnToDock) {
@@ -26,6 +26,12 @@ public class ArmPoseSelectorCommand extends CommandBase {
     m_returnToDock = returnToDock;
     m_armPneumaticSubsystem = armPneumaticSubsystem;
     m_armMotorSubsystem = armMotorSubsystem;
+
+    m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+  
    
     addRequirements(armPneumaticSubsystem);
   }

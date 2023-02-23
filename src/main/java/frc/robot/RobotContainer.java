@@ -18,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsControlModule;
 import frc.robot.commands.ArmFeedforwardCommand;
+import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
@@ -30,7 +30,6 @@ import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
-import frc.robot.subsystems.ArmFeedforwardSubsystem;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -60,7 +59,6 @@ public class RobotContainer extends TimedRobot {
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
   public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
-  public static final ArmFeedforwardSubsystem m_armFeedforwardSubsystem = new ArmFeedforwardSubsystem(m_armMotorSubsystem, m_armPneumaticSubsystem);
 
   // Commands
   private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
@@ -78,6 +76,7 @@ public class RobotContainer extends TimedRobot {
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final PrintGetXCommand m_printGetXCommand = new PrintGetXCommand(m_drivetrainSubsystem);
+  private final ArmMovementCommand m_ArmMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
   private final ArmFeedforwardCommand m_armFeedforwardCommand = new ArmFeedforwardCommand(m_armMotorSubsystem);
 
   public RobotContainer() {
@@ -118,7 +117,7 @@ public class RobotContainer extends TimedRobot {
     scoreCubeMid.onTrue(m_autoScoreMidCube);
     printGetX.onTrue(m_printGetXCommand);
     returnToDock.onTrue(m_returnToDockCommand);
-    armFeedforward.onTrue(m_armFeedforwardCommand);
+    armFeedforward.onTrue(m_ArmMovementCommand);
   }
 
     /**

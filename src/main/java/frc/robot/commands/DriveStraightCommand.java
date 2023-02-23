@@ -5,33 +5,20 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ArmMotorSubsystem;
 
-public class ArmMovementCommand extends CommandBase {
-
-  private ArmMotorSubsystem m_armMotorSubsystem;
-  private double m_targetPose;
-
-  /** Creates a new ArmMoveCommand. */
-  public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, int targetPose) {
+public class DriveStraightCommand extends CommandBase {
+  /** Creates a new DriveStraightCommand. */
+  public DriveStraightCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_armMotorSubsystem = armMotorSubsystem;
-    m_targetPose = targetPose;
-
-    addRequirements(m_armMotorSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_armMotorSubsystem.setPose(m_targetPose);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    boolean areWeThereYet = m_armMotorSubsystem.areWeThereYet();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

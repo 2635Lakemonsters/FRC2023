@@ -24,37 +24,19 @@ public class ArmMotorSubsystem extends SubsystemBase {
   private static double armPOFiltered = 0;
   private static long loopCtr = 0;
   PIDController pid = new PIDController(0.005, 0.0, 0.0);
+  private static double theta;
+  private static double m_poseTarget;
   
   /** Creates a new ArmMotorSubsystem. */
-  public ArmMotorSubsystem() {}
+  public ArmMotorSubsystem() {
+    pid.setTolerance(5);
+  }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-  }
-
-  public double calculatePower(double targetPose) { // target encoder pose
-    double currentPose = RobotContainer.encoder.getVoltage(); // Get current encoder pose 
-    double delta = targetPose - currentPose;
-
-    final double gain = 2.0;
-    final double range = 0.15;
-    double motorPower = gain * delta;
-    motorPower = Math.min(Math.max(motorPower, -range), range);
-
-    return motorPower;
-  }
-  
-  public void setMotorPower(double motorPower) {
-    /*Set Voltage in this method*/
-    armMotor.set(ControlMode.PercentOutput, motorPower);
-  }
-
-  public void setPose(double poseTarget) {
     loopCtr++;
     double upperLimit, lowerLimit, alpha;
-
-    // TODO: move magic #'s to Constants
 
     if (ArmPneumaticSubsystem.getIsExtended()) {
       alpha = Constants.ARM_EXTENDED_ALPHA;
@@ -66,9 +48,15 @@ public class ArmMotorSubsystem extends SubsystemBase {
       upperLimit = Constants.ARM_RETRACTED_UPPER_LIMIT;
     }
 
-    poseTarget = MathUtil.clamp(poseTarget, lowerLimit, upperLimit);
+    // m_poseTarget = MathUtil.clamp(m_poseTarget, lowerLimit, upperLimit);
 
-    double theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;
+    // manual control of the upper arm with z axis slider
+    double val = -RobotContainer.rightJoystick.getRawAxis(3);
+    double angle = (val+1.0)*180.0;
+    m_poseTarget = MathUtil.clamp(angle, lowerLimit, upperLimit);
+
+
+    theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;
     while (theta < 0)
       theta += 360.0;
     theta %= 360.0;
@@ -78,10 +66,10 @@ public class ArmMotorSubsystem extends SubsystemBase {
       fPO += 360.0;
     fPO %= 360.0;
 
-    final double gain = Constants.ARM_MOTOR_GAIN;
+    final double gain = Constants.ARM_MOTOR_FF_GAIN;
     double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));
 
-    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, poseTarget), Constants.FB_LOWER_LIMIT, Constants.FB_UPPER_LIMIT);
+    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, m_poseTarget), Constants.FB_LOWER_LIMIT, Constants.FB_UPPER_LIMIT);
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
@@ -90,7 +78,18 @@ public class ArmMotorSubsystem extends SubsystemBase {
       System.out.println("   FB Motor Power = " + fbMotorPower);
       System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
+    armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
+  }
 
-    // armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
+  public double getTheta() { // arm angle with respect to the lower arm
+    return theta;
+  }
+
+  public void setPose(double poseTarget) {
+    m_poseTarget = poseTarget;
+  }
+
+  public boolean areWeThereYet() {
+    return pid.atSetpoint();
   }
  }

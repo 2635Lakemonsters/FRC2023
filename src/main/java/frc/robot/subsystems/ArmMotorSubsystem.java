@@ -48,12 +48,12 @@ public class ArmMotorSubsystem extends SubsystemBase {
       upperLimit = Constants.ARM_RETRACTED_UPPER_LIMIT;
     }
 
-    // m_poseTarget = MathUtil.clamp(m_poseTarget, lowerLimit, upperLimit);
+    m_poseTarget = MathUtil.clamp(m_poseTarget, lowerLimit, upperLimit);
 
     // manual control of the upper arm with z axis slider
-    double val = -RobotContainer.rightJoystick.getRawAxis(3);
-    double angle = (val+1.0)*180.0;
-    m_poseTarget = MathUtil.clamp(angle, lowerLimit, upperLimit);
+    // double val = -RobotContainer.rightJoystick.getRawAxis(3);
+    // double angle = (val+1.0)*180.0;
+    // m_poseTarget = MathUtil.clamp(angle, lowerLimit, upperLimit);
 
 
     theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;

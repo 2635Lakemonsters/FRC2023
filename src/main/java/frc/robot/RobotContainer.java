@@ -7,6 +7,8 @@ package frc.robot;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import org.ejml.ops.QuickSort_S32;
+
 // import com.revrobotics.AnalogInput;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -48,6 +50,7 @@ import frc.robot.commands.FullScoringCommand;
 import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.ReturnToDockCommand;
+import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
@@ -100,32 +103,60 @@ public class RobotContainer extends TimedRobot {
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
-  public static boolean targetExtend;
-  public static int targetTheta;
+  public class Pose {
+    public Pose(boolean targetExtend, int targetTheta) {
+      this.targetExtend = targetExtend;
+      this.targetTheta = targetTheta;
+    }
+    public boolean targetExtend;
+    public int targetTheta;
+    
+  };
 
-  private ARM_TRANSITION select() {
-    return util.getTransition(targetExtend, targetTheta);
+  // TODO: This probably isn't the best way to do this.  However, it'll do
+  // for now and allow re-thinking later.  Use the set/getTargetPose functions
+  // to insulate consumers from changes in implementation.
+  
+  private static Pose m_targetPose;
+
+  static Pose getTargetPose() {
+    return m_targetPose;
   }
 
+  public static void setTargetPose(Pose pose) {
+    m_targetPose = pose;
+  }
+
+  private ARM_TRANSITION select() {
+    Pose pose = getTargetPose();
+    return util.getTransition(pose.targetExtend, pose.targetTheta);
+  }
+
+  public interface Poser {
+    public Pose execute();
+  }
+
+  static Poser m_getPose = () -> m_targetPose;
+  
   private final Command m_moveArmCommand = new SelectCommand(
     // Maps selector values to commands
     Map.ofEntries(
-      Map.entry(ARM_TRANSITION.BMinus2BMinus, new BMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BMinus2BPlus, new BMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BMinus2FMinus, new BMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BMinus2FPlus, new BMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BPlus2BMinus, new BPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BPlus2BPlus, new BPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BPlus2FMinus, new BPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.BPlus2FPlus, new BPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FMinus2BMinus, new FMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FMinus2BPlus, new FMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FMinus2FMinus, new FMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FMinus2FPlus, new FMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FPlus2BMinus, new FPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FPlus2BPlus, new FPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FPlus2FMinus, new FPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
-      Map.entry(ARM_TRANSITION.FPlus2FPlus, new FPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta))),
+      Map.entry(ARM_TRANSITION.BMinus2BMinus, new BMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BMinus2BPlus, new BMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BMinus2FMinus, new BMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BMinus2FPlus, new BMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BPlus2BMinus, new BPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BPlus2BPlus, new BPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BPlus2FMinus, new BPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.BPlus2FPlus, new BPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FMinus2BMinus, new FMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FMinus2BPlus, new FMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FMinus2FMinus, new FMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FMinus2FPlus, new FMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FPlus2BMinus, new FPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FPlus2BPlus, new FPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FPlus2FMinus, new FPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
+      Map.entry(ARM_TRANSITION.FPlus2FPlus, new FPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose))),
     this::select);
 
   public RobotContainer() {
@@ -158,7 +189,7 @@ public class RobotContainer extends TimedRobot {
     stationaryButton.onTrue(m_swerveNoMoveCommand);
     // clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     // armPneumaticButton.onTrue(m_armPneumaticCommand);
-    scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
+    //scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
     scoreConeMidLeft.onTrue(m_autoScoreMidLeft);
     scoreConeTopRight.onTrue(m_autoScoreTopRight);
     scoreConeMidRight.onTrue(m_autoScoreMidRight);
@@ -169,17 +200,9 @@ public class RobotContainer extends TimedRobot {
     pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
 
 
+    scoreConeTopLeft.onTrue(new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
 
-    /*
-     * private final Command m_exampleSelectCommand =
-      new SelectCommand(
-          // Maps selector values to commands
-          Map.ofEntries(
-              Map.entry(CommandSelector.ONE, new PrintCommand("Command one was selected!")),
-              Map.entry(CommandSelector.TWO, new PrintCommand("Command two was selected!")),
-              Map.entry(CommandSelector.THREE, new PrintCommand("Command three was selected!"))),
-          this::select);
-     */
+
     // armMovement.onTrue(m_armExtendCommand.unless(()->util.getArmState()!= ARM_STATE.Fplus));
 
     // armMovement.onTrue(new ConditionalCommand(m_armMovementCommand, m_armExtendCommand, ()->util.getArmState()!= ARM_STATE.Fplus));

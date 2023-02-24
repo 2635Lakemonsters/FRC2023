@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmMotorSubsystem;
 
 public class ArmMovementCommand extends CommandBase {
@@ -13,7 +14,16 @@ public class ArmMovementCommand extends CommandBase {
   private double m_targetPose;
 
   /** Creates a new ArmMoveCommand. */
-  public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, int targetPose) {
+  public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, RobotContainer.Poser getPose) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_armMotorSubsystem = armMotorSubsystem;
+    m_targetPose = getPose.execute().targetTheta;
+
+    addRequirements(m_armMotorSubsystem);
+  }
+
+  /** Creates a new ArmMoveCommand. */
+  public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, double targetPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_armMotorSubsystem = armMotorSubsystem;
     m_targetPose = targetPose;

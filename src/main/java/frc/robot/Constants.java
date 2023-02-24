@@ -70,13 +70,6 @@ public final class Constants {
     public static final int BALANCING_BUTTON = 9;
     public static final int HOLD_STILL_BUTTON = 10;
 
-    public static final int TOP_LEFT_CONE = 5;
-    public static final int MID_LEFT_CONE = 3;
-    public static final int TOP_RIGHT_CONE = 6;
-    public static final int MID_RIGHT_CONE = 4;
-    public static final int TOP_CUBE = 0;
-    public static final int MID_CUBE = 180;
-
     public static final int DOCKING_BUTTON_NUMBER = 4;
 
     // pneumatic channels
@@ -92,6 +85,12 @@ public final class Constants {
     public static final int MID_SCORING_ANGLE = 268;
     public static final int BOTTOM_SCORING_ANGLE = 326;
     public static final int PICKING_UP_ANGLE = 302;
+    public static final boolean HOME_EXTEND = false;
+    public static final boolean TOP_SCORING_EXTEND = true;
+    public static final boolean MID_SCORING_EXTEND = false;
+    public static final boolean BOTTOM_SCORING_EXTEND = true;
+    public static final boolean PICKING_UP_EXTEND = true;
+
 
     // illegal arm regions
     public static final int Hplus = 273;

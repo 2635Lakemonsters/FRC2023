@@ -17,11 +17,11 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.ARM_STATE;
@@ -93,12 +93,12 @@ public class RobotContainer extends TimedRobot {
   private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
   private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
   private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
-  private final FullScoringCommand m_autoScoreTopLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_LEFT_CONE);
-  private final FullScoringCommand m_autoScoreMidLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_LEFT_CONE);
-  private final FullScoringCommand m_autoScoreTopRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_RIGHT_CONE);
-  private final FullScoringCommand m_autoScoreMidRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_RIGHT_CONE);
-  private final FullScoringCommand m_autoScoreTopCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_CUBE);
-  private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
+  // private final FullScoringCommand m_autoScoreTopLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_LEFT_CONE);
+  // private final FullScoringCommand m_autoScoreMidLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_LEFT_CONE);
+  // private final FullScoringCommand m_autoScoreTopRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_RIGHT_CONE);
+  // private final FullScoringCommand m_autoScoreMidRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_RIGHT_CONE);
+  // private final FullScoringCommand m_autoScoreTopCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_CUBE);
+  // private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
@@ -166,41 +166,68 @@ public class RobotContainer extends TimedRobot {
 
   private void configureBindings() {
     // Create button
-    Trigger recalibrateButton = new JoystickButton(rightJoystick, Constants.CALIBRATE_BUTTON);
-    Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
-    Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
-    Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
+    // Trigger recalibrateButton = new JoystickButton(rightJoystick, Constants.CALIBRATE_BUTTON);
+    // Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
+    // Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
+    // Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-    Trigger scoreConeTopLeft = new JoystickButton(rightJoystick, Constants.TOP_LEFT_CONE);
-    Trigger scoreConeMidLeft = new JoystickButton(rightJoystick, Constants.MID_LEFT_CONE);
-    Trigger scoreConeTopRight = new JoystickButton(rightJoystick, Constants.TOP_RIGHT_CONE);
-    Trigger scoreConeMidRight = new JoystickButton(rightJoystick, Constants.MID_RIGHT_CONE);
-    POVButton scoreCubeTop = new POVButton(rightJoystick, Constants.TOP_CUBE);
-    POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
+    Trigger scoreTopLeft = new JoystickButton(rightJoystick, 7);
+    Trigger scoreTopRight = new JoystickButton(rightJoystick, 8);
+    Trigger scoreTopCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
+    Trigger scoreMidLeft = new JoystickButton(rightJoystick, 9);
+    Trigger scoreMidRight = new JoystickButton(rightJoystick, 10);
+    Trigger scoreMidCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
+    Trigger scoreBottomLeft = new JoystickButton(rightJoystick, 11);
+    Trigger scoreBottomRight = new JoystickButton(rightJoystick, 12);
+    Trigger scoreBottomCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
     Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
     Trigger armMovement = new JoystickButton(leftJoystick, 5);
     Trigger pickUpFloor = new JoystickButton(rightJoystick, 3);
 
     // Set commmands to button
-    recalibrateButton.onTrue(m_resetSwerveGyroCommand);
-    balancingButton.onTrue(m_swerveDriveBalanceCommand);
-    nonBalancingButton.onTrue(m_swerveDriveCommand);
-    stationaryButton.onTrue(m_swerveNoMoveCommand);
+    // recalibrateButton.onTrue(m_resetSwerveGyroCommand);
+    // balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    // nonBalancingButton.onTrue(m_swerveDriveCommand);
+    // stationaryButton.onTrue(m_swerveNoMoveCommand);
     // clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     // armPneumaticButton.onTrue(m_armPneumaticCommand);
-    //scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
-    scoreConeMidLeft.onTrue(m_autoScoreMidLeft);
-    scoreConeTopRight.onTrue(m_autoScoreTopRight);
-    scoreConeMidRight.onTrue(m_autoScoreMidRight);
-    scoreCubeTop.onTrue(m_autoScoreTopCube);
-    scoreCubeMid.onTrue(m_autoScoreMidCube);
+    // //scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
+    // scoreT.onTrue(m_autoScoreMidLeft);
+    // scoreConeTopRight.onTrue(m_autoScoreTopRight);
+    // scoreConeMidRight.onTrue(m_autoScoreMidRight);
+    // scoreCubeTop.onTrue(m_autoScoreTopCube);
+    // scoreCubeMid.onTrue(m_autoScoreMidCube);
     returnToDock.onTrue(m_returnToDockCommand);
     armMovement.onTrue(m_armMovementCommand);
     pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
 
-    SetTargetPoseCommand m_xxx = new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE));
-    scoreConeTopLeft.onTrue(m_xxx.andThen(m_moveArmCommand));
+    // TODO:
+    // 1: Do all the button bindings with arm movements
+    // 2: Test Full Score movement portion
+    // 3: Get target movement and rotation from April Tags, integrate into movement.
+    // 4: Integrate both to parallel execution
+    //SetTargetPoseCommand m_xxx = new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE));
+    scoreTopLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreMidLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreBottomLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreTopRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreMidRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreBottomRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreTopCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreMidCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    scoreBottomCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
+
+    // does two commands in parallel: 1) moving arm and 2) either moves to left or mid scoring position depending on state of button
+    // raise arm + robot translation 
+    // scoreTopLeft.onTrue(
+    //   new ParallelCommandGroup( // TODO might want these to be sequential? bc you could hit the wall if you approach too close before you raise arm.  
+    //     new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE))
+    //     .andThen(m_moveArmCommand)),
+    //     new ConditionalCommand(moveToMidScoringPosition, moveToLeftScoringPosition, leftJoystick.button(2)
+    //             ));
+
+
 
 
     // armMovement.onTrue(m_armExtendCommand.unless(()->util.getArmState()!= ARM_STATE.Fplus));

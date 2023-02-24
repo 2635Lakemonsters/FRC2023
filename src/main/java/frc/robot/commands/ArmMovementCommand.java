@@ -12,12 +12,13 @@ public class ArmMovementCommand extends CommandBase {
 
   private ArmMotorSubsystem m_armMotorSubsystem;
   private double m_targetPose;
+  private RobotContainer.Poser m_getPose;
 
   /** Creates a new ArmMoveCommand. */
   public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, RobotContainer.Poser getPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_armMotorSubsystem = armMotorSubsystem;
-    m_targetPose = getPose.execute().targetTheta;
+    m_getPose = getPose;
 
     addRequirements(m_armMotorSubsystem);
   }
@@ -34,6 +35,7 @@ public class ArmMovementCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_targetPose = m_getPose.execute().targetTheta;
     m_armMotorSubsystem.setPose(m_targetPose);
   }
 

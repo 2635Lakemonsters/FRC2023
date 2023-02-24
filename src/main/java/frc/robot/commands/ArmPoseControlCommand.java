@@ -14,10 +14,10 @@ public class ArmPoseControlCommand extends CommandBase {
   private ArmMotorSubsystem m_armMotorSubsystem;
   private int m_buttonNum;
   private boolean m_returnToDock;
-  TopScoringArmMovementCommand m_topScoringArmMovementCommand;
-  MidScoringArmMovementCommand m_midScoringArmMovementCommand;
-  FromTopToHomeCommand m_fromTopReturnHomeCommand;
-  FromMidToHomeCommand m_fromMidReturnHomeCommand;
+  // TopScoringArmMovementCommand m_topScoringArmMovementCommand;
+  // MidScoringArmMovementCommand m_midScoringArmMovementCommand;
+  // FromTopToHomeCommand m_fromTopReturnHomeCommand;
+  // FromMidToHomeCommand m_fromMidReturnHomeCommand;
 
   /** Creates a new ControlScoringCommands. */
   public ArmPoseControlCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, int buttonNum, boolean returnToDock) {
@@ -27,10 +27,10 @@ public class ArmPoseControlCommand extends CommandBase {
     m_armPneumaticSubsystem = armPneumaticSubsystem;
     m_armMotorSubsystem = armMotorSubsystem;
 
-    m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-    m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-    m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
-    m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    // m_topScoringArmMovementCommand = new TopScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    // m_midScoringArmMovementCommand = new MidScoringArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    // m_fromTopReturnHomeCommand = new FromTopToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
+    // m_fromMidReturnHomeCommand = new FromMidToHomeCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
    
     addRequirements(armPneumaticSubsystem);
   }
@@ -45,18 +45,18 @@ public class ArmPoseControlCommand extends CommandBase {
     if (!m_returnToDock) {
       if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
         // top arm position command
-        m_topScoringArmMovementCommand.execute();
+        // m_topScoringArmMovementCommand.execute();
       } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
         // middle arm position command
-        m_midScoringArmMovementCommand.execute();
+        // m_midScoringArmMovementCommand.execute();
       } 
     } else if (m_returnToDock){
       if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
         // going back to the home pose from top scoring
-        m_fromTopReturnHomeCommand.execute();
+        // m_fromTopReturnHomeCommand.execute();
       } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
         // going back to the home pose from mid scoring
-        m_fromMidReturnHomeCommand.execute();
+        // m_fromMidReturnHomeCommand.execute();
       }
     }
   }

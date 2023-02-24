@@ -26,6 +26,8 @@ public final class util {
         return meters * 3.281;
     }
 
+    // TODO: Instead of returning an invalid state, return nearest valid state and log the error.
+    
     public static ARM_STATE getArmState(boolean bExtended, double theta) {
         if (!RobotContainer.m_armMotorSubsystem.areWeThereYet()) {
             return ARM_STATE.Moving;

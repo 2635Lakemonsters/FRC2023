@@ -25,7 +25,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {
-    pid.setTolerance(5);
+    pid.setTolerance(20);
   }
 
   @Override
@@ -69,11 +69,11 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);
-    if (loopCtr % 50 == 0) {
-      System.out.print("FF Motor Power = " + ffMotorPower);
-      System.out.println("   FB Motor Power = " + fbMotorPower);
-      System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
-    }
+    // if (loopCtr % 50 == 0) {
+    //   System.out.print("FF Motor Power = " + ffMotorPower);
+    //   System.out.println("   FB Motor Power = " + fbMotorPower);
+    //   System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
+    // }
     armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
   }
 

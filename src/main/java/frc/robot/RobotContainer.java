@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
@@ -31,6 +33,7 @@ import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.FullScoringCommand;
+import frc.robot.commands.MoveArmToPoseCommand;
 import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.ReturnToDockCommand;
@@ -103,7 +106,17 @@ public class RobotContainer extends TimedRobot {
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
+
   public class Pose {
+    public Pose() {
+      this.targetExtend = false;
+      this.targetTheta = Constants.ARM_RETRACTED_LOWER_LIMIT;
+    }
+    
+    /**
+    @param targetExtend whether arm pneumatics are extended (true) or not (false)
+    @param targetTheta angle of upper arm relative to lower arm (NOT floor)
+    **/
     public Pose(boolean targetExtend, int targetTheta) {
       this.targetExtend = targetExtend;
       this.targetTheta = targetTheta;
@@ -119,7 +132,7 @@ public class RobotContainer extends TimedRobot {
   
   private static Pose m_targetPose;
 
-  static Pose getTargetPose() {
+  public static Pose getTargetPose() {
     return m_targetPose;
   }
 
@@ -127,7 +140,12 @@ public class RobotContainer extends TimedRobot {
     m_targetPose = pose;
   }
 
-  private ARM_TRANSITION select() {
+  public static void setTargetPose(boolean targetExtend, int targetTheta) {
+    m_targetPose.targetExtend = targetExtend;
+    m_targetPose.targetTheta = targetTheta;
+}
+
+  public ARM_TRANSITION select() {
     Pose pose = getTargetPose();
     return util.getTransition(pose.targetExtend, pose.targetTheta);
   }
@@ -136,7 +154,7 @@ public class RobotContainer extends TimedRobot {
     public Pose execute();
   }
 
-  static Poser m_getPose = () -> m_targetPose;
+  public static Poser m_getPose = () -> m_targetPose;
   
   private final Command m_moveArmCommand = new SelectCommand(
     // Maps selector values to commands
@@ -208,15 +226,27 @@ public class RobotContainer extends TimedRobot {
     // 3: Get target movement and rotation from April Tags, integrate into movement.
     // 4: Integrate both to parallel execution
     //SetTargetPoseCommand m_xxx = new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE));
-    scoreTopLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreMidLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreBottomLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreTopRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreMidRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreBottomRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreTopCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreMidCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(m_moveArmCommand));
-    scoreBottomCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(m_moveArmCommand));
+
+    // scoreTopLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    
+    // make into sequential command group
+    scoreTopLeft.onTrue(new SequentialCommandGroup(
+                          new PrintCommand("Before STPC"),
+                          new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
+                          new PrintCommand("Before MATPC"),
+                          new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
+                          new PrintCommand("After STPC")
+                        ));
+
+    
+    scoreMidLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreBottomLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreTopRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreMidRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreBottomRight.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreTopCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreMidCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    scoreBottomCenter.onTrue(new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
 
     // does two commands in parallel: 1) moving arm and 2) either moves to left or mid scoring position depending on state of button
     // raise arm + robot translation 

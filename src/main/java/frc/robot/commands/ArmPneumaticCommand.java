@@ -7,6 +7,9 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
+/**
+  * Moves lower arm between retracted and extended configurations
+ */
 public class ArmPneumaticCommand extends CommandBase {
   ArmPneumaticSubsystem m_armPneumaticSubsystem;
   public boolean bExtend;
@@ -25,6 +28,7 @@ public class ArmPneumaticCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    System.out.println("APC: " + bExtend);
     if(bExtend) { // if extended then retract
       m_armPneumaticSubsystem.armExtend();
     } else { // if retracted then extend

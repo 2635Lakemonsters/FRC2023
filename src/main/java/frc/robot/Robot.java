@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
   private SendableChooser<Command> m_autoChooser; 
   private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
 
+  // for motion compensate (vision)
   public static int circularBufferSize = 50;
   public static int bufferSlotNumber = 0;
   public static double[] time;
@@ -39,16 +40,16 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    time = new double[circularBufferSize]; 
-    angle =  new double[circularBufferSize];
-    autoHappened = false;
 
+    // motion compensate (vision)
     time = new double[circularBufferSize]; 
     angle =  new double[circularBufferSize];
     autoHappened = false;
 
     m_robotContainer = new RobotContainer();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
+
+
   }
 
   /**
@@ -124,6 +125,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+
+    // TODO add something to put arm in default state - may not need this in autoinit because arm starts in known pos before auto
     
   }
 

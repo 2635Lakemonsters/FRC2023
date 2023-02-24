@@ -8,11 +8,14 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmMotorSubsystem;
 
+/**
+  * Moves upper arm to target position
+ */
 public class ArmMovementCommand extends CommandBase {
 
   private ArmMotorSubsystem m_armMotorSubsystem;
   private double m_targetPose;
-  private RobotContainer.Poser m_getPose;
+  private RobotContainer.Poser m_getPose = null;
 
   /** Creates a new ArmMoveCommand. */
   public ArmMovementCommand(ArmMotorSubsystem armMotorSubsystem, RobotContainer.Poser getPose) {
@@ -35,7 +38,9 @@ public class ArmMovementCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_targetPose = m_getPose.execute().targetTheta;
+    if (m_getPose != null)
+      m_targetPose = m_getPose.execute().targetTheta;
+    System.out.println("AMC: " + m_targetPose);
     m_armMotorSubsystem.setPose(m_targetPose);
   }
 

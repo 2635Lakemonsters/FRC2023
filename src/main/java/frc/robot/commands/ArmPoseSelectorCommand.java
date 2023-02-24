@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -43,10 +44,10 @@ public class ArmPoseSelectorCommand extends CommandBase {
   @Override
   public void execute() {
     if (!m_returnToDock) {
-      if (m_buttonNum == 5 || m_buttonNum == 6 || m_buttonNum == 0) {
+      if (m_buttonNum == 7 || m_buttonNum == 8) {
         // top arm position command
-        // m_topScoringArmMovementCommand.execute();
-      } else if (m_buttonNum == 3 || m_buttonNum == 4|| m_buttonNum == 180) {
+        // RobotContainer.select();
+      } else if (m_buttonNum == 9 || m_buttonNum == 10) {
         // middle arm position command
         // m_midScoringArmMovementCommand.execute();
       } 

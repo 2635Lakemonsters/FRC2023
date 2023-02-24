@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 // import com.revrobotics.AnalogInput;
 
@@ -26,7 +27,23 @@ import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
+import frc.robot.commands.BMinus2BMinusCommand;
+import frc.robot.commands.BMinus2BPlusCommand;
+import frc.robot.commands.BMinus2FMinusCommand;
+import frc.robot.commands.BMinus2FPlusCommand;
+import frc.robot.commands.BPlus2BMinusCommand;
+import frc.robot.commands.BPlus2BPlusCommand;
+import frc.robot.commands.BPlus2FMinusCommand;
+import frc.robot.commands.BPlus2FPlusCommand;
 import frc.robot.commands.ClawPneumaticCommand;
+import frc.robot.commands.FMinus2BMinusCommand;
+import frc.robot.commands.FMinus2BPlusCommand;
+import frc.robot.commands.FMinus2FMinusCommand;
+import frc.robot.commands.FMinus2FPlusCommand;
+import frc.robot.commands.FPlus2BMinusCommand;
+import frc.robot.commands.FPlus2BPlusCommand;
+import frc.robot.commands.FPlus2FMinusCommand;
+import frc.robot.commands.FPlus2FPlusCommand;
 import frc.robot.commands.FullScoringCommand;
 import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
@@ -83,29 +100,32 @@ public class RobotContainer extends TimedRobot {
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
-  public static double targetTheta;
   public static boolean targetExtend;
+  public static int targetTheta;
 
-  private final SelectCommand m_moveArmCommand = new SelectCommand(
+  private ARM_TRANSITION select() {
+    return util.getTransition(targetExtend, targetTheta);
+  }
+
+  private final Command m_moveArmCommand = new SelectCommand(
     // Maps selector values to commands
     Map.ofEntries(
-        Map.entry(ARM_TRANSITION.BMinus2BMinus, new PrintCommand("Command one was selected!")),
-        Map.entry(ARM_TRANSITION.BMinus2BPlus, new PrintCommand("Command two was selected!")),
-        Map.entry(ARM_TRANSITION.BMinus2FMinus, new PrintCommand("Command three was selected!")),
-        Map.entry(ARM_TRANSITION.BMinus2FPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.BPlus2BMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.BPlus2BPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.BPlus2FMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.BPlus2FPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FMinus2BMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FMinus2BPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FMinus2FMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FMinus2FPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FPlus2BMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FPlus2BPlus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FPlus2FMinus, new PrintCommand("")),
-        Map.entry(ARM_TRANSITION.FPlus2FPlus, new PrintCommand(""))
-        )
+      Map.entry(ARM_TRANSITION.BMinus2BMinus, new BMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BMinus2BPlus, new BMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BMinus2FMinus, new BMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BMinus2FPlus, new BMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BPlus2BMinus, new BPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BPlus2BPlus, new BPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BPlus2FMinus, new BPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.BPlus2FPlus, new BPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FMinus2BMinus, new FMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FMinus2BPlus, new FMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FMinus2FMinus, new FMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FMinus2FPlus, new FMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FPlus2BMinus, new FPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FPlus2BPlus, new FPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FPlus2FMinus, new FPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta)),
+      Map.entry(ARM_TRANSITION.FPlus2FPlus, new FPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, targetTheta))),
     this::select);
 
   public RobotContainer() {
@@ -147,6 +167,7 @@ public class RobotContainer extends TimedRobot {
     returnToDock.onTrue(m_returnToDockCommand);
     armMovement.onTrue(m_armMovementCommand);
     pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
+
 
 
     /*

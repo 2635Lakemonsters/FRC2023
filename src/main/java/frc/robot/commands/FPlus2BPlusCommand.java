@@ -13,13 +13,13 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class FPlus2BPlusCommand extends SequentialCommandGroup {
   /** Creates a new TopScoringArmMovementCommand. */
-  public FPlus2BPlusCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
+  public FPlus2BPlusCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, int targetpose) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem, false),
-      new ArmMovementCommand(armMotorSubsystem, 0) // target pose
+      new ArmMovementCommand(armMotorSubsystem, targetpose) // target pose
     );
   }
 }

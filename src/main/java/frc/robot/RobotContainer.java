@@ -29,23 +29,7 @@ import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
-import frc.robot.commands.BMinus2BMinusCommand;
-import frc.robot.commands.BMinus2BPlusCommand;
-import frc.robot.commands.BMinus2FMinusCommand;
-import frc.robot.commands.BMinus2FPlusCommand;
-import frc.robot.commands.BPlus2BMinusCommand;
-import frc.robot.commands.BPlus2BPlusCommand;
-import frc.robot.commands.BPlus2FMinusCommand;
-import frc.robot.commands.BPlus2FPlusCommand;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.FMinus2BMinusCommand;
-import frc.robot.commands.FMinus2BPlusCommand;
-import frc.robot.commands.FMinus2FMinusCommand;
-import frc.robot.commands.FMinus2FPlusCommand;
-import frc.robot.commands.FPlus2BMinusCommand;
-import frc.robot.commands.FPlus2BPlusCommand;
-import frc.robot.commands.FPlus2FMinusCommand;
-import frc.robot.commands.FPlus2FPlusCommand;
 import frc.robot.commands.FullScoringCommand;
 import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
@@ -54,6 +38,22 @@ import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
+import frc.robot.commands.Transitions.BMinus2BMinusCommand;
+import frc.robot.commands.Transitions.BMinus2BPlusCommand;
+import frc.robot.commands.Transitions.BMinus2FMinusCommand;
+import frc.robot.commands.Transitions.BMinus2FPlusCommand;
+import frc.robot.commands.Transitions.BPlus2BMinusCommand;
+import frc.robot.commands.Transitions.BPlus2BPlusCommand;
+import frc.robot.commands.Transitions.BPlus2FMinusCommand;
+import frc.robot.commands.Transitions.BPlus2FPlusCommand;
+import frc.robot.commands.Transitions.FMinus2BMinusCommand;
+import frc.robot.commands.Transitions.FMinus2BPlusCommand;
+import frc.robot.commands.Transitions.FMinus2FMinusCommand;
+import frc.robot.commands.Transitions.FMinus2FPlusCommand;
+import frc.robot.commands.Transitions.FPlus2BMinusCommand;
+import frc.robot.commands.Transitions.FPlus2BPlusCommand;
+import frc.robot.commands.Transitions.FPlus2FMinusCommand;
+import frc.robot.commands.Transitions.FPlus2FPlusCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -199,8 +199,8 @@ public class RobotContainer extends TimedRobot {
     armMovement.onTrue(m_armMovementCommand);
     pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
 
-
-    scoreConeTopLeft.onTrue(new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE)).andThen(m_moveArmCommand));
+    SetTargetPoseCommand m_xxx = new SetTargetPoseCommand(new Pose(true, Constants.TOP_SCORING_ANGLE));
+    scoreConeTopLeft.onTrue(m_xxx.andThen(m_moveArmCommand));
 
 
     // armMovement.onTrue(m_armExtendCommand.unless(()->util.getArmState()!= ARM_STATE.Fplus));

@@ -83,6 +83,9 @@ public class RobotContainer extends TimedRobot {
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
+  public static double targetTheta;
+  public static boolean targetExtend;
+
   private final SelectCommand m_moveArmCommand = new SelectCommand(
     // Maps selector values to commands
     Map.ofEntries(

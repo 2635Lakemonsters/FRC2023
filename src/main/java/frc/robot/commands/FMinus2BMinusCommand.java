@@ -4,7 +4,6 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.subsystems.ArmMotorSubsystem;
@@ -13,20 +12,16 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class TopScoringArmMovementCommand extends SequentialCommandGroup {
+public class FMinus2BMinusCommand extends SequentialCommandGroup {
   /** Creates a new TopScoringArmMovementCommand. */
-  public TopScoringArmMovementCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
+  public FMinus2BMinusCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    // TODO: figure out the mid angle
-
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, 20),
-      new ParallelCommandGroup(
-        new ArmPneumaticCommand(armPneumaticSubsystem, true),
-        new ArmMovementCommand(armMotorSubsystem, Constants.TOP_SCORING_ANGLE)
-      )
+      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
+      new ArmPneumaticCommand(armPneumaticSubsystem, false),
+      new ArmMovementCommand(armMotorSubsystem, 0) // target pose
     );
   }
 }

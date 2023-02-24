@@ -16,12 +16,12 @@ import frc.robot.RobotContainer;
 public class ArmMotorSubsystem extends SubsystemBase {
 
   public TalonFX armMotor = new TalonFX(Constants.TALON_CHANNEL);
-  private static final double kFilterArm = 0.1;
-  private static double armPOFiltered = 0;
-  private static long loopCtr = 0;
-  PIDController pid = new PIDController(0.005, 0.0, 0.0);
-  private static double theta;
-  private static double m_poseTarget;
+  private  final double kFilterArm = 0.1;
+  private  double armPOFiltered = 0;
+  private  long loopCtr = 0;
+  private PIDController pid = new PIDController(0.005, 0.0, 0.0);
+  private  double theta;
+  private  double m_poseTarget;
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {
@@ -34,7 +34,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
     loopCtr++;
     double upperLimit, lowerLimit, alpha;
 
-    if (ArmPneumaticSubsystem.getIsExtended()) {
+    if (RobotContainer.m_armPneumaticSubsystem.getIsExtended()) {
       alpha = Constants.ARM_EXTENDED_ALPHA;
       lowerLimit = Constants.ARM_EXTENDED_LOWER_LIMIT;
       upperLimit = Constants.ARM_EXTENDED_UPPER_LIMIT;

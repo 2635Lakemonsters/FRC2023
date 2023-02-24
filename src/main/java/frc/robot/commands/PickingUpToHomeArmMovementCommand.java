@@ -19,7 +19,7 @@ public class PickingUpToHomeArmMovementCommand extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new ArmMovementCommand(armMotorSubsystem, Constants.HOME_ARM_ANGLE),
-      new ArmPneumaticCommand(armPneumaticSubsystem)
+      new ArmPneumaticCommand(armPneumaticSubsystem, false)
     );
   }
 }

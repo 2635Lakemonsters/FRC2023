@@ -9,22 +9,23 @@ import frc.robot.subsystems.ClawPneumaticSubsystem;
 
 public class ClawPneumaticCommand extends CommandBase {
   ClawPneumaticSubsystem m_clawPneumaticSubsystem;
-  public boolean isClosed;
+  public boolean m_bOpen;
 
   /** Creates a new IntakePneumaticCommand. */
-  public ClawPneumaticCommand(ClawPneumaticSubsystem clawPneumaticSubsystem) {
+  public ClawPneumaticCommand(ClawPneumaticSubsystem clawPneumaticSubsystem, boolean bOpen) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_clawPneumaticSubsystem = clawPneumaticSubsystem;
+    m_bOpen = bOpen;
+
     addRequirements(m_clawPneumaticSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isClosed = m_clawPneumaticSubsystem.getIsClosed();
-    if(isClosed) { //if closed then open
+    if(m_bOpen) {
       m_clawPneumaticSubsystem.grabberOpen();
-    } else if(!isClosed) { // if open then close
+    } else {
       m_clawPneumaticSubsystem.grabberClose();
     }
   }

@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Map;
+
 // import com.revrobotics.AnalogInput;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -12,15 +14,21 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Constants.ARM_STATE;
+import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.FullScoringCommand;
+import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
@@ -61,8 +69,10 @@ public class RobotContainer extends TimedRobot {
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  private final ClawPneumaticCommand m_clawPneumaticCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem);
-  private final ArmPneumaticCommand m_armPneumaticCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem);
+  private final ClawPneumaticCommand m_clawOpenCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, true);
+  private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
+  private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
+  private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
   private final FullScoringCommand m_autoScoreTopLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_LEFT_CONE);
   private final FullScoringCommand m_autoScoreMidLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_LEFT_CONE);
   private final FullScoringCommand m_autoScoreTopRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_RIGHT_CONE);
@@ -72,6 +82,28 @@ public class RobotContainer extends TimedRobot {
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
+
+  private final SelectCommand m_moveArmCommand = new SelectCommand(
+    // Maps selector values to commands
+    Map.ofEntries(
+        Map.entry(ARM_TRANSITION.BMinus2BMinus, new PrintCommand("Command one was selected!")),
+        Map.entry(ARM_TRANSITION.BMinus2BPlus, new PrintCommand("Command two was selected!")),
+        Map.entry(ARM_TRANSITION.BMinus2FMinus, new PrintCommand("Command three was selected!")),
+        Map.entry(ARM_TRANSITION.BMinus2FPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.BPlus2BMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.BPlus2BPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.BPlus2FMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.BPlus2FPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FMinus2BMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FMinus2BPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FMinus2FMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FMinus2FPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FPlus2BMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FPlus2BPlus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FPlus2FMinus, new PrintCommand("")),
+        Map.entry(ARM_TRANSITION.FPlus2FPlus, new PrintCommand(""))
+        )
+    this::select);
 
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
@@ -94,14 +126,15 @@ public class RobotContainer extends TimedRobot {
     POVButton scoreCubeMid = new POVButton(rightJoystick, Constants.MID_CUBE);
     Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
     Trigger armMovement = new JoystickButton(leftJoystick, 5);
+    Trigger pickUpFloor = new JoystickButton(rightJoystick, 3);
 
     // Set commmands to button
     recalibrateButton.onTrue(m_resetSwerveGyroCommand);
     balancingButton.onTrue(m_swerveDriveBalanceCommand);
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
-    clawPneumaticButton.onTrue(m_clawPneumaticCommand);
-    armPneumaticButton.onTrue(m_armPneumaticCommand);
+    // clawPneumaticButton.onTrue(m_clawPneumaticCommand);
+    // armPneumaticButton.onTrue(m_armPneumaticCommand);
     scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
     scoreConeMidLeft.onTrue(m_autoScoreMidLeft);
     scoreConeTopRight.onTrue(m_autoScoreTopRight);
@@ -110,6 +143,22 @@ public class RobotContainer extends TimedRobot {
     scoreCubeMid.onTrue(m_autoScoreMidCube);
     returnToDock.onTrue(m_returnToDockCommand);
     armMovement.onTrue(m_armMovementCommand);
+    pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
+
+
+    /*
+     * private final Command m_exampleSelectCommand =
+      new SelectCommand(
+          // Maps selector values to commands
+          Map.ofEntries(
+              Map.entry(CommandSelector.ONE, new PrintCommand("Command one was selected!")),
+              Map.entry(CommandSelector.TWO, new PrintCommand("Command two was selected!")),
+              Map.entry(CommandSelector.THREE, new PrintCommand("Command three was selected!"))),
+          this::select);
+     */
+    // armMovement.onTrue(m_armExtendCommand.unless(()->util.getArmState()!= ARM_STATE.Fplus));
+
+    // armMovement.onTrue(new ConditionalCommand(m_armMovementCommand, m_armExtendCommand, ()->util.getArmState()!= ARM_STATE.Fplus));
   }
 
     /**

@@ -20,9 +20,9 @@ public class ReturnToDockCommand extends SequentialCommandGroup {
     // TODO: figure out the docking angle
 
     addCommands(
-      new ArmPneumaticCommand(armPneumaticSubsystem),
+      new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, 20),
-      new ArmPneumaticCommand(armPneumaticSubsystem)
+      new ArmPneumaticCommand(armPneumaticSubsystem, false)
     );
   }
 }

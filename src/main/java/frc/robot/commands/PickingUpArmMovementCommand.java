@@ -18,7 +18,7 @@ public class PickingUpArmMovementCommand extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ArmPneumaticCommand(armPneumaticSubsystem),
+      new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, Constants.PICKING_UP_ANGLE)
 
     );

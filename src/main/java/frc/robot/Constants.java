@@ -93,6 +93,12 @@ public final class Constants {
     public static final int BOTTOM_SCORING_ANGLE = 326;
     public static final int PICKING_UP_ANGLE = 302;
 
+    // illegal arm regions
+    public static final int Hplus = 273;
+    public static final int Hminus = 210;
+    public static final int Vplus = 209;
+    public static final int Vminus = 167;
+    
     // arm motor constants
     public static final double ARM_EXTENDED_ALPHA = 116.3;
     public static final double ARM_EXTENDED_LOWER_LIMIT = 50;
@@ -108,13 +114,40 @@ public final class Constants {
     public static final double ARM_MOTOR_FF_GAIN = -0.08;
     public static final double ARM_ENCODER_OFFSET = -349;
 
-    // enconder id
+    // absolute enconder for top arm id
     public static final int ARM_ENCODER_ID = 7;
 
-    // motor id
+    // arm driving motor id
     public static final int TALON_CHANNEL = 21;
 
     // VISION CONSTANTS
     public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds
 
+    public enum ARM_STATE { Fplus, 
+                            Fminus, 
+                            Bplus, 
+                            Bminus,
+                            InvalidVert,
+                            InvalidHorz,
+                            Moving};
+
+    public enum ARM_TRANSITION { FPlus2FPlus,
+                                 FPlus2FMinus,
+                                 FPlus2BPlus,
+                                 FPlus2BMinus,
+                                 FMinus2FPlus,
+                                 FMinus2FMinus,
+                                 FMinus2BPlus,
+                                 FMinus2BMinus,
+                                 BPlus2FPlus,
+                                 BPlus2FMinus,
+                                 BPlus2BPlus,
+                                 BPlus2BMinus,
+                                 BMinus2FPlus,
+                                 BMinus2FMinus,
+                                 BMinus2BPlus,
+                                 BMinus2BMinus,
+                                 Illegal};
+
+                           
 }

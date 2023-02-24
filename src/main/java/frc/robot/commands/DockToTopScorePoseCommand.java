@@ -18,7 +18,7 @@ public class DockToTopScorePoseCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ArmPneumaticCommand(armPneumaticSubsystem),
+      new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, Constants.TOP_SCORING_ANGLE)
     );
   }

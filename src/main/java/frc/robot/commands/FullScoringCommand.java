@@ -25,7 +25,7 @@ public class FullScoringCommand extends SequentialCommandGroup {
         new GoToScorePoseCommand(drivetrainSubsystem, objectTrackerSubsystemChassis, buttonNumber),
         new ArmPoseSelectorCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber, false)
       ),
-      new ClawPneumaticCommand(clawPneumaticSubsystem),
+      new ClawPneumaticCommand(clawPneumaticSubsystem, true),
       new ArmPoseSelectorCommand(armPneumaticSubsystem, armMotorSubsystem, buttonNumber , true)
     );
   }

@@ -9,12 +9,13 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 
 public class ArmPneumaticCommand extends CommandBase {
   ArmPneumaticSubsystem m_armPneumaticSubsystem;
-  public boolean isExtended;
+  public boolean bExtend;
 
   /** Creates a new IntakePneumaticCommand. */
-  public ArmPneumaticCommand(ArmPneumaticSubsystem armPneumaticSubsystem) {
+  public ArmPneumaticCommand(ArmPneumaticSubsystem armPneumaticSubsystem, boolean bExtend) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_armPneumaticSubsystem = armPneumaticSubsystem;
+    this.bExtend = bExtend;
     
     addRequirements(m_armPneumaticSubsystem);
   }
@@ -22,11 +23,10 @@ public class ArmPneumaticCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isExtended = m_armPneumaticSubsystem.getIsExtended();
-    if(isExtended) { // if extended then retract
-      m_armPneumaticSubsystem.armRetract();
-    } else if(!isExtended) { // if retracted then extend
+    if(bExtend) { // if extended then retract
       m_armPneumaticSubsystem.armExtend();
+    } else { // if retracted then extend
+      m_armPneumaticSubsystem.armRetract();
     }
   }
 

@@ -106,8 +106,8 @@ public final class Constants {
     // illegal arm regions
     public static final int Hplus = 273;
     public static final int Hminus = 210;
-    public static final int Vplus = 209;
-    public static final int Vminus = 167;
+    public static final int Vplus = 201;        // Calculated as 200.34
+    public static final int Vminus = 156;       // Calculated as 156.66
     
     // arm motor constants
     public static final int ARM_EXTENDED_ALPHA = 116;

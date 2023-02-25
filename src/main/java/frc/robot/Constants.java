@@ -78,7 +78,8 @@ public final class Constants {
     public static final int SCORE_BOTTOM_RIGHT = 12;
     public static final int SCORE_CENTER_BUTTON = 2;
 
-    public static final int DOCKING_BUTTON_NUMBER = 4;
+    public static final int LEFT_SLIDER_BUTTON = 3;
+    public static final int RIGHT_SLIDER_BUTTON = 4;
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
@@ -93,11 +94,13 @@ public final class Constants {
     public static final int MID_SCORING_ANGLE = 268;
     public static final int BOTTOM_SCORING_ANGLE = 326;
     public static final int PICKING_UP_ANGLE = 302;
+    public static final int SUBSTATION_ANGLE = 268; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;
     public static final boolean MID_SCORING_EXTEND = false;
     public static final boolean BOTTOM_SCORING_EXTEND = true;
     public static final boolean PICKING_UP_EXTEND = true;
+    public static final boolean SUBSTATION_EXTEND = false; // TODO: check this value
 
 
     // illegal arm regions
@@ -129,6 +132,8 @@ public final class Constants {
 
     // VISION CONSTANTS
     public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds
+    public static final double TARGET_TRIGGER_DISTANCE = 36; // how far away you quit driving w/ vision
+
 
     public enum ARM_STATE { Fplus, 
                             Fminus, 
@@ -167,5 +172,7 @@ public final class Constants {
     public static final int  APRIL_TAG_ID_BlueMiddle = 7;
     public static final int  APRIL_TAG_ID_BlueLeft = 8;
 
-    public static final double offsetFromAprilTagToConeNode = 0.47;     // TODO: What is the real value?
+    public static final double offsetFromAprilTagToConeNode = 0.5588;
+    public static final double offsetFromAprilTagToCenter = 0;
+    public static final double offsetFromAprilTagToSlider = 34*2.54/100;
 }

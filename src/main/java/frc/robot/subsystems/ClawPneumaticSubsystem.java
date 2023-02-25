@@ -34,6 +34,11 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
 		doubleSolenoid.set(Value.kForward);
     isClosed = false;
 	}
+
+  public void togglePosition() {
+    doubleSolenoid.set(isClosed ? Value.kForward : Value.kReverse);
+    isClosed = !isClosed;
+  }
   
 	public void grabberClose() {
 		doubleSolenoid.set(Value.kReverse);

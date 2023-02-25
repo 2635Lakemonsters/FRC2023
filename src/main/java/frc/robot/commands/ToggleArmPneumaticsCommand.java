@@ -5,36 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.ClawPneumaticSubsystem;
+import frc.robot.subsystems.ArmPneumaticSubsystem;
 
-public class ClawPneumaticCommand extends CommandBase {
-  ClawPneumaticSubsystem m_clawPneumaticSubsystem;
-  public boolean m_bOpen;
+public class ToggleArmPneumaticsCommand extends CommandBase {
+  /** Creates a new ToggleArmPneumaticsCommand. */
+  ArmPneumaticSubsystem m_armPneumaticSubsystem;
 
-  /** Creates a new ClawPneumaticCommand. */
-  public ClawPneumaticCommand(ClawPneumaticSubsystem clawPneumaticSubsystem, boolean bOpen) {
+  public ToggleArmPneumaticsCommand(ArmPneumaticSubsystem aps) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_clawPneumaticSubsystem = clawPneumaticSubsystem;
-    m_bOpen = bOpen;
-
-    addRequirements(m_clawPneumaticSubsystem);
+    m_armPneumaticSubsystem = aps;
+    addRequirements(m_armPneumaticSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(m_bOpen) {
-      m_clawPneumaticSubsystem.grabberOpen();
-    } else {
-      m_clawPneumaticSubsystem.grabberClose();
-    }
+    m_armPneumaticSubsystem.togglePosition();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

@@ -38,11 +38,11 @@ public final class util {
     // BM2BM
     // BM2BP requires upper transition protection
     // BM2FM requires upper transition protection 
-    //       * actually needs to be:
+    //       * actually could be:
     //         BM2BP
     //         BP2FM
     // BM2FP requires upper transition protection
-    //       * actually needs to be:
+    //       * actually could be:
     //         BM2FM
     //         FM2FP
     //
@@ -57,7 +57,7 @@ public final class util {
     //       * NOTE: Likely taken care of by current state transition logic in the command.
     //
     // FM2BM requires upper transition protection
-    //       * actually needs to be:
+    //       * actually could be:
     //         FM2BP (set to 210 prior to moving pneumatics)
     //         BP2BM requires upper transition protection
     // FM2BP requires lower transition protection 1
@@ -69,7 +69,7 @@ public final class util {
     //       * NOTE: Likely taken care of by current state transition logic in the command.
     //
     // FP2BM requires upper transition protection
-    //       * actually needs to be:
+    //       * actually could be:
     //         FP2FM
     //         FM2BM
     // FP2BP safe,no special protection required

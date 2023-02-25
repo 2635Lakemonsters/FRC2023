@@ -24,7 +24,7 @@ public class BMinus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new PrintCommand("B-2F-  Enter"),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
       new PrintCommand("B-2F-  About to move lower arm"),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new PrintCommand("B-2F-  done"),

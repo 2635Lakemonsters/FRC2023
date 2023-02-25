@@ -40,6 +40,11 @@ package frc.robot.subsystems;
       isExtended = false;
 	  }
 
+    public void togglePosition() {
+      doubleSolenoid.set(isExtended ? Value.kForward : Value.kReverse);
+      isExtended = !isExtended;
+    }
+
     @Override
     public void periodic() {
       // This method will be called once per scheduler run

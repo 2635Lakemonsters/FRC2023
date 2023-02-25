@@ -11,9 +11,12 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.models.VisionObject;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
+import frc.robot.legacymath2910.Vector2;
 
 // import com.kauailabs.navx.frc.AHRS;  
 // import edu.wpi.first.wpilibj.SPI;
@@ -23,7 +26,8 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 */
 
 public class VisionDriveClosedLoopCommand extends CommandBase {
-  DrivetrainSubsystem m_driveTrainSubsystem;
+  DrivetrainSubsystem m_drivetrainSubsystem;
+  ObjectTrackerSubsystem m_objectTrackerSubsystem;
 
   PIDController angleController;
   PIDController strafeController;
@@ -41,19 +45,21 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
   private boolean inTeleop = false; 
 
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds) {
+  public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel);     
-    m_driveTrainSubsystem = ds;
-    addRequirements(m_driveTrainSubsystem);
+    m_drivetrainSubsystem = ds;
+    m_objectTrackerSubsystem = ots;
+    addRequirements(m_drivetrainSubsystem);
   }
 
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds) {
+  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel); 
     this.inTeleop = inTeleop;    
-    m_driveTrainSubsystem = ds;
-    addRequirements(m_driveTrainSubsystem);
+    m_drivetrainSubsystem = ds;
+    m_objectTrackerSubsystem = ots;
+    addRequirements(m_drivetrainSubsystem);
   }
 
   private void checkUpdateObjectLabel(String label) {
@@ -86,8 +92,11 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // SmartDashboard.putNumber("initial angle", gyroAngle);
     // SmartDashboard.putNumber("SetPoint angle", setPointAngle);
     
-    Vector2 position = new Vector2(0, 0);
-    Robot.drivetrainSubsystem.resetKinematics(position, 0);
+    // LEGACY RESET KINEMATICS
+    // Vector2 position = new Vector2(0, 0);
+    // m_drivetrainSubsystem.resetKinematics(position, 0);
+    m_drivetrainSubsystem.zeroOdometry(); // TODO not sure if we want to do this??
+
     System.out.println("Initialized FCC");
 
     isClose = false;
@@ -96,24 +105,23 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
   @Override
   public void execute() {
-    
-    Robot.objectTrackerSubsystem.data();
+    m_objectTrackerSubsystem.data();
     double forward = 0;
     double strafe = 0;
     double rotation = 0;
 
-    VisionObject closestObject = Robot.objectTrackerSubsystem.getClosestObject(targetObjectLabel);
+    VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
      
     if (closestObject == null || closestObject.z > 150) {
       SmartDashboard.putNumber("driveRotation", 99);
-      Robot.drivetrainSubsystem.holonomicDrive(new Vector2(0,0), 0, false);
+      m_drivetrainSubsystem.drive(0, 0, 0, false);
       SmartDashboard.putString("FCC Status", "No cargo in frame OR cargo out of range");
       return; // no object found
     }
     
     double v; // velocity? 3/14
     // System.out.println("Closest z: " + closestObject.z);
-    closestObject.motionCompensate(Robot.drivetrainSubsystem, true);
+    closestObject.motionCompensate(m_drivetrainSubsystem, true);
   
     double angle =  Math.atan2(closestObject.x, closestObject.z);
     
@@ -168,21 +176,21 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // //   v = -0.05;
      
     //  }
-    final Vector2 translation = new Vector2(v, strafe);
+    // final Vector2 translation = new Vector2(v, strafe);
     // System.out.println("translation: " + translation);
-    Robot.drivetrainSubsystem.holonomicDrive(translation, rotation, robotOriented);
+    m_drivetrainSubsystem.drive(v, strafe, rotation, robotOriented);
   }
 
 @Override
 public boolean isFinished() {
   double tolerance = 4; // TODO units...? i think it's inches
-  VisionObject closestObject = Robot.objectTrackerSubsystem.getClosestObject(targetObjectLabel);
+  VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
   if(closestObject == null) {
     return false;
   }//TODO could lose sight for small amount of time causing command to finish early
   
   //boolean done = Math.abs(closestObject.z-RobotMap.TARGET_TRIGGER_DISTANCE) <= tolerance;
-  isClose = Math.abs(closestObject.z - RobotMap.TARGET_TRIGGER_DISTANCE) <= tolerance;
+  isClose = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance;
   // if (done) {
   //   System.out.println("done FCC");
   // }
@@ -201,11 +209,10 @@ public boolean isFinished() {
 
   @Override
   public void end(boolean interrupted) {
-    Robot.vision.ledOff();
     // Robot.drivetrainSubsystem.holonomicDrive(new Vector2(-100.0, 0.0), 0, true);
     // System.out.println("FCC end() drive forward extra 5 in");
 
-    Robot.drivetrainSubsystem.holonomicDrive(Vector2.ZERO, 0, true);
+    m_drivetrainSubsystem.drive(0, 0, 0, true);
     System.out.println("FCC end()");
   }
 

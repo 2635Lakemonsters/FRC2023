@@ -70,6 +70,14 @@ public final class Constants {
     public static final int BALANCING_BUTTON = 9;
     public static final int HOLD_STILL_BUTTON = 10;
 
+    public static final int SCORE_TOP_LEFT = 7;
+    public static final int SCORE_MID_LEFT = 9;
+    public static final int SCORE_BOTTOM_LEFT = 11;
+    public static final int SCORE_TOP_RIGHT = 8;
+    public static final int SCORE_MID_RIGHT = 10;
+    public static final int SCORE_BOTTOM_RIGHT = 12;
+    public static final int SCORE_CENTER_BUTTON = 2;
+
     public static final int DOCKING_BUTTON_NUMBER = 4;
 
     // pneumatic channels
@@ -148,5 +156,16 @@ public final class Constants {
                                  BMinus2BMinus,
                                  Illegal};
 
-                           
+    public enum SCORING_LOCATION { Left, Middle, Right };
+
+    public static final int  APRIL_TAG_ID_RedRight = 1;
+    public static final int  APRIL_TAG_ID_RedMiddle = 2;
+    public static final int  APRIL_TAG_ID_RedLeft = 3;
+    public static final int  APRIL_TAG_ID_BlueSubstation = 4;
+    public static final int  APRIL_TAG_ID_RedSubstation = 5;
+    public static final int  APRIL_TAG_ID_BlueRight = 6;
+    public static final int  APRIL_TAG_ID_BlueMiddle = 7;
+    public static final int  APRIL_TAG_ID_BlueLeft = 8;
+
+    public static final double offsetFromAprilTagToConeNode = 0.47;     // TODO: What is the real value?
 }

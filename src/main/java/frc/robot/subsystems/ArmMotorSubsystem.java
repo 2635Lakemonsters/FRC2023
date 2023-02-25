@@ -25,7 +25,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {
-    pid.setTolerance(20);
+    pid.setTolerance(5);
   }
 
   @Override

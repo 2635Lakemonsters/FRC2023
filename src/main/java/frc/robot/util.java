@@ -8,6 +8,7 @@ import frc.robot.Constants.ARM_STATE;
 import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
 
 /** Add your docs here. */
@@ -37,7 +38,10 @@ public final class util {
     // BM2BM
     // BM2BP requires upper transition protection
     // BM2FM requires upper transition protection 
-    // BM2FP requires upper transition protection (no need for additional protection if FM2BM is protected)
+    //       * actually needs to be:
+    //         BM2BP
+    //         BP2FM
+    // BM2FP requires upper transition protection
     //       * actually needs to be:
     //         BM2FM
     //         FM2FP
@@ -45,27 +49,35 @@ public final class util {
     // BP2BM requires upper transition protection
     // BP2BP
     // BP2FM requires lower tranistion protection 1
-    //       * move arm to 210 prior to pneumatics move forward... 210 is a magic number 
+    //       * move arm to 210 prior to pneumatics move forward... 
+    //       * 210 is a magic number for transition between BP2FM and FM2BP
     //         which is valid both forward and back regardless of transition
     // BP2FP requires lower tranistion protection 2
     //       * move arm to 273 or greater prior to moving pneumatics forward
+    //       * NOTE: Likely taken care of by current state transition logic in the command.
     //
     // FM2BM requires upper transition protection
+    //       * actually needs to be:
+    //         FM2BP (set to 210 prior to moving pneumatics)
+    //         BP2BM requires upper transition protection
     // FM2BP requires lower transition protection 1
-    //       * move to 210 prior to pneumatics moving back
+    //       * move to 210 or greater prior to pneumatics moving back
     // FM2FM
     // FM2FP requires lower transition protection 2
     //       * pneumatics move back
     //       * move arm to 273 or greater prior to moving pneumatics forward
+    //       * NOTE: Likely taken care of by current state transition logic in the command.
     //
-    // FP2BM requires upper transition protection (no need for additional protection if FM2BM is protected)
+    // FP2BM requires upper transition protection
     //       * actually needs to be:
     //         FP2FM
     //         FM2BM
-    // FP2BP safe, no special protection required
+    // FP2BP safe,no special protection required
+    //       due to geometry, rotating back FP2BP is safe and will never cause a boundary violation
     // FP2FM requires lower transition protection 1
     //       * move pneumatics back
     //       * move arm to < 210 prior to moving pneumatics forward
+    //       * NOTE: Likely taken care of by current state transition logic in the command.
     // FP2FP
     //
     // Transitioning betwen
@@ -95,7 +107,20 @@ public final class util {
         return meters * 3.281;
     }
 
-    // TODO: Instead of returning an invalid state, return nearest valid state and log the error.
+    public static boolean isRed(int tagNum) {
+        switch (tagNum)
+        {
+            case Constants.APRIL_TAG_ID_RedLeft:
+            case Constants.APRIL_TAG_ID_RedMiddle:
+            case Constants.APRIL_TAG_ID_RedRight:
+            case Constants.APRIL_TAG_ID_RedSubstation:
+                return true;
+
+            default:
+                return false;
+        }
+    }
+
     
     public static ARM_STATE getArmState(boolean bExtended, double theta) {
         if (bExtended) {
@@ -110,7 +135,7 @@ public final class util {
                 return ARM_STATE.Fminus;
             } else {
                 // TODO: This should never happen. Log this error state
-                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state horizontal. util.getArmState() theta: "+ theta);
+                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state horizontal. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
                 return ARM_STATE.InvalidHorz;
             }
         } else {
@@ -124,7 +149,7 @@ public final class util {
                 return ARM_STATE.Bminus;
             } else {
                 // TODO: This should never happen. Log this error state
-                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state vertical. util.getArmState() theta: "+ theta);
+                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state vertical. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
                 return ARM_STATE.InvalidVert;
             }
         }
@@ -188,5 +213,9 @@ public final class util {
 
             default: return ARM_TRANSITION.Illegal;
         }
+    }
+
+    public static boolean areWeRed() {
+        return DriverStation.getAlliance() == DriverStation.Alliance.Red;
     }
 }

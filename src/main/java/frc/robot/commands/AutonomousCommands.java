@@ -14,7 +14,7 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /** Add your docs here. */
-public class AutonomousCommands extends CommandBase {
+public class AutonomousCommands  {
     public Command DoNothing() {
         return null;
     }

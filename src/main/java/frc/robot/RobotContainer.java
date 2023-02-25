@@ -4,12 +4,6 @@
 
 package frc.robot;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
-import org.ejml.ops.QuickSort_S32;
-
-// import com.revrobotics.AnalogInput;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -17,46 +11,22 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
-import frc.robot.Constants.ARM_STATE;
 import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.FullScoringCommand;
 import frc.robot.commands.MoveArmToPoseCommand;
-import frc.robot.commands.PickingUpArmMovementCommand;
 import frc.robot.commands.ResetSwerveGyroCommand;
-import frc.robot.commands.ReturnToDockCommand;
 import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
-import frc.robot.commands.Transitions.BMinus2BMinusCommand;
-import frc.robot.commands.Transitions.BMinus2BPlusCommand;
-import frc.robot.commands.Transitions.BMinus2FMinusCommand;
-import frc.robot.commands.Transitions.BMinus2FPlusCommand;
-import frc.robot.commands.Transitions.BPlus2BMinusCommand;
-import frc.robot.commands.Transitions.BPlus2BPlusCommand;
-import frc.robot.commands.Transitions.BPlus2FMinusCommand;
-import frc.robot.commands.Transitions.BPlus2FPlusCommand;
-import frc.robot.commands.Transitions.FMinus2BMinusCommand;
-import frc.robot.commands.Transitions.FMinus2BPlusCommand;
-import frc.robot.commands.Transitions.FMinus2FMinusCommand;
-import frc.robot.commands.Transitions.FMinus2FPlusCommand;
-import frc.robot.commands.Transitions.FPlus2BMinusCommand;
-import frc.robot.commands.Transitions.FPlus2BPlusCommand;
-import frc.robot.commands.Transitions.FPlus2FMinusCommand;
-import frc.robot.commands.Transitions.FPlus2FPlusCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -67,9 +37,6 @@ public class RobotContainer extends TimedRobot {
   // Joysticks
   public final static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
   public final static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
-
-  // Pneumatic Control Module
-  //public static final PneumaticHub m_pneumaticHub = new PneumaticHub(Constants.PNEUMATIC_HUB_CANID);
 
   // Arm Encoder
   public static final AnalogInput encoder = new AnalogInput(Constants.ARM_ENCODER_ID);
@@ -96,14 +63,7 @@ public class RobotContainer extends TimedRobot {
   private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
   private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
   private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
-  // private final FullScoringCommand m_autoScoreTopLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_LEFT_CONE);
-  // private final FullScoringCommand m_autoScoreMidLeft = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_LEFT_CONE);
-  // private final FullScoringCommand m_autoScoreTopRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_RIGHT_CONE);
-  // private final FullScoringCommand m_autoScoreMidRight = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_RIGHT_CONE);
-  // private final FullScoringCommand m_autoScoreTopCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.TOP_CUBE);
-  // private final FullScoringCommand m_autoScoreMidCube = new FullScoringCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, Constants.MID_CUBE);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
-  private final ReturnToDockCommand m_returnToDockCommand = new ReturnToDockCommand(m_armPneumaticSubsystem, m_armMotorSubsystem);
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
 
 
@@ -156,27 +116,6 @@ public class RobotContainer extends TimedRobot {
 
   public static Poser m_getPose = () -> m_targetPose;
   
-  private final Command m_moveArmCommand = new SelectCommand(
-    // Maps selector values to commands
-    Map.ofEntries(
-      Map.entry(ARM_TRANSITION.BMinus2BMinus, new BMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BMinus2BPlus, new BMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BMinus2FMinus, new BMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BMinus2FPlus, new BMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BPlus2BMinus, new BPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BPlus2BPlus, new BPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BPlus2FMinus, new BPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.BPlus2FPlus, new BPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FMinus2BMinus, new FMinus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FMinus2BPlus, new FMinus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FMinus2FMinus, new FMinus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FMinus2FPlus, new FMinus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FPlus2BMinus, new FPlus2BMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FPlus2BPlus, new FPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FPlus2FMinus, new FPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
-      Map.entry(ARM_TRANSITION.FPlus2FPlus, new FPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose))),
-    this::select);
-
   public RobotContainer() {
     m_drivetrainSubsystem.setDefaultCommand(new SwerveDriveCommand(m_drivetrainSubsystem));
     configureBindings();
@@ -190,18 +129,25 @@ public class RobotContainer extends TimedRobot {
     // Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-    Trigger scoreTopLeft = new JoystickButton(rightJoystick, 7);
-    Trigger scoreTopRight = new JoystickButton(rightJoystick, 8);
-    Trigger scoreTopCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
-    Trigger scoreMidLeft = new JoystickButton(rightJoystick, 9);
-    Trigger scoreMidRight = new JoystickButton(rightJoystick, 10);
-    Trigger scoreMidCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
-    Trigger scoreBottomLeft = new JoystickButton(rightJoystick, 11);
-    Trigger scoreBottomRight = new JoystickButton(rightJoystick, 12);
-    Trigger scoreBottomCenter = new JoystickButton(rightJoystick, 0); // toggleable button bindings
-    Trigger returnToDock = new JoystickButton(leftJoystick, Constants.DOCKING_BUTTON_NUMBER);
+    Trigger scoreTopRight = new JoystickButton(rightJoystick, Constants.SCORE_TOP_RIGHT);
+    Trigger scoreMidRight = new JoystickButton(rightJoystick, Constants.SCORE_MID_RIGHT);
+    Trigger scoreBottomRight = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_RIGHT);
+
     Trigger armMovement = new JoystickButton(leftJoystick, 5);
     Trigger pickUpFloor = new JoystickButton(rightJoystick, 3);
+
+    Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
+    Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
+    Trigger bottomLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_LEFT);
+
+    Trigger centerButton = new JoystickButton(rightJoystick, Constants.SCORE_CENTER_BUTTON);
+
+    Trigger scoreTopLeft = centerButton.negate().and(topLeftButton);
+    Trigger scoreTopCenter = centerButton.and(topLeftButton);
+    Trigger scoreMidLeft = centerButton.negate().and(midLeftButton);
+    Trigger scoreMidCenter = centerButton.and(midLeftButton);
+    Trigger scoreBottomLeft = centerButton.negate().and(bottomLeftButton);
+    Trigger scoreBottomCenter = centerButton.and(bottomLeftButton);
 
     // Set commmands to button
     // recalibrateButton.onTrue(m_resetSwerveGyroCommand);
@@ -210,15 +156,8 @@ public class RobotContainer extends TimedRobot {
     // stationaryButton.onTrue(m_swerveNoMoveCommand);
     // clawPneumaticButton.onTrue(m_clawPneumaticCommand);
     // armPneumaticButton.onTrue(m_armPneumaticCommand);
-    // //scoreConeTopLeft.onTrue(m_autoScoreTopLeft);
-    // scoreT.onTrue(m_autoScoreMidLeft);
-    // scoreConeTopRight.onTrue(m_autoScoreTopRight);
-    // scoreConeMidRight.onTrue(m_autoScoreMidRight);
-    // scoreCubeTop.onTrue(m_autoScoreTopCube);
-    // scoreCubeMid.onTrue(m_autoScoreMidCube);
-    returnToDock.onTrue(m_returnToDockCommand);
-    armMovement.onTrue(m_armMovementCommand);
-    pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
+    // armMovement.onTrue(m_armMovementCommand);
+    // pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
 
     // TODO:
     // 1: Do all the button bindings with arm movements
@@ -230,7 +169,7 @@ public class RobotContainer extends TimedRobot {
     // scoreTopLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
     
     // make into sequential command group
-    scoreTopLeft.onTrue(new SequentialCommandGroup(
+    scoreTopLeft.onTrue(  new SequentialCommandGroup(
                           new PrintCommand("Before STPC"),
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
                           new PrintCommand("Before MATPC"),
@@ -238,42 +177,42 @@ public class RobotContainer extends TimedRobot {
                           new PrintCommand("After STPC")
                         ));
     
-    scoreMidLeft.onTrue(new SequentialCommandGroup( 
+    scoreMidLeft.onTrue(  new SequentialCommandGroup( 
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                         ));
     
-    scoreBottomLeft.onTrue(new SequentialCommandGroup( 
+    scoreBottomLeft.onTrue( new SequentialCommandGroup( 
                             new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    scoreTopRight.onTrue(new SequentialCommandGroup(
+    scoreTopRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                         ));
 
-    scoreMidRight.onTrue(new SequentialCommandGroup(
+    scoreMidRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                         ));
 
-    scoreBottomRight.onTrue(new SequentialCommandGroup(
+    scoreBottomRight.onTrue(  new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             ));
 
-    scoreTopCenter.onTrue(new SequentialCommandGroup(
+    scoreTopCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    scoreMidCenter.onTrue(new SequentialCommandGroup(
+    scoreMidCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    scoreBottomCenter.onTrue(new SequentialCommandGroup(
+    scoreBottomCenter.onTrue( new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             ));

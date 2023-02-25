@@ -15,7 +15,7 @@ public class GoToScorePoseCommand extends CommandBase {
   private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
   private VisionObject aprilTagData;
 
-  private double l;
+  private double l; // length of robot
   private double dfo = 0.36; //meters
   private double targetPoseX;
   private double targetPoseY;

@@ -68,7 +68,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             foundObjects = null; 
         }
         
-        if (foundObjects != null) {
+        if (foundObjects != null && source.contains("Chassis")) {
             applyRotationTranslationMatrix();
         }
         // for (VisionObject object : foundObjects){
@@ -134,15 +134,10 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     /** Returns whether closest cone/cube to the gripper if close enough to pick up */
     public boolean isGripperCloseEnough() {
-        double min = 0;//calibrate min dist and feild of veiw pose for correct pickup
+        double min = 0;// TODO calibrate min dist and feild of veiw pose for correct pickup
         double radius = foundObjects[0].r;
-        if(radius > min){
-            return true;
-        }
-        else{
-            return false;
-        }
 
+        return radius > min; // TODO may want to change min based on whether it's a cube or cone
     }
     
 

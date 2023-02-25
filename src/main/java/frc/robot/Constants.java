@@ -81,6 +81,10 @@ public final class Constants {
     public static final int LEFT_SLIDER_BUTTON = 3;
     public static final int RIGHT_SLIDER_BUTTON = 4;
 
+    public static final int DEATH_CONE_BUTTON = 12;
+    public static final int DEATH_CUBE_BUTTON = 11;
+    public static final int PICKUP_FROM_FLOOR_BUTTON = 10;
+
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
     public static final int CLOSE_CHANNEL = 1;
@@ -102,12 +106,17 @@ public final class Constants {
     public static final boolean PICKING_UP_EXTEND = true;
     public static final boolean SUBSTATION_EXTEND = false; // TODO: check this value
 
-
+    // pickup off floor
+    public static final boolean ARM_EXTEND_DEATH_BUTTON_START = false; 
+    public static final int ARM_ANGLE_DEATH_BUTTON_START = 302; // TODO no idea what this real angle is, something > 273 or so to avoid horizontal exclusion zone
+    public static final boolean ARM_EXTEND_PICKUP_FLOOR = true;
+    public static final int ARM_ANGLE_PICKUP_FLOOR = 302;
+    
     // illegal arm regions
     public static final int Hplus = 273;
     public static final int Hminus = 210;
-    public static final int Vplus = 201;        // Calculated as 200.34
-    public static final int Vminus = 156;       // Calculated as 156.66
+    public static final int Vplus = 201;        // CADculated as 200.34
+    public static final int Vminus = 156;       // CADculated as 156.66
     
     // arm motor constants
     public static final int ARM_EXTENDED_ALPHA = 116;
@@ -132,7 +141,11 @@ public final class Constants {
 
     // VISION CONSTANTS
     public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds
-    public static final double TARGET_TRIGGER_DISTANCE = 36; // how far away you quit driving w/ vision
+
+    // how far away you quit driving w/ vision
+    public static final int TARGET_TRIGGER_DISTANCE_CONE = 36;       // cone is skinny
+    public static final int TARGET_TRIGGER_DISTANCE_CUBE = 36;       // cube is not as skinny
+    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 36;  // april tag approach distance for feeding station?
 
 
     public enum ARM_STATE { Fplus, 
@@ -175,4 +188,8 @@ public final class Constants {
     public static final double offsetFromAprilTagToConeNode = 0.5588;
     public static final double offsetFromAprilTagToCenter = 0;
     public static final double offsetFromAprilTagToSlider = 34*2.54/100;
+
+    public static final String TARGET_OBJECT_LABEL_CONE = "cone";
+    public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
+    public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "aprilTag";
 }

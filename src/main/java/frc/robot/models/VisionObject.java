@@ -75,7 +75,6 @@ public class VisionObject {
     /** Return ID of AprilTag on field */
     public int getAprilTagID() {
         return Integer.valueOf(objectLabel.substring(objectLabel.indexOf(" "),objectLabel.length()-1));
-
     }
     
     /** Returns FIELD centric coordinates of the Robot*/

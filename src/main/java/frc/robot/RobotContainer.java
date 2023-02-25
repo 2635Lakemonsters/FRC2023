@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.ARM_TRANSITION;
+import frc.robot.commands.AlignGripperToObjectCommand;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
@@ -30,6 +32,7 @@ import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.commands.ToggleArmPneumaticsCommand;
+import frc.robot.commands.VisionDriveClosedLoopCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -69,6 +72,9 @@ public class RobotContainer extends TimedRobot {
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
   private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
   private final ToggleArmPneumaticsCommand m_toggleArmPneumaticsCommand = new ToggleArmPneumaticsCommand(m_armPneumaticSubsystem);
+  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
+  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
+
 
   public class Pose {
     public Pose() {
@@ -137,7 +143,6 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreBottomRight = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_RIGHT);
 
     Trigger armMovement = new JoystickButton(leftJoystick, 5);
-    Trigger pickUpFloor = new JoystickButton(rightJoystick, 3);
 
     Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
     Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
@@ -155,6 +160,11 @@ public class RobotContainer extends TimedRobot {
     Trigger pickUpGamePieceSliderLeft = new JoystickButton(rightJoystick, Constants.LEFT_SLIDER_BUTTON);
     Trigger pickUpGamePieceSliderRight = new JoystickButton(rightJoystick, Constants.RIGHT_SLIDER_BUTTON);
 
+    Trigger deathDriveCUBE = new JoystickButton(leftJoystick, Constants.DEATH_CUBE_BUTTON);
+    Trigger deathDriveCONE = new JoystickButton(leftJoystick, Constants.DEATH_CONE_BUTTON);
+
+    Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
+
     clawPneumaticButton.onTrue(m_toggleArmPneumaticsCommand);
 
     armPneumaticButton.toggleOnTrue(Commands.startEnd(m_armPneumaticSubsystem::armExtend,
@@ -162,6 +172,15 @@ public class RobotContainer extends TimedRobot {
                                       m_armPneumaticSubsystem
                                     ));
     
+    pickUpFromFloor.onTrue(new SequentialCommandGroup(new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)), 
+                          new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
+                          new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper), 
+                          m_clawCloseCommand,
+                          new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)), 
+                          new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                          ));
+
+
     // Set commmands to button
     // recalibrateButton.onTrue(m_resetSwerveGyroCommand);
     // balancingButton.onTrue(m_swerveDriveBalanceCommand);
@@ -251,6 +270,19 @@ public class RobotContainer extends TimedRobot {
                             new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider)
                           ));
     
+    deathDriveCONE.whileTrue( new ParallelCommandGroup(
+                            m_visionDriveClosedLoopCommandCONE,
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            )));
+
+    deathDriveCUBE.whileTrue(new ParallelCommandGroup(
+                            m_visionDriveClosedLoopCommandCUBE, 
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            )));
 
 
     // does two commands in parallel: 1) moving arm and 2) either moves to left or mid scoring position depending on state of button

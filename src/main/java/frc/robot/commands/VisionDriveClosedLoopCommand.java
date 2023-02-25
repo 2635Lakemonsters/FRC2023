@@ -42,6 +42,8 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
   private boolean inTeleop = false; 
 
+  // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
+  // the constructor argument and the instance variable this.targetObjectLabel
   public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel);     
@@ -50,6 +52,8 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     addRequirements(m_drivetrainSubsystem);
   }
 
+  // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
+  // the constructor argument and the instance variable this.targetObjectLabel
   public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel); 
@@ -59,6 +63,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     addRequirements(m_drivetrainSubsystem);
   }
 
+  // TODO: beter name? This actually sets / initializes the targetObjectLabel instance parameter
   private void checkUpdateObjectLabel(String label) {
     // checks targetObjectLabel given to constructor, normalizes case
     if (label.equalsIgnoreCase("cone")) {
@@ -70,6 +75,9 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     } else if (label.contains("tag16h5")) {
       this.targetObjectLabel = "aprilTag";
       this.aprilTagID = Integer.valueOf(label.substring(label.indexOf(" "),label.length()-1)); 
+    } else {
+      // This should never happen.
+      System.out.println("ERROR: UNKNOWN targetObjectLabel in VisionDriveClosedLoopCommand.checkUpdateObjectLabel(). Vision drive closed loop command will not behave as expected.");
     }
   }
 
@@ -187,7 +195,24 @@ public boolean isFinished() {
   }//TODO could lose sight for small amount of time causing command to finish early
   
   //boolean done = Math.abs(closestObject.z-RobotMap.TARGET_TRIGGER_DISTANCE) <= tolerance;
-  isClose = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance;
+  int triggerDistance = 0;
+  switch (this.targetObjectLabel)
+  {
+      case Constants.TARGET_OBJECT_LABEL_CONE:
+        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CONE;
+        break;
+      case Constants.TARGET_OBJECT_LABEL_CUBE:
+        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CUBE;
+        break;
+      case Constants.TARGET_OBJECT_LABEL_APRIL_TAG:
+        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_APRIL_TAG;
+        break;
+      default:
+        // this shouldn't happen
+        break;
+  }
+
+  isClose = Math.abs(closestObject.z - triggerDistance) <= tolerance;
   // if (done) {
   //   System.out.println("done FCC");
   // }

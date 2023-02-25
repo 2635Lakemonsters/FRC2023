@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import java.util.Map;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -16,7 +15,6 @@ import frc.robot.RobotContainer.Poser;
 
 import frc.robot.Constants.ARM_TRANSITION;
 
-import frc.robot.Constants;
 import frc.robot.commands.Transitions.*;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;

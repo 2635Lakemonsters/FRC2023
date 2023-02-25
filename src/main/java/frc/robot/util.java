@@ -6,10 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.ARM_STATE;
 import frc.robot.Constants.ARM_TRANSITION;
-import frc.robot.subsystems.ArmMotorSubsystem;
-import frc.robot.subsystems.ArmPneumaticSubsystem;
 import edu.wpi.first.wpilibj.DriverStation;
-import frc.robot.RobotContainer;
 
 /** Add your docs here. */
 public final class util {

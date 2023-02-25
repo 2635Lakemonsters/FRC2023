@@ -16,9 +16,9 @@ import frc.robot.RobotContainer;
 public class ArmMotorSubsystem extends SubsystemBase {
 
   public TalonFX armMotor = new TalonFX(Constants.TALON_CHANNEL);
-  private  final double kFilterArm = 0.1;
-  private  double armPOFiltered = 0;
-  private  long loopCtr = 0;
+  // private  final double kFilterArm = 0.1;
+  // private  double armPOFiltered = 0;
+  // private  long loopCtr = 0;
   private PIDController pid = new PIDController(0.005, 0.0, 0.0);
   private  double theta;
   private  double m_poseTarget;
@@ -31,7 +31,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    loopCtr++;
+    // loopCtr++;
     double upperLimit, lowerLimit, alpha;
 
     if (RobotContainer.m_armPneumaticSubsystem.getIsExtended()) {

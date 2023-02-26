@@ -14,6 +14,10 @@ package frc.robot;
  */
 public final class Constants {
 
+    public static final double INCHES_PER_METER = 39.37;
+    public static final double LENGTH_OF_BOT = 35 / INCHES_PER_METER;
+    public static final double FIELD_OFFSET_FROM_NODE_TO_APRILTAG = 0.36;
+
     // FRONT LEFT
     public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; 
     public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER = 0; 
@@ -84,6 +88,7 @@ public final class Constants {
     public static final int DEATH_CONE_BUTTON = 12;
     public static final int DEATH_CUBE_BUTTON = 11;
     public static final int PICKUP_FROM_FLOOR_BUTTON = 10;
+    public static final int HOME_ARM_BUTTON = 6;
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
@@ -93,13 +98,15 @@ public final class Constants {
     public static final int RETRACT_CHANNEL = 0;
 
     // arm angle positions
-    public static final int HOME_ARM_ANGLE = 331;
+    public static final int HOME_ARM_ANGLE = 40; 
+    public static final int TRAVELING_ARM_ANGLE = 331;
     public static final int TOP_SCORING_ANGLE = 202;
     public static final int MID_SCORING_ANGLE = 268;
     public static final int BOTTOM_SCORING_ANGLE = 326;
     public static final int PICKING_UP_ANGLE = 302;
     public static final int SUBSTATION_ANGLE = 268; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
+    public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;
     public static final boolean MID_SCORING_EXTEND = false;
     public static final boolean BOTTOM_SCORING_EXTEND = true;
@@ -185,9 +192,9 @@ public final class Constants {
     public static final int  APRIL_TAG_ID_BlueMiddle = 7;
     public static final int  APRIL_TAG_ID_BlueLeft = 8;
 
-    public static final double offsetFromAprilTagToConeNode = 0.5588;
+    public static final double offsetFromAprilTagToConeNode = 22 / INCHES_PER_METER;   // Inches
     public static final double offsetFromAprilTagToCenter = 0;
-    public static final double offsetFromAprilTagToSlider = 34*2.54/100;
+    public static final double offsetFromAprilTagToSlider = 34 / INCHES_PER_METER;     // Inches
 
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";

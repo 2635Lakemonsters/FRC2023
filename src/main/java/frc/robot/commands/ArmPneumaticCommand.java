@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
   * Moves lower arm between retracted and extended configurations
@@ -13,6 +14,11 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 public class ArmPneumaticCommand extends CommandBase {
   ArmPneumaticSubsystem m_armPneumaticSubsystem;
   public boolean bExtend;
+
+  Timer m_ticktock = new Timer(); 
+  double m_startTime;
+  double m_endTime;
+  double m_delay = 1.5; // seconds
 
   /** Creates a new IntakePneumaticCommand. */
   public ArmPneumaticCommand(ArmPneumaticSubsystem armPneumaticSubsystem, boolean bExtend) {
@@ -34,12 +40,15 @@ public class ArmPneumaticCommand extends CommandBase {
     } else { // if retracted then extend
       m_armPneumaticSubsystem.armRetract();
     }
+
+    m_ticktock.start(); 
+    m_startTime = m_ticktock.get(); 
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    m_endTime = m_ticktock.get(); 
   }
 
   // Called once the command ends or is interrupted.
@@ -49,6 +58,6 @@ public class ArmPneumaticCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return true;
+    return m_endTime - m_startTime > m_delay;
   }
 }

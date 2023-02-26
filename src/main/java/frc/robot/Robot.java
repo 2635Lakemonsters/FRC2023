@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
 
+    System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 
   }
 
@@ -66,6 +67,10 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    // if (RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees() != 0) {
+    //   System.out.println("Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
+    // }
   }
 
   /** This function is called once each time the robot enters Disabled mode. */

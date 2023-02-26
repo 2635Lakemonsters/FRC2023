@@ -78,6 +78,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /** Creates a new DrivetrianSubsystem. */
   public DrivetrainSubsystem() {
     m_gyro.calibrate();
+    getPose();
   }
 
   private static double xPowerCommanded = 0;

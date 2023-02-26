@@ -165,6 +165,8 @@ public class RobotContainer extends TimedRobot {
 
     Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
 
+    Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
+
     clawPneumaticButton.onTrue(m_toggleArmPneumaticsCommand);
 
     armPneumaticButton.toggleOnTrue(Commands.startEnd(m_armPneumaticSubsystem::armExtend,
@@ -277,12 +279,17 @@ public class RobotContainer extends TimedRobot {
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             )));
 
-    deathDriveCUBE.whileTrue(new ParallelCommandGroup(
+    deathDriveCUBE.whileTrue( new ParallelCommandGroup(
                             m_visionDriveClosedLoopCommandCUBE, 
                             new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             )));
+
+    homeArmButton.onTrue( new SequentialCommandGroup(
+                            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+                            new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                          ));
 
 
     // does two commands in parallel: 1) moving arm and 2) either moves to left or mid scoring position depending on state of button

@@ -25,14 +25,14 @@ public class MoveToScore extends CommandBase {
   private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
   private VisionObject m_aprilTagData;
   private boolean m_allDone = false;
-  private double m_length; // TODO: length of robot
-  private double m_dfo = 0.36; //meters
+  private double m_length = Constants.LENGTH_OF_BOT;
+  private double m_dfo = Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG; //meters
   private double m_targetPoseX;
   private double m_targetPoseY;
   private double m_targetPoseR = 0;
   private int m_scoringPose;
   DrivetrainSubsystem m_driveTrainSubsystem;
-  Command m_c;
+  Command m_c = null;
 
   /** Creates a new MoveToScore. */
   public MoveToScore(DrivetrainSubsystem driveTrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, double nodeOffset) {
@@ -45,28 +45,35 @@ public class MoveToScore extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_allDone = true;
     m_objectTrackerSubsystemChassis.data();
     m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
-    int tagNumber = m_aprilTagData.getAprilTagID();
-    m_allDone = false;
 
-    if (util.areWeRed() != util.isRed(tagNumber)) {     // TODO: Coopertition
-      m_allDone = true;
+    if (m_aprilTagData == null) {
+      System.out.println("No AprilTag visible");
       return;
     }
 
+    int tagNumber = m_aprilTagData.getAprilTagID();
+
+    if (util.areWeRed() != util.isRed(tagNumber)) {     // TODO: Coopertition
+      System.out.println("Wrong color tag visible");
+      return;
+    }
+
+    m_allDone = false;
     m_objectTrackerSubsystemChassis.data();
     m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
 
-    double x = m_aprilTagData.x;
-    double z = m_aprilTagData.z;
+    // math to normalize apriltag coordinates to robot-centric coordinates
+    double x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
+    double y = m_aprilTagData.z / Constants.INCHES_PER_METER;
     
-    double thetaOne = Math.atan(x / z);
+    double thetaOne = Math.atan(x / y);
     double thetaTwo = m_targetPoseR - m_driveTrainSubsystem.m_odometry.getPoseMeters().getRotation().getRadians();
-    double thetaThree = 90 - (thetaOne + thetaTwo);
-    double dc = Math.sqrt(Math.pow(x, 2) + Math.pow(z, 2));
+    double thetaThree = (Math.PI / 2)- (thetaOne + thetaTwo);
+    double dc = Math.hypot(x, y);
     double lambda = dc * Math.sin(thetaThree);
-
     double delX = dc * Math.cos(thetaThree);
     double delY = lambda - (m_dfo + (m_length / 2));
 
@@ -79,26 +86,30 @@ public class MoveToScore extends CommandBase {
         new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
         new PathPoint(new Translation2d(delX + m_nodeOffset, delY), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
     ));
-    m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
-    m_c.initialize();
- 
+    // m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
+    // m_c.initialize();
+    System.out.println("X: " + (delX + m_nodeOffset) + "   delY: " + delY + "   thetaTwo: " + thetaTwo);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_c.execute();
+    if (m_c != null) {
+      m_c.execute();
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_c.end(interrupted);
+    if (m_c != null) {
+      m_c.end(interrupted);
+    }  
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_allDone || m_c.isFinished();
+    return m_allDone || m_c == null || m_c.isFinished();
   }
 }

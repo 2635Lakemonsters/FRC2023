@@ -32,8 +32,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     */
 
     // rotation matrix
-    private double cameraTilt = 20.0 * Math.PI / 180.0; //Update this
-    private double[] cameraOffset = {0.0, 18.25, 9.0}; // goes {x, y, z}
+    private double cameraTilt = 0.0 * Math.PI / 180.0; //Update this      Fix these constants
+    private double[] cameraOffset = {0.0, 0.0, 0.0}; // goes {x, y, z}
 
     private double sinTheta = Math.sin(cameraTilt);
     private double cosTheta = Math.cos(cameraTilt);
@@ -165,7 +165,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             return null;
         List<VisionObject> filteredResult = Arrays.asList(foundObjects)
             .stream()
-            .filter(vo -> vo.objectLabel.contains(objectLabel) && vo.confidence > .40)//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
+            .filter(vo -> vo.objectLabel.contains(objectLabel) && (objectLabel == "tag" || vo.confidence > .40))//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
             .collect(Collectors.toList());
 
         VisionObject filteredArray[] = new VisionObject[filteredResult.size()];

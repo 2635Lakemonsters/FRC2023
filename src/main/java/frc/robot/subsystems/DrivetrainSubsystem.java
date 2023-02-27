@@ -32,10 +32,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final double kMaxSpeed = 0.5;
     public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
-    public final Translation2d m_frontLeftLocation = new Translation2d(0.318, 0.444);
-    public final Translation2d m_frontRightLocation = new Translation2d(0.318, -0.444);
-    public final Translation2d m_backLeftLocation = new Translation2d(-0.318, 0.444);
-    public final Translation2d m_backRightLocation = new Translation2d(-0.318, -0.444);
+    public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
+    public final double m_drivetrainWheelbaseLength = 28.5 / Constants.INCHES_PER_METER;
+
+    public final Translation2d m_frontLeftLocation = 
+            new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_frontRightLocation = 
+            new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_backLeftLocation = 
+            new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_backRightLocation = 
+            new Translation2d(-m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
 
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 

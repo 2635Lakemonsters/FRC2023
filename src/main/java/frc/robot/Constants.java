@@ -49,7 +49,8 @@ public final class Constants {
     public static final double kWheelDiameterMeters = util.inchesToMeters(4.0);
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
-        (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
+        // (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
+        (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (18.0 / 26.0) / (42.0 / 14.0));
 
     public static final double kTurningEncoderDistancePerPulse =
         // Assumes the encoders are on a 1:1 reduction with the module shaft.

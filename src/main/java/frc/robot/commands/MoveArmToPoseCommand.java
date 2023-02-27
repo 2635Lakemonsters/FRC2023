@@ -41,7 +41,7 @@ public class MoveArmToPoseCommand extends SequentialCommandGroup {
     m_armPneumaticSubsystem = armPneumaticSubsystem;
     m_armMotorSubsystem = armMotorSubsystem; 
     m_getPose = p;
-    System.out.println("Poser: " + m_getPose);
+    // System.out.println("Poser: " + m_getPose);
 
     
     addCommands(

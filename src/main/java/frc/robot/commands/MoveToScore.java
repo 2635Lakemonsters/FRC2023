@@ -80,15 +80,19 @@ public class MoveToScore extends CommandBase {
     m_targetPoseX = m_driveTrainSubsystem.m_odometry.getPoseMeters().getX() + delX + m_nodeOffset;
     m_targetPoseY = m_driveTrainSubsystem.m_odometry.getPoseMeters().getY() + delY;
 
-// Simple path without holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+    // Simple path without holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
     PathPlannerTrajectory traj = PathPlanner.generatePath(
-        new PathConstraints(4, 3), 
-        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(delX + m_nodeOffset, delY), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
+        new PathConstraints(0.1, 0.1), 
+        new PathPoint(mapCoordinates(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(mapCoordinates(delX + m_nodeOffset, delY), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
     ));
-    // m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
-    // m_c.initialize();
     System.out.println("X: " + (delX + m_nodeOffset) + "   delY: " + delY + "   thetaTwo: " + thetaTwo);
+    m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
+    m_c.initialize();
+  }
+
+  private static Translation2d mapCoordinates(double x, double y) {
+    return new Translation2d(-(y / 3), x / 3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

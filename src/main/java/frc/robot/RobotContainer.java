@@ -24,6 +24,8 @@ import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
+import frc.robot.commands.DriveStraightCommand;
+import frc.robot.commands.ManualArmMotorCommand;
 import frc.robot.commands.MoveArmToPoseCommand;
 import frc.robot.commands.MoveToScore;
 import frc.robot.commands.ResetSwerveGyroCommand;
@@ -32,6 +34,7 @@ import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.commands.ToggleArmPneumaticsCommand;
+import frc.robot.commands.ToggleClawPneumaticsCommand;
 import frc.robot.commands.VisionDriveClosedLoopCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
@@ -70,11 +73,11 @@ public class RobotContainer extends TimedRobot {
   private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
   private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
-  private final ArmMovementCommand m_armMovementCommand = new ArmMovementCommand(m_armMotorSubsystem, 90);
   private final ToggleArmPneumaticsCommand m_toggleArmPneumaticsCommand = new ToggleArmPneumaticsCommand(m_armPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
-
+  private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
+  private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
 
   public class Pose {
     public Pose() {
@@ -138,11 +141,10 @@ public class RobotContainer extends TimedRobot {
     // Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
+    Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
     Trigger scoreTopRight = new JoystickButton(rightJoystick, Constants.SCORE_TOP_RIGHT);
     Trigger scoreMidRight = new JoystickButton(rightJoystick, Constants.SCORE_MID_RIGHT);
     Trigger scoreBottomRight = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_RIGHT);
-
-    Trigger armMovement = new JoystickButton(leftJoystick, 5);
 
     Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
     Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
@@ -162,12 +164,18 @@ public class RobotContainer extends TimedRobot {
 
     Trigger deathDriveCUBE = new JoystickButton(leftJoystick, Constants.DEATH_CUBE_BUTTON);
     Trigger deathDriveCONE = new JoystickButton(leftJoystick, Constants.DEATH_CONE_BUTTON);
+    Trigger resetDriveOrientation = new JoystickButton(leftJoystick, Constants.RESET_DRIVE_BUTTON);
 
     Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
 
     Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
 
-    clawPneumaticButton.onTrue(m_toggleArmPneumaticsCommand);
+    Trigger driveStraightButton = new JoystickButton(leftJoystick, 7);
+    driveStraightButton.onTrue(m_driveStraightCommand);
+
+    clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
+
+    manualArmMovement.whileTrue(m_manualArmMotorCommand);
 
     armPneumaticButton.toggleOnTrue(Commands.startEnd(m_armPneumaticSubsystem::armExtend,
                                       m_armPneumaticSubsystem::armRetract,
@@ -176,7 +184,8 @@ public class RobotContainer extends TimedRobot {
     
     pickUpFromFloor.onTrue(new SequentialCommandGroup(new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)), 
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper), 
+                          new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem), 
+                          new PrintCommand("after align gripper to object"),
                           m_clawCloseCommand,
                           new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)), 
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
@@ -201,6 +210,8 @@ public class RobotContainer extends TimedRobot {
     // scoreTopLeft.onTrue(new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)).andThen(new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
     
     // make into sequential command group
+    resetDriveOrientation.onTrue(m_resetSwerveGyroCommand);
+
     scoreTopLeft.onTrue(  new SequentialCommandGroup(
                           new PrintCommand("Before STPC"),
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
@@ -273,18 +284,18 @@ public class RobotContainer extends TimedRobot {
                           ));
     
     deathDriveCONE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCONE,
-                            new SequentialCommandGroup(
-                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            )));
+                            m_visionDriveClosedLoopCommandCONE
+                            // new SequentialCommandGroup(
+                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            ));
 
     deathDriveCUBE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCUBE, 
-                            new SequentialCommandGroup(
-                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            )));
+                            m_visionDriveClosedLoopCommandCUBE 
+                            // new SequentialCommandGroup(
+                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            ));
 
     homeArmButton.onTrue( new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),

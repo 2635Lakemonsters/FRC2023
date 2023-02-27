@@ -19,13 +19,13 @@ public class ArmMotorSubsystem extends SubsystemBase {
   // private  final double kFilterArm = 0.1;
   // private  double armPOFiltered = 0;
   private  long loopCtr = 0;
-  private PIDController pid = new PIDController(0.010, 0.0, 0.0);
+  private PIDController pid = new PIDController(0.012, 0.0, 0.0);
   private  double theta;
   private  double m_poseTarget;
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {
-    pid.setTolerance(5);
+    pid.setTolerance(10);
   }
 
   @Override
@@ -87,6 +87,8 @@ public class ArmMotorSubsystem extends SubsystemBase {
   }
 
   public boolean areWeThereYet() {
-    return pid.atSetpoint();
+    double sp = pid.getSetpoint();
+    boolean atSP = pid.atSetpoint();
+    return sp == 0.0 || atSP;
   }
  }

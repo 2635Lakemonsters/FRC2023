@@ -126,7 +126,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     
     double v; // velocity? 3/14
     // System.out.println("Closest z: " + closestObject.z);
-    closestObject.motionCompensate(m_drivetrainSubsystem, true);
+    // closestObject.motionCompensate(m_drivetrainSubsystem, true);
   
     double angle =  Math.atan2(closestObject.x, closestObject.z);
     
@@ -135,7 +135,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     
     if (rotation > 1){
       rotation = 1;
-    } else if (rotation < -1){
+    } else if (rotation < -1) {
       rotation = -1;
     }
 
@@ -173,7 +173,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     v = -0.4;  
 
     if (inTeleop) {
-      v = -0.7;
+      v = -0.3; // -0.7
     }
     
     //  if (closestObject.z < 60) {
@@ -194,7 +194,7 @@ public boolean isFinished() {
     return false;
   }//TODO could lose sight for small amount of time causing command to finish early
   
-  //boolean done = Math.abs(closestObject.z-RobotMap.TARGET_TRIGGER_DISTANCE) <= tolerance;
+  // boolean done = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance;
   int triggerDistance = 0;
   switch (this.targetObjectLabel)
   {
@@ -208,7 +208,8 @@ public boolean isFinished() {
         triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_APRIL_TAG;
         break;
       default:
-        // this shouldn't happen
+      System.out.println("this is happening and it shouldn't :(");  
+      // this shouldn't happen
         break;
   }
 

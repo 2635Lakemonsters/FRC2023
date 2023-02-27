@@ -87,8 +87,10 @@ public final class Constants {
 
     public static final int DEATH_CONE_BUTTON = 12;
     public static final int DEATH_CUBE_BUTTON = 11;
-    public static final int PICKUP_FROM_FLOOR_BUTTON = 10;
+    public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
     public static final int HOME_ARM_BUTTON = 6;
+
+    public static final int RESET_DRIVE_BUTTON = 9;
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
@@ -137,7 +139,7 @@ public final class Constants {
     public static final double FB_UPPER_LIMIT = 0.2;
     public static final double FB_LOWER_LIMIT = -0.2;
 
-    public static final double ARM_MOTOR_FF_GAIN = -0.08;
+    public static final double ARM_MOTOR_FF_GAIN = -0.15;
     public static final double ARM_ENCODER_OFFSET = -349;
 
     // absolute enconder for top arm id
@@ -150,9 +152,10 @@ public final class Constants {
     public static double OBJECT_DETECTION_LATENCY = 0.217; // seconds
 
     // how far away you quit driving w/ vision
-    public static final int TARGET_TRIGGER_DISTANCE_CONE = 36;       // cone is skinny
-    public static final int TARGET_TRIGGER_DISTANCE_CUBE = 36;       // cube is not as skinny
-    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 36;  // april tag approach distance for feeding station?
+    // TODO: figure out these distances
+    public static final int TARGET_TRIGGER_DISTANCE_CONE = 10;       // cone is skinny
+    public static final int TARGET_TRIGGER_DISTANCE_CUBE = 10;       // cube is not as skinny
+    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 10;  // april tag approach distance for feeding station?
 
 
     public enum ARM_STATE { Fplus, 
@@ -199,4 +202,6 @@ public final class Constants {
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
     public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "aprilTag";
+
+    public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
 }

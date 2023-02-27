@@ -25,14 +25,14 @@ public class AutoClawCloseCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    isObjectCloseEnough = m_objectTrackerSubsystem.isGripperCloseEnough();
+    // isObjectCloseEnough = m_objectTrackerSubsystem.isGripperCloseEnough();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     while (!isObjectCloseEnough) {
-      isObjectCloseEnough = m_objectTrackerSubsystem.isGripperCloseEnough();
+      // isObjectCloseEnough = m_objectTrackerSubsystem.isGripperCloseEnough();
     }
     if (isObjectCloseEnough) {
       m_clawPneumaticCommand.execute();

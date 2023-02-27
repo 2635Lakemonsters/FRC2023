@@ -33,7 +33,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
     // rotation matrix
     private double cameraTilt = 0.0 * Math.PI / 180.0; //Update this      Fix these constants
-    private double[] cameraOffset = {0.0, 0.0, 0.0}; // goes {x, y, z}
+    private double[] cameraOffset = {0.0, 0.0, 0.0}; // goes {x, y, z} // TODO: figure this offset
 
     private double sinTheta = Math.sin(cameraTilt);
     private double cosTheta = Math.cos(cameraTilt);
@@ -115,6 +115,14 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         return objects[0];
     }
 
+    public VisionObject getClosestObject() {
+        VisionObject[] objects = getObjects(0.5);
+        if (objects == null || objects.length == 0) {
+            return null; 
+        }
+        return objects[0];
+    }
+
     public VisionObject getSecondClosestObject(String objectLabel) {
         VisionObject[] objects = getObjectsOfType(objectLabel);
         if (objects == null || objects.length == 0) {
@@ -132,12 +140,15 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         return object;
     }
 
-    /** Returns whether closest cone/cube to the gripper if close enough to pick up */
-    public boolean isGripperCloseEnough() {
-        double min = 0;// TODO calibrate min dist and feild of veiw pose for correct pickup
-        double radius = foundObjects[0].r;
+    /** Returns whether closest cone/cube to the gripper if close enough to pick up 
+     * @param isCube TRUE cube, FALSE cone
+    */
+    public boolean isGripperCloseEnough(boolean isCube) {
+        // this target is the target y value when the object moves between the claws for pick up
+        double targetY = isCube ? 5 : 2; //TODO: figure this y position out (somehting <0 bc its below the cneter of the FOV)
+        double actualY = 0; //TODO: get current y of the object
 
-        return radius > min; // TODO may want to change min based on whether it's a cube or cone
+        return actualY < targetY; // TODO may want to change min based on whether it's a cube or cone
     }
     
 

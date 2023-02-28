@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -82,6 +83,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
               m_backRight.getPosition()
             });
 
+    // pid constants from 2022 FOLLOWER_TRANSLATION_CONSTANTS and FOLLOWER_ROTATION_CONSTANTS
+    private static final double TRANSLATION_P = 0.018; //0.05
+    private static final double TRANSLATION_I = 0.0; //0.01
+    private static final double TRANSLATION_D = 0.0;
+    private static final double ROTATION_P = 0.0; //0.3
+    private static final double ROTATION_I = 0.0; //0.01
+    private static final double ROTATION_D = 0.0;
+    
+
   /** Creates a new DrivetrianSubsystem. */
   public DrivetrainSubsystem() {
     m_gyro.calibrate();
@@ -107,6 +117,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    putDTSToSmartDashboard();
+
     // Get the x speed
     final var xPower =
       RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
@@ -243,9 +255,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     PPSwerveControllerCommand c = new PPSwerveControllerCommand(
       traj, 
       this::getPose, 
-      new PIDController(0.0, 0.0, 0.0), 
-      new PIDController(0.0, 0.0, 0.0), 
-      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+      new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
       this::setDesiredStates, 
       isFirstPath, 
       this
@@ -263,9 +275,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     PPSwerveControllerCommand c = new PPSwerveControllerCommand(
       traj, 
       this::getPose, 
-      new PIDController(0.0, 0.0, 0.0), 
-      new PIDController(0.0, 0.0, 0.0), 
-      new PIDController(0.0, 0.0, 0.0), 
+      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+      new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
       this::setDesiredStates, 
       this
     );
@@ -275,6 +287,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   public NavX getGyroscope() {
     return m_gyro; 
+  }
+
+  /**
+   * Displays all 4 module positions + overall robot pose in SmartDashboard. 
+   * For debugging
+   */
+  public void putDTSToSmartDashboard() {
+    SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+
+    SmartDashboard.putNumber("Drive Pose", getPose().getTranslation().getX());
   }
 
   

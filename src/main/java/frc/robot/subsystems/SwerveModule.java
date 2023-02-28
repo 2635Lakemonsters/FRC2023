@@ -22,7 +22,7 @@ public class SwerveModule {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
 
-  private final RelativeEncoder m_driveEncoder;
+  public final RelativeEncoder m_driveEncoder;
   private final AnalogInput m_turningEncoder;
   //private final AnalogInput m_offsetEncoder;
 
@@ -56,6 +56,7 @@ public class SwerveModule {
     m_turningEncoder = new AnalogInput(analogEncoderPort);
 
     m_driveEncoder = m_driveMotor.getEncoder();
+    
     // Set the distance per pulse for the drive encoder. We can simply use the
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.

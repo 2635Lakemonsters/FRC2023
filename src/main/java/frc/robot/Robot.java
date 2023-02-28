@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.AutonomousTrajectoryCommand;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -106,7 +107,7 @@ public class Robot extends TimedRobot {
 
     System.out.println("AUTO INIT");
 
-    m_autonomousCommand = RobotContainer.m_drivetrainSubsystem.getAutonomousCommand();
+    m_autonomousCommand = new AutonomousTrajectoryCommand(RobotContainer.m_drivetrainSubsystem).runAutonomousCommand();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

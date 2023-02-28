@@ -23,6 +23,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
  * </p> *Probably misnamed tbh*
  * </p> Call runAutonomousCommand() to actually run the path you pass in when you 
  * create an AutonomousTrajectoryCommand object
+ * </p> Should be able to take in and follow a PathPlanner trajectory.
  */
 public class AutonomousTrajectoryCommand {
     DrivetrainSubsystem m_drivetrainSubsystem;
@@ -50,54 +51,56 @@ public class AutonomousTrajectoryCommand {
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(m_drivetrainSubsystem.getSwerveDriveKinematics());
 
+    /** Generates new AutonomousTrajectoryCommand
+     * @param dts DrivetrainSubsystem requirement
+     * @param traj Autonomous Trajectory 
+     */
     public AutonomousTrajectoryCommand(DrivetrainSubsystem dts, Trajectory traj) {
         m_drivetrainSubsystem = dts;
         m_traj = traj; 
     }
 
+    /** Default constructor, uses a preset trajectory in the AutonomousTrajectoryCommand class */
     public AutonomousTrajectoryCommand(DrivetrainSubsystem dts) {
         m_drivetrainSubsystem = dts;
     }
 
-    /**
-   * Use this method to pass the autonomous command to the main {@link Robot} class.
-   * 
-   * https://github.com/wpilibsuite/allwpilib/blob/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/swervecontrollercommand/RobotContainer.java
-   * 
-   * @return the command to run in autonomous
-   */
-  public Command runAutonomousCommand() {
-    // Create config for trajectory
-    if (m_traj == null) {
-        this.generateDefaultTrajectory(); 
-    }
+    /** Use this method to pass the autonomous command to the main {@link Robot} class.
+     * </p> https://github.com/wpilibsuite/allwpilib/blob/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/swervecontrollercommand/RobotContainer.java
+     * @return the SwerveControllerCommand to run in autonomous
+    */
+    public Command runAutonomousCommand() {
+        // Create config for trajectory. Sets default trajectory if using the non-traj taking constructory
+        if (m_traj == null) {
+            this.generateDefaultTrajectory(); 
+        }
 
-    var thetaController =
-        new ProfiledPIDController(
-            this.kPThetaController, 0, 0, this.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        var thetaController =
+            new ProfiledPIDController(
+                this.kPThetaController, 0, 0, this.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            m_traj,
-            m_drivetrainSubsystem::getPose, // Functional interface to feed supplier
-            m_drivetrainSubsystem.getSwerveDriveKinematics(),
+        SwerveControllerCommand swerveControllerCommand =
+            new SwerveControllerCommand(
+                m_traj,
+                m_drivetrainSubsystem::getPose, // Functional interface to feed supplier
+                m_drivetrainSubsystem.getSwerveDriveKinematics(),
 
-            // Position controllers
-            new PIDController(this.kPXController, 0, 0),
-            new PIDController(this.kPYController, 0, 0),
-            thetaController,
-            m_drivetrainSubsystem::setModuleStates,
-            m_drivetrainSubsystem);
+                // Position controllers
+                new PIDController(this.kPXController, 0, 0),
+                new PIDController(this.kPYController, 0, 0),
+                thetaController,
+                m_drivetrainSubsystem::setModuleStates,
+                m_drivetrainSubsystem);
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_drivetrainSubsystem.resetOdometry(m_traj.getInitialPose());
+        // Reset odometry to the starting pose of the trajectory.
+        m_drivetrainSubsystem.resetOdometry(m_traj.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false));
-  }
+        // Run path following command, then stop at the end.
+        return swerveControllerCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false));
+    } 
   
-  public Trajectory generateDefaultTrajectory() {
+    private Trajectory generateDefaultTrajectory() {
     // An example trajectory to follow.  All units in meters.
     Trajectory exampleTrajectory =
         TrajectoryGenerator.generateTrajectory(
@@ -124,6 +127,10 @@ public class AutonomousTrajectoryCommand {
             config);
 
     return exampleTrajectory; 
+  }
+
+  public String getTrajectoryWaypoints() {
+    return m_traj.toString();
   }
 
 }

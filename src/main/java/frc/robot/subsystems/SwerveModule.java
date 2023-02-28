@@ -28,8 +28,8 @@ public class SwerveModule {
 
   private double turningMotorOffset;
 
-  // private final PIDController m_drivePIDController =
-  //     new PIDController(0.005, 0, 0);
+  private final PIDController m_drivePIDController =
+      new PIDController(0.005, 0, 0);
 
   private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
@@ -118,7 +118,7 @@ public class SwerveModule {
 
     // Calculate the drive output from the drive PID controller.
     final double driveOutput =
-        state.speedMetersPerSecond;//ontroller.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+        m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
     final var turnOutput =

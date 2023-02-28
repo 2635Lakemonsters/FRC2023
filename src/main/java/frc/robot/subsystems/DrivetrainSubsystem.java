@@ -230,9 +230,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     m_frontRight.setDesiredState(desiredStates[1]);
     m_backLeft.setDesiredState(desiredStates[2]);
     m_backRight.setDesiredState(desiredStates[3]);
-  }
+  } 
 
-  public ChassisSpeeds getChassisSpeeds() {
+public ChassisSpeeds getChassisSpeeds() {
     ChassisSpeeds chassisSpeeds = m_kinematics.toChassisSpeeds(m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState());
     return chassisSpeeds;
   }

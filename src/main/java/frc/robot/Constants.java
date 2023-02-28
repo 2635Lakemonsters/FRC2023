@@ -45,12 +45,14 @@ public final class Constants {
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
 
-    public static final int kEncoderCPR = 42;
+    public static final int kEncoderCPR = 42; // neo encoder ticks per revolution
     public static final double kWheelDiameterMeters = util.inchesToMeters(4.0);
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
-        // (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
-        (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (18.0 / 26.0) / (42.0 / 14.0));
+        // TODO 2/27 should this be divided by kEncoderCPR?
+        (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
+
+    // put into manual mode, manually read position and rotate wheel
 
     public static final double kTurningEncoderDistancePerPulse =
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
@@ -70,10 +72,9 @@ public final class Constants {
     // buttons
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
     public static final int ARM_PNEUMATIC_BUTTON = 1;
-    public static final int CALIBRATE_BUTTON = 7;
-    public static final int NORMAL_MODE = 8;
-    public static final int BALANCING_BUTTON = 9;
-    public static final int HOLD_STILL_BUTTON = 10;
+    public static final int NORMAL_MODE = 7;
+    public static final int BALANCING_BUTTON = 8;
+    public static final int HOLD_STILL_BUTTON = 9;
 
     public static final int SCORE_TOP_LEFT = 7;
     public static final int SCORE_MID_LEFT = 9;
@@ -91,7 +92,7 @@ public final class Constants {
     public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
     public static final int HOME_ARM_BUTTON = 6;
 
-    public static final int RESET_DRIVE_BUTTON = 9;
+    public static final int RESET_DRIVE_BUTTON = 10;
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;

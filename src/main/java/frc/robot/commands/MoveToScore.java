@@ -27,10 +27,7 @@ public class MoveToScore extends CommandBase {
   private boolean m_allDone = false;
   private double m_length = Constants.LENGTH_OF_BOT;
   private double m_dfo = Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG; //meters
-  private double m_targetPoseX;
-  private double m_targetPoseY;
   private double m_targetPoseR = 0;
-  private int m_scoringPose;
   DrivetrainSubsystem m_driveTrainSubsystem;
   Command m_c = null;
 
@@ -56,7 +53,7 @@ public class MoveToScore extends CommandBase {
 
     int tagNumber = m_aprilTagData.getAprilTagID();
 
-    if (util.areWeRed() != util.isRed(tagNumber)) {     // TODO: Coopertition
+    if (util.areWeRed() != util.isRed(tagNumber)) {
       System.out.println("Wrong color tag visible");
       return;
     }
@@ -77,8 +74,8 @@ public class MoveToScore extends CommandBase {
     double delX = dc * Math.cos(thetaThree);
     double delY = lambda - (m_dfo + (m_length / 2));
 
-    m_targetPoseX = m_driveTrainSubsystem.m_odometry.getPoseMeters().getX() + delX + m_nodeOffset;
-    m_targetPoseY = m_driveTrainSubsystem.m_odometry.getPoseMeters().getY() + delY;
+    // m_targetPoseX = m_driveTrainSubsystem.m_odometry.getPoseMeters().getX() + delX + m_nodeOffset;
+    // m_targetPoseY = m_driveTrainSubsystem.m_odometry.getPoseMeters().getY() + delY;
 
     // Simple path without holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
     PathPlannerTrajectory traj = PathPlanner.generatePath(

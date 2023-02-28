@@ -4,13 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+// import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -24,8 +22,8 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private SendableChooser<Command> m_autoChooser; 
-  private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
+  // private SendableChooser<Command> m_autoChooser; 
+  // private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
 
   // for motion compensate (vision)
   public static int circularBufferSize = 50;
@@ -49,7 +47,7 @@ public class Robot extends TimedRobot {
     autoHappened = false;
 
     m_robotContainer = new RobotContainer();
-    m_autoChooser = m_robotContainer.getAutonomousCommand();
+    // m_autoChooser = m_robotContainer.getAutonomousCommand();
     m_robotContainer.m_resetSwerveGyroCommand.execute();
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());

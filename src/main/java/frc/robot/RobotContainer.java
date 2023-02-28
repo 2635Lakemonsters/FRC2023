@@ -20,11 +20,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.AlignGripperToObjectCommand;
-import frc.robot.commands.ArmMovementCommand;
-import frc.robot.commands.ArmPneumaticCommand;
+// import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.DriveStraightCommand;
+// import frc.robot.commands.DriveStraightCommand;
 import frc.robot.commands.ManualArmMotorCommand;
 import frc.robot.commands.MoveArmToPoseCommand;
 import frc.robot.commands.MoveToScore;
@@ -33,7 +32,7 @@ import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
-import frc.robot.commands.ToggleArmPneumaticsCommand;
+// import frc.robot.commands.ToggleArmPneumaticsCommand;
 import frc.robot.commands.ToggleClawPneumaticsCommand;
 import frc.robot.commands.VisionDriveClosedLoopCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
@@ -68,16 +67,16 @@ public class RobotContainer extends TimedRobot {
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  private final ClawPneumaticCommand m_clawOpenCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, true);
+  // private final ClawPneumaticCommand m_clawOpenCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, true);
   private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
-  private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
-  private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
+  // private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
+  // private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
-  private final ToggleArmPneumaticsCommand m_toggleArmPneumaticsCommand = new ToggleArmPneumaticsCommand(m_armPneumaticSubsystem);
+  // private final ToggleArmPneumaticsCommand m_toggleArmPneumaticsCommand = new ToggleArmPneumaticsCommand(m_armPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
-  private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
+  // private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
 
   public class Pose {
     public Pose() {
@@ -299,22 +298,6 @@ public class RobotContainer extends TimedRobot {
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-
-    // does two commands in parallel: 1) moving arm and 2) either moves to left or mid scoring position depending on state of button
-    // raise arm + robot translation 
-    // scoreTopLeft.onTrue(
-    //   new ParallelCommandGroup( // TODO might want these to be sequential? bc you could hit the wall if you approach too close before you raise arm.  
-    //     new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE))
-    //     .andThen(m_moveArmCommand)),
-    //     new ConditionalCommand(moveToMidScoringPosition, moveToLeftScoringPosition, leftJoystick.button(2)
-    //             ));
-
-
-
-
-    // armMovement.onTrue(m_armExtendCommand.unless(()->util.getArmState()!= ARM_STATE.Fplus));
-
-    // armMovement.onTrue(new ConditionalCommand(m_armMovementCommand, m_armExtendCommand, ()->util.getArmState()!= ARM_STATE.Fplus));
   }
 
     /**

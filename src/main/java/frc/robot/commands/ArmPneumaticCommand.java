@@ -29,8 +29,6 @@ public class ArmPneumaticCommand extends CommandBase {
     addRequirements(m_armPneumaticSubsystem);
   }
 
-  // TODO: Start a timer.  Don't finish until we believe arm has finished moving.
-  
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {

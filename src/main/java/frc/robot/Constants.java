@@ -49,7 +49,6 @@ public final class Constants {
     public static final double kWheelDiameterMeters = util.inchesToMeters(4.0);
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
-        // TODO 2/27 should this be divided by kEncoderCPR?
         (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
 
     // put into manual mode, manually read position and rotate wheel
@@ -124,10 +123,10 @@ public final class Constants {
     public static final int ARM_ANGLE_PICKUP_FLOOR = 302;
     
     // illegal arm regions
-    public static final int Hplus = 273;
-    public static final int Hminus = 210;
-    public static final int Vplus = 201;        // CADculated as 200.34
-    public static final int Vminus = 156;       // CADculated as 156.66
+    public static final int Hplus = 271;
+    public static final int Hminus = 217;
+    public static final int Vplus = 208;
+    public static final int Vminus = 148;
     
     // arm motor constants
     public static final int ARM_EXTENDED_ALPHA = 116;

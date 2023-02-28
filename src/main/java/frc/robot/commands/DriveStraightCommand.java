@@ -40,9 +40,9 @@ public class DriveStraightCommand extends CommandBase {
     m_c.initialize();
   }
 
-  private static Translation2d mapCoordinates(double x, double y) {
-    return new Translation2d(-(y / 3), x / 3);
-  }
+  // private static Translation2d mapCoordinates(double x, double y) {
+  //   return new Translation2d(-(y / 3), x / 3);
+  // }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

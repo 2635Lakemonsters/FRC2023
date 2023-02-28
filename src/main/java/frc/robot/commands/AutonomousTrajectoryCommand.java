@@ -19,7 +19,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
-/** Add your docs here. */
+/** Class to follow an autonomous trajectory with non-pathplanner SwerveControllerCommand
+ * </p> *Probably misnamed tbh*
+ * </p> Call runAutonomousCommand() to actually run the path you pass in when you 
+ * create an AutonomousTrajectoryCommand object
+ */
 public class AutonomousTrajectoryCommand {
     DrivetrainSubsystem m_drivetrainSubsystem;
     Trajectory m_traj; 

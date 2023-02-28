@@ -50,6 +50,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.m_resetSwerveGyroCommand.execute();
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 

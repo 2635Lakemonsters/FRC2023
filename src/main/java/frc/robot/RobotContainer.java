@@ -64,7 +64,7 @@ public class RobotContainer extends TimedRobot {
   public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
 
   // Commands
-  private final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
+  final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
@@ -135,10 +135,10 @@ public class RobotContainer extends TimedRobot {
 
   private void configureBindings() {
     // Create button
-    // Trigger recalibrateButton = new JoystickButton(rightJoystick, Constants.CALIBRATE_BUTTON);
-    // Trigger nonBalancingButton = new JoystickButton(rightJoystick, Constants.NORMAL_MODE);
-    // Trigger balancingButton = new JoystickButton(rightJoystick, Constants.BALANCING_BUTTON);
-    // Trigger stationaryButton = new JoystickButton(rightJoystick, Constants.HOLD_STILL_BUTTON);
+
+    Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
+    Trigger balancingButton = new JoystickButton(leftJoystick, Constants.BALANCING_BUTTON);
+    Trigger stationaryButton = new JoystickButton(leftJoystick, Constants.HOLD_STILL_BUTTON);
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
     Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
@@ -170,8 +170,8 @@ public class RobotContainer extends TimedRobot {
 
     Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
 
-    Trigger driveStraightButton = new JoystickButton(leftJoystick, 7);
-    driveStraightButton.onTrue(m_driveStraightCommand);
+    // Trigger driveStraightButton = new JoystickButton(leftJoystick, 7);
+    // driveStraightButton.onTrue(m_driveStraightCommand);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -193,12 +193,9 @@ public class RobotContainer extends TimedRobot {
 
 
     // Set commmands to button
-    // recalibrateButton.onTrue(m_resetSwerveGyroCommand);
-    // balancingButton.onTrue(m_swerveDriveBalanceCommand);
-    // nonBalancingButton.onTrue(m_swerveDriveCommand);
-    // stationaryButton.onTrue(m_swerveNoMoveCommand);
-    // armMovement.onTrue(m_armMovementCommand);
-    // pickUpFloor.onTrue(new PickingUpArmMovementCommand(m_armPneumaticSubsystem, m_armMotorSubsystem).unless(() -> util.getArmState() != ARM_STATE.Bplus));
+    balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    nonBalancingButton.onTrue(m_swerveDriveCommand);
+    stationaryButton.onTrue(m_swerveNoMoveCommand);
 
     // TODO:
     // 1: Do all the button bindings with arm movements

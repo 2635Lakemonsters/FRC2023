@@ -11,6 +11,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -188,10 +189,12 @@ public class RobotContainer extends TimedRobot {
 
     traj = PathPlanner.generatePath(
         new PathConstraints(0.1, 0.1), 
-        new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0 / 3.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 1.0 / 3.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
+
+    PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
 
     Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
     // driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));

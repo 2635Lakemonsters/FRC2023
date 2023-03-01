@@ -4,11 +4,14 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,11 +20,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
@@ -37,13 +44,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final double m_drivetrainWheelbaseLength = 28.5 / Constants.INCHES_PER_METER;
 
     public final Translation2d m_frontLeftLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
-    public final Translation2d m_frontRightLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
-    public final Translation2d m_backLeftLocation = 
-            new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
-    public final Translation2d m_backRightLocation = 
             new Translation2d(-m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_frontRightLocation = 
+            new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_backLeftLocation = 
+            new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+    public final Translation2d m_backRightLocation = 
+            new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
 
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 
@@ -198,16 +205,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
     this.m_odometry.resetPosition(new Rotation2d(), initSwerveModulePos, new Pose2d());
   }
 
-  /** THIS FUNCTION IS NOT DONE
+  /**
+   * Resets the odometry to the specified pose.
+   *
+   * https://github.com/wpilibsuite/allwpilib/blob/main/wpilibjExamples/src/main/java/edu/wpi/first/wpilibj/examples/swervecontrollercommand/subsystems/DriveSubsystem.java
    * 
-   * resets drivetrain odometry to given swervemodule positions **/
+   * @param pose The pose to which to set the odometry.
+   */
   public void resetOdometry(Pose2d pose) {
-    SwerveModulePosition[] initSwerveModulePos = {new SwerveModulePosition(), 
-                                                  new SwerveModulePosition(),
-                                                  new SwerveModulePosition(),
-                                                  new SwerveModulePosition()};
-
-    this.m_odometry.resetPosition(pose.getRotation(), initSwerveModulePos, pose);
+    m_odometry.resetPosition(
+        m_gyro.getRotation2d(),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()
+        },
+        pose);
   }
 
   // /** sets swerve drive module states **/
@@ -290,6 +304,19 @@ public ChassisSpeeds getChassisSpeeds() {
     return m_gyro; 
   }
 
+  /**Sets the swerve ModuleStates.
+   *
+   * @param desiredStates The desired SwerveModule states. Array of `SwerveModuleState[]`
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, this.kMaxSpeed);
+    m_frontLeft.setDesiredState(desiredStates[0]);
+    m_frontRight.setDesiredState(desiredStates[1]);
+    m_backLeft.setDesiredState(desiredStates[2]);
+    m_backRight.setDesiredState(desiredStates[3]);
+  }
+  
   /**
    * Displays all 4 module positions + overall robot pose in SmartDashboard. 
    * For debugging

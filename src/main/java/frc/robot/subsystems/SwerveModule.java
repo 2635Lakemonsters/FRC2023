@@ -117,8 +117,8 @@ public class SwerveModule {
         SwerveModuleState.optimize(desiredState, new Rotation2d(getTurningEncoderRadians()));
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput =
-        m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+    final double driveOutput =state.speedMetersPerSecond;
+        //m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
 
     // Calculate the turning motor output from the turning PID controller.
     final var turnOutput =

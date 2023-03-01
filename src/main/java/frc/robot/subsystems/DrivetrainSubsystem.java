@@ -149,9 +149,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /**
    * Method to drive the robot using joystick info.
    *
-   * @param xSpeed Speed of the robot in the x direction (forward).
-   * @param ySpeed Speed of the robot in the y direction (sideways).
-   * @param rot Angular rate of the robot.
+   * @param xSpeed Speed of the robot in the x direction (forward).   -1.0 ... +1.0
+   * @param ySpeed Speed of the robot in the y direction (sideways).  -1.0 ... +1.0
+   * @param rot Angular rate of the robot.                            -1.0 ... +1.0
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
@@ -222,6 +222,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param desiredStates The desired SwerveModule states as a ChassisSpeeds object
    */
   public void setDesiredStates(ChassisSpeeds cs) {
+    // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(

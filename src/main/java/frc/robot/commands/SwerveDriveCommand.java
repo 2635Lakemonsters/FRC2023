@@ -32,7 +32,7 @@ public class SwerveDriveCommand extends CommandBase {
     DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY());
     DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
     // DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX()); // uncomment this to use left joystick for rotation
-    DrivetrainSubsystem.setRotCommanded(RobotContainer.rightJoystick.getTwist()); // uncomment this to use right joystick twist
+    DrivetrainSubsystem.setRotCommanded(RobotContainer.rightJoystick.getTwist()/2); // uncomment this to use right joystick twist
   }
 
   // Called once the command ends or is interrupted.

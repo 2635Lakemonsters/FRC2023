@@ -68,30 +68,34 @@ public final class Constants {
     public static final int RIGHT_JOYSTICK_CHANNEL = 2;
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
-    // buttons
+    // buttons - Left Stick
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    public static final int ARM_PNEUMATIC_BUTTON = 1;
+    public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
+    public static final int DRIVE_STRAIGHT_BUTTON = 3;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;
     public static final int HOLD_STILL_BUTTON = 9;
+    public static final int RESET_DRIVE_BUTTON = 10;
+    public static final int DEATH_CUBE_BUTTON = 11;
+    public static final int DEATH_CONE_BUTTON = 12;
 
-    public static final int SCORE_TOP_LEFT = 7;
-    public static final int SCORE_MID_LEFT = 9;
-    public static final int SCORE_BOTTOM_LEFT = 11;
-    public static final int SCORE_TOP_RIGHT = 8;
-    public static final int SCORE_MID_RIGHT = 10;
-    public static final int SCORE_BOTTOM_RIGHT = 12;
+
+    // buttons - Right Stick
+    public static final int ARM_PNEUMATIC_BUTTON = 1;
     public static final int SCORE_CENTER_BUTTON = 2;
-
     public static final int LEFT_SLIDER_BUTTON = 3;
     public static final int RIGHT_SLIDER_BUTTON = 4;
-
-    public static final int DEATH_CONE_BUTTON = 12;
-    public static final int DEATH_CUBE_BUTTON = 11;
     public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
     public static final int HOME_ARM_BUTTON = 6;
+    public static final int SCORE_TOP_LEFT = 7;
+    public static final int SCORE_TOP_RIGHT = 8;
+    public static final int SCORE_MID_LEFT = 9;
+    public static final int SCORE_MID_RIGHT = 10;
+    public static final int SCORE_BOTTOM_LEFT = 11;
+    public static final int SCORE_BOTTOM_RIGHT = 12;
 
-    public static final int RESET_DRIVE_BUTTON = 10;
+
+
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
@@ -204,5 +208,4 @@ public final class Constants {
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
     public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "aprilTag";
 
-    public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
 }

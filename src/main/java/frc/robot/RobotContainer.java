@@ -23,7 +23,7 @@ import frc.robot.commands.AlignGripperToObjectCommand;
 // import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-// import frc.robot.commands.DriveStraightCommand;
+import frc.robot.commands.DriveStraightCommand;
 import frc.robot.commands.ManualArmMotorCommand;
 import frc.robot.commands.MoveArmToPoseCommand;
 import frc.robot.commands.MoveToScore;
@@ -76,7 +76,7 @@ public class RobotContainer extends TimedRobot {
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
-  // private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
+  private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
 
   public class Pose {
     public Pose() {
@@ -169,8 +169,8 @@ public class RobotContainer extends TimedRobot {
 
     Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
 
-    // Trigger driveStraightButton = new JoystickButton(leftJoystick, 7);
-    // driveStraightButton.onTrue(m_driveStraightCommand);
+    Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
+    driveStraightButton.onTrue(m_driveStraightCommand);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 

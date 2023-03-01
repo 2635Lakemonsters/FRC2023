@@ -33,6 +33,7 @@ import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.AlignGripperToObjectCommand;
 // import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
+import frc.robot.commands.AutonomousTrajectoryCommand;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.DriveStraightCommand;
 import frc.robot.commands.ManualArmMotorCommand;
@@ -181,7 +182,10 @@ public class RobotContainer extends TimedRobot {
     Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
 
     Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
-    driveStraightButton.onTrue(m_driveStraightCommand);
+    driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
+    //AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
+    //driveStraightButton.onTrue(atc);
+   //driveStraightButton.onTrue(atc::runAutonomousCommand);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -331,6 +335,9 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("Score bottom grab", m_autonomousCommands.ScoreBottomGrab(m_drivetrainSubsystem));
     m_autoChooser.addOption("Score mid grab", m_autonomousCommands.ScoreMidGrab(m_drivetrainSubsystem));
     m_autoChooser.addOption("Score top grab", m_autonomousCommands.ScoreTopGrab(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
+
     
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 

@@ -7,7 +7,11 @@ package frc.robot.commands;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
@@ -62,5 +66,24 @@ public class AutonomousCommands  {
     public Command ScoreBottomGrab(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Score bottom grab engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj);
+    }
+
+    /** Drive straight with AutonomousTrajectoryCommand and path planner traj */
+    public Command driveStraightPP(DrivetrainSubsystem ds) {
+        PathPlannerTrajectory traj = PathPlanner.generatePath(
+            new PathConstraints(0.5, 0.5), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
+        );
+
+        AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(ds, traj);
+        return atc.runAutonomousCommand();
+    }
+
+    /** Drive straight with AutonomousTrajectoryCommand and normal traj */
+    public Command driveStraight(DrivetrainSubsystem ds) {
+        AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(ds);
+        return atc.runAutonomousCommand();
     }
 }

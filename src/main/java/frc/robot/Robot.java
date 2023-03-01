@@ -6,6 +6,7 @@ package frc.robot;
 
 // import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,7 +24,7 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  // private SendableChooser<Command> m_autoChooser; 
+  private SendableChooser<Command> m_autoChooser; 
   // private BuiltInAccelerometer rioAccel = new BuiltInAccelerometer();
 
   // for motion compensate (vision)
@@ -48,7 +49,6 @@ public class Robot extends TimedRobot {
     autoHappened = false;
 
     m_robotContainer = new RobotContainer();
-    // m_autoChooser = m_robotContainer.getAutonomousCommand();
     m_robotContainer.m_resetSwerveGyroCommand.execute();
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
@@ -86,6 +86,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
+    // m_autoChooser = m_robotContainer.getAutonomousCommand();
+
     // m_autonomousCommand = m_autoChooser.getSelected();
     
     // print camera values to log
@@ -107,7 +109,7 @@ public class Robot extends TimedRobot {
 
     System.out.println("AUTO INIT");
 
-    m_autonomousCommand = new AutonomousTrajectoryCommand(RobotContainer.m_drivetrainSubsystem).runAutonomousCommand();
+    // m_autonomousCommand = new AutonomousTrajectoryCommand(RobotContainer.m_drivetrainSubsystem).runAutonomousCommand();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {

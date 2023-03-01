@@ -224,15 +224,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         pose);
   }
 
-  // /** sets swerve drive module states **/
-  // public SwerveModuleState[] setDesiredStates() {
-  //   SwerveModuleState[] sms = {m_frontLeft.getState(), m_frontRight.getState(), m_backLeft.getState(), m_backRight.getState()};
-  //   return sms;
-  // }
-
-  /**
-   * Sets the swerve ModuleStates.
-   *
+  /** Sets the swerve ModuleStates.
    * @param desiredStates The desired SwerveModule states as a ChassisSpeeds object
    */
   public void setDesiredStates(ChassisSpeeds cs) {
@@ -305,7 +297,6 @@ public ChassisSpeeds getChassisSpeeds() {
   }
 
   /**Sets the swerve ModuleStates.
-   *
    * @param desiredStates The desired SwerveModule states. Array of `SwerveModuleState[]`
    */
   public void setModuleStates(SwerveModuleState[] desiredStates) {
@@ -317,9 +308,8 @@ public ChassisSpeeds getChassisSpeeds() {
     m_backRight.setDesiredState(desiredStates[3]);
   }
   
-  /**
-   * Displays all 4 module positions + overall robot pose in SmartDashboard. 
-   * For debugging
+  /** Displays all 4 module positions + robot pose (forward/back) in SmartDashboard. 
+   * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
     SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());

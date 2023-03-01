@@ -74,7 +74,7 @@ public class AutonomousTrajectoryCommand {
         
         // Create config for trajectory. Sets default trajectory if using the non-traj taking constructory
         if (m_traj == null) {
-            this.generateDefaultTrajectory(); 
+            m_traj = this.generateDefaultTrajectory(); 
         }
 
         var thetaController =
@@ -109,9 +109,9 @@ public class AutonomousTrajectoryCommand {
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(0.5, 0)),
+            List.of(),
             // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(1, 0, new Rotation2d(0)),
+            new Pose2d(1.0 / 3.0, 0, new Rotation2d(0)),
             config);
     
     return exampleTrajectory; 

@@ -32,7 +32,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     */
 
     // rotation matrix
-    private double cameraTilt = 0.0 * Math.PI / 180.0; //Update this      Fix these constants
+    private double cameraTilt = 0.0 * Math.PI / 180.0; //Update this      TODO: update
     private double[] cameraOffset = {0.0, 0.0, 0.0}; // goes {x, y, z} // TODO: figure this offset
 
     private double sinTheta = Math.sin(cameraTilt);

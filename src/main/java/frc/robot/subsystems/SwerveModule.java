@@ -24,12 +24,10 @@ public class SwerveModule {
 
   public final RelativeEncoder m_driveEncoder;
   private final AnalogInput m_turningEncoder;
-  //private final AnalogInput m_offsetEncoder;
 
   private double turningMotorOffset;
 
-  private final PIDController m_drivePIDController =
-      new PIDController(0.005, 0, 0);
+  // private final PIDController m_drivePIDController = new PIDController(0.005, 0, 0);
 
   private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
@@ -61,9 +59,6 @@ public class SwerveModule {
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
     m_driveEncoder.setPositionConversionFactor(Constants.kDriveEncoderDistancePerPulse);
-
-    //m_turningEncoder.setPosition(turningMotorOffset);
-
 
     // Set whether drive encoder should be reversed or not
     // m_driveEncoder.setReverseDirection(driveEncoderReversed);
@@ -128,10 +123,4 @@ public class SwerveModule {
     m_driveMotor.set(driveOutput);
     m_turningMotor.set(turnOutput);
   }
-
-  /** Zeros all the SwerveModule encoders. */
-  // public void resetEncoders() {
-  //   m_driveEncoder.reset();
-  //   m_turningEncoder.reset();
-  // }
 }

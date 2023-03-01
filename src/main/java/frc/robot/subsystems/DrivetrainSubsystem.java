@@ -4,14 +4,11 @@
 
 package frc.robot.subsystems;
 
-import java.util.List;
-
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -20,19 +17,15 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
@@ -139,7 +132,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Get the rate of angular rotation
     final var rot =
     //must be positive to read accuate joystick yaw
-      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.1))
+      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
         * this.kMaxAngularSpeed;
 
     this.drive(xPower, yPower, rot, true);
@@ -255,7 +248,6 @@ public ChassisSpeeds getChassisSpeeds() {
         // Reset odometry for the first path you run during auto
         if(isFirstPath){
           this.zeroOdometry();
-          // this.resetOdometry(traj.getInitialHolonomicPose());
         }
       });
 

@@ -5,19 +5,17 @@
 package frc.robot;
 
 
-import java.util.List;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,15 +23,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.AlignGripperToObjectCommand;
-// import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.commands.AutonomousCommands;
-import frc.robot.commands.AutonomousTrajectoryCommand;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.DriveStraightCommand;
 import frc.robot.commands.ManualArmMotorCommand;
@@ -44,7 +38,6 @@ import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
-// import frc.robot.commands.ToggleArmPneumaticsCommand;
 import frc.robot.commands.ToggleClawPneumaticsCommand;
 import frc.robot.commands.VisionDriveClosedLoopCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
@@ -54,9 +47,10 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 public class RobotContainer extends TimedRobot {
+  public static PathPlannerTrajectory traj;
   // Joysticks
-  public final static Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
-  public final static Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
+  public static final Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
+  public static final Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
 
   // Arm Encoder
   public static final AnalogInput encoder = new AnalogInput(Constants.ARM_ENCODER_ID);
@@ -75,16 +69,12 @@ public class RobotContainer extends TimedRobot {
   public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
 
   // Commands
-  final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
+  public final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  // private final ClawPneumaticCommand m_clawOpenCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, true);
   private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
-  // private final ArmPneumaticCommand m_armExtendCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, true);
-  // private final ArmPneumaticCommand m_armRetractCommand = new ArmPneumaticCommand(m_armPneumaticSubsystem, false);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
-  // private final ToggleArmPneumaticsCommand m_toggleArmPneumaticsCommand = new ToggleArmPneumaticsCommand(m_armPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
@@ -145,23 +135,30 @@ public class RobotContainer extends TimedRobot {
   }
 
   private void configureBindings() {
-    // Create button
-
+    // left joystick button bindings
+    Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
+    Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
+    Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(leftJoystick, Constants.BALANCING_BUTTON);
     Trigger stationaryButton = new JoystickButton(leftJoystick, Constants.HOLD_STILL_BUTTON);
-    Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
+    Trigger resetDriveOrientation = new JoystickButton(leftJoystick, Constants.RESET_DRIVE_BUTTON);
+    Trigger deathDriveCUBE = new JoystickButton(leftJoystick, Constants.DEATH_CUBE_BUTTON);
+    Trigger deathDriveCONE = new JoystickButton(leftJoystick, Constants.DEATH_CONE_BUTTON);
+    
+    // right joystick button bindings
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
-    Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
-    Trigger scoreTopRight = new JoystickButton(rightJoystick, Constants.SCORE_TOP_RIGHT);
-    Trigger scoreMidRight = new JoystickButton(rightJoystick, Constants.SCORE_MID_RIGHT);
-    Trigger scoreBottomRight = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_RIGHT);
-
-    Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
-    Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
-    Trigger bottomLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_LEFT);
-
     Trigger centerButton = new JoystickButton(rightJoystick, Constants.SCORE_CENTER_BUTTON);
+    Trigger pickUpGamePieceSliderLeft = new JoystickButton(rightJoystick, Constants.LEFT_SLIDER_BUTTON);
+    Trigger pickUpGamePieceSliderRight = new JoystickButton(rightJoystick, Constants.RIGHT_SLIDER_BUTTON);
+    Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
+    Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
+    Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
+    Trigger scoreTopRight = new JoystickButton(rightJoystick, Constants.SCORE_TOP_RIGHT);
+    Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
+    Trigger scoreMidRight = new JoystickButton(rightJoystick, Constants.SCORE_MID_RIGHT);
+    Trigger bottomLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_LEFT);
+    Trigger scoreBottomRight = new JoystickButton(rightJoystick, Constants.SCORE_BOTTOM_RIGHT);
 
     Trigger scoreTopLeft = centerButton.negate().and(topLeftButton);
     Trigger scoreTopCenter = centerButton.and(topLeftButton);
@@ -170,22 +167,18 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreBottomLeft = centerButton.negate().and(bottomLeftButton);
     Trigger scoreBottomCenter = centerButton.and(bottomLeftButton);
 
-    Trigger pickUpGamePieceSliderLeft = new JoystickButton(rightJoystick, Constants.LEFT_SLIDER_BUTTON);
-    Trigger pickUpGamePieceSliderRight = new JoystickButton(rightJoystick, Constants.RIGHT_SLIDER_BUTTON);
+    traj = PathPlanner.generatePath(
+        new PathConstraints(0.1, 0.1), 
+        new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 1.0 / 3.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+        // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
+    );
 
-    Trigger deathDriveCUBE = new JoystickButton(leftJoystick, Constants.DEATH_CUBE_BUTTON);
-    Trigger deathDriveCONE = new JoystickButton(leftJoystick, Constants.DEATH_CONE_BUTTON);
-    Trigger resetDriveOrientation = new JoystickButton(leftJoystick, Constants.RESET_DRIVE_BUTTON);
-
-    Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
-
-    Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
-
-    Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
-    driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
-    //AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
-    //driveStraightButton.onTrue(atc);
-   //driveStraightButton.onTrue(atc::runAutonomousCommand);
+    Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
+    // AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
+    // driveStraightButton.onTrue(atc.runAutonomousCommand());
+    driveStraightButton.onTrue(dsc);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -312,7 +305,6 @@ public class RobotContainer extends TimedRobot {
                             new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
-
   }
 
     /**
@@ -321,8 +313,6 @@ public class RobotContainer extends TimedRobot {
    * @return the command to run in autonomous
    */
   public SendableChooser<Command> getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
     m_autoChooser.setDefaultOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
 
@@ -337,7 +327,6 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("Score top grab", m_autonomousCommands.ScoreTopGrab(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
-
     
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 

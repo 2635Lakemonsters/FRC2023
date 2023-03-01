@@ -33,7 +33,7 @@ public class DriveStraightCommand extends CommandBase {
     PathPlannerTrajectory traj = PathPlanner.generatePath(
         new PathConstraints(0.1, 0.1), 
         new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
+        new PathPoint(new Translation2d(1.0, 0.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
     m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);

@@ -95,8 +95,6 @@ public final class Constants {
     public static final int SCORE_BOTTOM_RIGHT = 12;
 
 
-
-
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
     public static final int CLOSE_CHANNEL = 1;

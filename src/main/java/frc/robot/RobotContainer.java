@@ -174,18 +174,8 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreBottomLeft = centerButton.negate().and(bottomLeftButton);
     Trigger scoreBottomCenter = centerButton.and(bottomLeftButton);
 
-    var sideStart = new Pose2d(Units.feetToMeters(1.54), Units.feetToMeters(23.23),
-    Rotation2d.fromDegrees(-180));
-    var crossScale = new Pose2d(Units.feetToMeters(23.7), Units.feetToMeters(6.8),
-    Rotation2d.fromDegrees(-160));
 
-    var interiorWaypoints = new ArrayList<Translation2d>();
-    // interiorWaypoints.add(new Translation2d(Units.feetToMeters(14.54), Units.feetToMeters(23.23)));
-    // interiorWaypoints.add(new Translation2d(Units.feetToMeters(21.04), Units.feetToMeters(18.23)));
-
-    TrajectoryConfig config = new TrajectoryConfig(Units.feetToMeters(12), Units.feetToMeters(12));
-    config.setReversed(true);
-
+    PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
 
     traj = PathPlanner.generatePath(
         new PathConstraints(0.1, 0.1), 
@@ -194,13 +184,15 @@ public class RobotContainer extends TimedRobot {
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
 
-    PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
-
     Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    Command dsc1 = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
     // driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
     // AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
     // driveStraightButton.onTrue(atc.runAutonomousCommand());
-    driveStraightButton.onTrue(dsc);
+    driveStraightButton.onTrue(dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
+
+    Trigger temp = new JoystickButton(leftJoystick, 4);
+    temp.onTrue(dsc1);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 

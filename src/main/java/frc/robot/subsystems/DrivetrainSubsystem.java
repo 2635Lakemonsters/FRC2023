@@ -30,8 +30,8 @@ import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
 
-    // public static final double kMaxSpeed = 3.0; // 3 meters per second
-    public final double kMaxSpeed = 0.5;
+    public static final double kMaxSpeed = 3.63; // 3.63 meters per second
+    // public final double kMaxSpeed = 0.5;
     public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
@@ -123,12 +123,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Get the x speed
     final var xPower =
       RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-        * this.kMaxSpeed;
+        * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the y speed or sideways/strafe speed
     final var yPower =
       RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-        * this.kMaxSpeed;
+        * DrivetrainSubsystem.kMaxSpeed;
 
     // Get the rate of angular rotation
     final var rot =
@@ -156,6 +156,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    xSpeed *= kMaxSpeed;
+    ySpeed *= kMaxSpeed;
+    rot *= kMaxAngularSpeed;
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
@@ -221,12 +224,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
   /** Sets the swerve ModuleStates.
    * @param desiredStates The desired SwerveModule states as a ChassisSpeeds object
    */
-  public void setDesiredStates(ChassisSpeeds cs) {
+  private void setDesiredStates(ChassisSpeeds cs) {
     // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, 4); //Constants.kMaxSpeedMetersPerSecond);
+        desiredStates, 4); //TODO: Constants.kMaxSpeedMetersPerSecond);
+
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
     m_backLeft.setDesiredState(desiredStates[2]);

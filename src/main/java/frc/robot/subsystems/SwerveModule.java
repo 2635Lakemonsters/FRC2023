@@ -27,8 +27,7 @@ public class SwerveModule {
 
   private double turningMotorOffset;
 
-  // private final PIDController m_drivePIDController = new PIDController(0.005, 0, 0);
-
+  private final PIDController m_drivePIDController = new PIDController(0.005, 0, 0.);
   private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
   public NetworkTableEntry t_turningEncoder;
@@ -59,6 +58,8 @@ public class SwerveModule {
     // distance traveled for one rotation of the wheel divided by the encoder
     // resolution.
     m_driveEncoder.setPositionConversionFactor(Constants.kDriveEncoderDistancePerPulse);
+    m_driveEncoder.setVelocityConversionFactor(Constants.kDriveEncoderDistancePerPulse/60.0);
+
 
     // Set whether drive encoder should be reversed or not
     // m_driveEncoder.setReverseDirection(driveEncoderReversed);
@@ -101,6 +102,7 @@ public class SwerveModule {
     return new SwerveModuleState(m_driveEncoder.getVelocity(), new Rotation2d(getTurningEncoderRadians()));
   }
 
+  private static int loopCtr = 0;
   /**
    * Sets the desired state for the module.
    *
@@ -112,15 +114,28 @@ public class SwerveModule {
         SwerveModuleState.optimize(desiredState, new Rotation2d(getTurningEncoderRadians()));
 
     // Calculate the drive output from the drive PID controller.
-    final double driveOutput =state.speedMetersPerSecond;
-        //m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+    final double driveOutput = //state.speedMetersPerSecond;
+      m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+
+    final double driveFeedForward = state.speedMetersPerSecond / DrivetrainSubsystem.kMaxSpeed;
 
     // Calculate the turning motor output from the turning PID controller.
     final var turnOutput =
         m_turningPIDController.calculate(getTurningEncoderRadians(), state.angle.getRadians());
 
+    loopCtr++;
+    if ((loopCtr % 50 == 0) && (m_driveMotor.getDeviceId() == 8))
+    {
+      
+      System.out.println(
+        "Spd: " + Math.round(state.speedMetersPerSecond * 100.) / 100. + 
+        "  getV(): " + Math.round(m_driveEncoder.getVelocity() * 100.) / 100. + 
+        "  DO: "+ Math.round(driveOutput * 100.) / 100.
+      );
+    }
+
     // Calculate the turning motor output from the turning PID controller.
-    m_driveMotor.set(driveOutput);
+    m_driveMotor.set(driveOutput + driveFeedForward);
     m_turningMotor.set(turnOutput);
   }
 }

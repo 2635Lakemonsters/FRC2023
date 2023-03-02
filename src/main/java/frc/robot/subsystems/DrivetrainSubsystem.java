@@ -194,12 +194,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   /** zeroes drivetrain odometry **/
   public void zeroOdometry() {
-    SwerveModulePosition[] initSwerveModulePos = {new SwerveModulePosition(), 
-                                                  new SwerveModulePosition(),
-                                                  new SwerveModulePosition(),
-                                                  new SwerveModulePosition()};
-
-    this.m_odometry.resetPosition(new Rotation2d(), initSwerveModulePos, new Pose2d());
+    resetOdometry(new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
   }
 
   /**
@@ -309,12 +304,13 @@ public ChassisSpeeds getChassisSpeeds() {
    * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
-    SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+    // SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
 
-    SmartDashboard.putNumber("Drive Pose", getPose().getTranslation().getX());
+    SmartDashboard.putNumber("Drive Pose X", getPose().getTranslation().getX());
+    SmartDashboard.putNumber("Drive Pose Y", getPose().getTranslation().getY());
   }
 
   

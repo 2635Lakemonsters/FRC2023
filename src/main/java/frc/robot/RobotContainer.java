@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -178,9 +179,9 @@ public class RobotContainer extends TimedRobot {
     PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
 
     traj = PathPlanner.generatePath(
-        new PathConstraints(0.1, 0.1), 
+        new PathConstraints(2, 0.5), 
         new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0 / 3.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
 
@@ -189,7 +190,10 @@ public class RobotContainer extends TimedRobot {
     // driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
     // AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
     // driveStraightButton.onTrue(atc.runAutonomousCommand());
-    driveStraightButton.onTrue(dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
+    //driveStraightButton.onTrue(dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
+    driveStraightButton.onTrue(new SequentialCommandGroup(
+      new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
+      dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false))));
 
     Trigger temp = new JoystickButton(leftJoystick, 4);
     temp.onTrue(dsc1);

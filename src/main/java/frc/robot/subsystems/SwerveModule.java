@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 import frc.robot.Constants;
@@ -117,6 +118,13 @@ public class SwerveModule {
     final double driveOutput = //state.speedMetersPerSecond;
       m_drivePIDController.calculate(m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
 
+    // This computes the velocity error regardless of direction of travel
+    // such that >0 means too fast and <0 means too slow
+    double velocityError = Math.copySign(state.speedMetersPerSecond - m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+
+    String str = String.format("setDesiredState/Verror%d", m_driveMotor.getDeviceId());
+    SmartDashboard.putNumber(str, velocityError);
+
     final double driveFeedForward = state.speedMetersPerSecond / DrivetrainSubsystem.kMaxSpeed;
 
     // Calculate the turning motor output from the turning PID controller.
@@ -127,11 +135,11 @@ public class SwerveModule {
     if ((loopCtr % 50 == 0) && (m_driveMotor.getDeviceId() == 8))
     {
       
-      System.out.println(
-        "Spd: " + Math.round(state.speedMetersPerSecond * 100.) / 100. + 
-        "  getV(): " + Math.round(m_driveEncoder.getVelocity() * 100.) / 100. + 
-        "  DO: "+ Math.round(driveOutput * 100.) / 100.
-      );
+      // System.out.println(
+      //   "Spd: " + Math.round(state.speedMetersPerSecond * 100.) / 100. + 
+      //   "  getV(): " + Math.round(m_driveEncoder.getVelocity() * 100.) / 100. + 
+      //   "  DO: "+ Math.round(driveOutput * 100.) / 100.
+      // );
     }
 
     // Calculate the turning motor output from the turning PID controller.

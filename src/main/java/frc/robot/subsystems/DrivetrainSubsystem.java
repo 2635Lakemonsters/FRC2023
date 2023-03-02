@@ -308,8 +308,8 @@ public ChassisSpeeds getChassisSpeeds() {
     // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
     // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
 
-    SmartDashboard.putNumber("Drive Pose X", getPose().getTranslation().getX());
-    SmartDashboard.putNumber("Drive Pose Y", getPose().getTranslation().getY());
+    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
+    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
   }
 
   

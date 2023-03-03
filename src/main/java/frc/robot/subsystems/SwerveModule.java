@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.networktables.NetworkTableEntry;
 
 import frc.robot.Constants;
+import frc.robot.legacymath2910.MathUtils;
 
 public class SwerveModule {
   private final CANSparkMax m_driveMotor;
@@ -28,7 +29,7 @@ public class SwerveModule {
 
   private double turningMotorOffset;
 
-  private final PIDController m_drivePIDController = new PIDController(0.005, 0, 0.00);
+  private final PIDController m_drivePIDController = new PIDController(0.0, 0, 0.00);
   private final PIDController m_turningPIDController = new PIDController(Constants.kPModuleTurningController, 0, 0.0001);
 
   public NetworkTableEntry t_turningEncoder;
@@ -142,8 +143,13 @@ public class SwerveModule {
       // );
     }
 
+    String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
+    SmartDashboard.putNumber(str1, driveOutput);
+    String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
+    SmartDashboard.putNumber(str2, driveFeedForward);
+
     // Calculate the turning motor output from the turning PID controller.
-    m_driveMotor.set(driveOutput + driveFeedForward);
+    m_driveMotor.set(MathUtils.clamp(driveOutput + driveFeedForward, -1.0, 1.0));
     m_turningMotor.set(turnOutput);
   }
 }

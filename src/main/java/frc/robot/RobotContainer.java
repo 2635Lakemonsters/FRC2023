@@ -174,24 +174,19 @@ public class RobotContainer extends TimedRobot {
     traj = PathPlanner.generatePath(
         new PathConstraints(2, 0.5), 
         new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) ,// position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
-
-    // TODO: decide which of these ways to implement this.
-    
+ 
     Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    Command dsc1 = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // driveStraightButton.onTrue(m_driveStraightCommand.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
-    // AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(m_drivetrainSubsystem);
-    // driveStraightButton.onTrue(atc.runAutonomousCommand());
-    //driveStraightButton.onTrue(dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)));
     driveStraightButton.onTrue(new SequentialCommandGroup(
       new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
-      dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false))));
+      new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+      dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
+      new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+      ));
 
-    Trigger temp = new JoystickButton(leftJoystick, 4);
-    temp.onTrue(dsc1);
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 

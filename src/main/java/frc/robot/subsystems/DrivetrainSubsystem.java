@@ -65,6 +65,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // private final AnalogGyro m_gyro = new AnalogGyro(0);
   
     private final NavX m_gyro = new NavX(SPI.Port.kMXP);
+
+    private boolean followJoysticks = true;
+
+    public void followPath() {
+      followJoysticks = false;
+    }
+
+    public void followJoystick() {
+      followJoysticks = true;
+    }
   
     private final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
       m_frontLeftLocation,
@@ -119,24 +129,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     putDTSToSmartDashboard();
 
-    // Get the x speed
-    final var xPower =
-      RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-        * DrivetrainSubsystem.kMaxSpeed;
+    if (followJoysticks) {
 
-    // Get the y speed or sideways/strafe speed
-    final var yPower =
-      RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-        * DrivetrainSubsystem.kMaxSpeed;
+      // Get the x speed
+      final var xPower =
+        RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
+          * DrivetrainSubsystem.kMaxSpeed;
 
-    // Get the rate of angular rotation
-    final var rot =
-    //must be positive to read accuate joystick yaw
-      RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
-        * this.kMaxAngularSpeed;
+      // Get the y speed or sideways/strafe speed
+      final var yPower =
+        RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
+          * DrivetrainSubsystem.kMaxSpeed;
 
-    this.drive(xPower, yPower, rot, true);
-    // This method will be called once per scheduler run
+      // Get the rate of angular rotation
+      final var rot =
+      //must be positive to read accuate joystick yaw
+        RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
+          * this.kMaxAngularSpeed;
+
+      this.drive(xPower, yPower, rot, true);
+    }
+    
     updateOdometry();
   }
 

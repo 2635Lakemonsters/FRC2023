@@ -21,16 +21,20 @@ public class VisionObject {
     public double y;
     public double z;
     public double r;
+    public double xa;
+    public double ya;
     public double confidence;
     
 
-    public VisionObject(String objectType, double x, double y, double z, double r) {
+    public VisionObject(String objectType, double x, double y, double z, double r, double xa, double ya) {
         this.objectLabel = objectType;
         this.x = x;
         this.y = y;
         this.z = z;
         this.r = r;
-
+        this.xa = xa;
+        this.ya = ya;
+        confidence = -1;
     }
 
     public void motionCompensate(DrivetrainSubsystem drivetrainSubsystem, boolean compensateTranslation) {

@@ -7,7 +7,6 @@ package frc.robot.subsystems;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,7 +23,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -131,23 +129,28 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     if (followJoysticks) {
 
-      // Get the x speed
-      final var xPower =
-        RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-          * DrivetrainSubsystem.kMaxSpeed;
+      // // Get the x speed
+      // final var xPower =
+      //   RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
+      //     * DrivetrainSubsystem.kMaxSpeed;
 
-      // Get the y speed or sideways/strafe speed
-      final var yPower =
-        RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-          * DrivetrainSubsystem.kMaxSpeed;
+      // // Get the y speed or sideways/strafe speed
+      // final var yPower =
+      //   RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
+      //     * DrivetrainSubsystem.kMaxSpeed;
 
-      // Get the rate of angular rotation
-      final var rot =
-      //must be positive to read accuate joystick yaw
-        RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
-          * this.kMaxAngularSpeed;
+      // // Get the rate of angular rotation
+      // final var rot =
+      // //must be positive to read accuate joystick yaw
+      //   RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
+      //     * this.kMaxAngularSpeed;
 
-      this.drive(xPower, yPower, rot, true);
+      // this.drive(xPower, yPower, rot, true);
+
+      this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
+                 yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
+                 rotCommanded*this.kMaxAngularSpeed, 
+                 true);
     }
     
     updateOdometry();
@@ -168,9 +171,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param fieldRelative Whether the provided x and y speeds are relative to the field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    xSpeed *= kMaxSpeed;
-    ySpeed *= kMaxSpeed;
-    rot *= kMaxAngularSpeed;
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             fieldRelative
@@ -229,11 +229,29 @@ public class DrivetrainSubsystem extends SubsystemBase {
   }
 
   /** Sets the swerve ModuleStates.
-   * @param desiredStates The desired SwerveModule states as a ChassisSpeeds object
+   * @param cs The desired SwerveModule states as a ChassisSpeeds object
    */
   private void setDesiredStates(ChassisSpeeds cs) {
     // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
+
+    SwerveDriveKinematics.desaturateWheelSpeeds(
+        desiredStates, 4); //TODO: Constants.kMaxSpeedMetersPerSecond);
+
+    m_frontLeft.setDesiredState(desiredStates[0]);
+    m_frontRight.setDesiredState(desiredStates[1]);
+    m_backLeft.setDesiredState(desiredStates[2]);
+    m_backRight.setDesiredState(desiredStates[3]);
+  } 
+
+  /** Sets the swerve ModuleStates. Accept a center of rotation for when you DON'T want to rotate
+   * around the center of the robot
+   * @param cs The desired SwerveModule states as a ChassisSpeeds object
+   * @param centerOfRotation Center of rotation. Ex. location of camera
+   */
+  private void setDesiredStates(ChassisSpeeds cs, Translation2d centerOfRotation) {
+    // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
+    SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs, centerOfRotation);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, 4); //TODO: Constants.kMaxSpeedMetersPerSecond);

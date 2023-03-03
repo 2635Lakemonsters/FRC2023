@@ -178,14 +178,20 @@ public class RobotContainer extends TimedRobot {
         new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
- 
+    
+    /** Have to do the following lines every single time you use the trajectory follower
+     * 1. zero odometry
+     * 2. followPath() --> IGNORES THE JOYSTICKS / DRIVE ELSE THEY WILL FIGHT BAD
+     * 3. Run path follower
+     * 4. Re-enable joysticks
+     */
     Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
     driveStraightButton.onTrue(new SequentialCommandGroup(
       new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
       new InstantCommand(()->m_drivetrainSubsystem.followPath()),
       dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
       new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-      ));
+    ));
 
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));

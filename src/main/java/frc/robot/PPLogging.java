@@ -25,7 +25,7 @@ public class PPLogging {
         SmartDashboard.putNumber("PPSwerveControllerCommand/xTargetPose", pose.getX());
         SmartDashboard.putNumber("PPSwerveControllerCommand/yTargetPose", pose.getY());
         SmartDashboard.putNumber("PPSwerveControllerCommand/tTargetPose", pose.getRotation().getDegrees());
-
+        //Pose2d currentPose = DrivetrainSubsystem.
     }
     
     public static void logSetpoint(ChassisSpeeds speeds)

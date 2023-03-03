@@ -27,7 +27,7 @@ public class MoveToScore extends CommandBase {
   private boolean m_allDone = false;
   private double m_length = Constants.LENGTH_OF_BOT;
   private double m_dfo = Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG; //meters
-  private double m_targetPoseR = 0;
+  private double m_targetPoseR = (Math.PI / 2);
   DrivetrainSubsystem m_driveTrainSubsystem;
   Command m_c = null;
 
@@ -65,31 +65,30 @@ public class MoveToScore extends CommandBase {
     // math to normalize apriltag coordinates to robot-centric coordinates
     double x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
     double y = m_aprilTagData.z / Constants.INCHES_PER_METER;
+    double ya = Math.toRadians(m_aprilTagData.ya);
     
     double thetaOne = Math.atan(x / y);
-    double thetaTwo = m_targetPoseR - m_driveTrainSubsystem.m_odometry.getPoseMeters().getRotation().getRadians();
+    double thetaTwo = m_targetPoseR - ya;
     double thetaThree = (Math.PI / 2)- (thetaOne + thetaTwo);
     double dc = Math.hypot(x, y);
     double lambda = dc * Math.sin(thetaThree);
     double delX = dc * Math.cos(thetaThree);
-    double delY = lambda - (m_dfo + (m_length / 2));
+    double delY = lambda - m_dfo;
 
     // m_targetPoseX = m_driveTrainSubsystem.m_odometry.getPoseMeters().getX() + delX + m_nodeOffset;
     // m_targetPoseY = m_driveTrainSubsystem.m_odometry.getPoseMeters().getY() + delY;
 
     // Simple path without holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+
+
     PathPlannerTrajectory traj = PathPlanner.generatePath(
-        new PathConstraints(0.1, 0.1), 
-        new PathPoint(mapCoordinates(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(mapCoordinates(delX + m_nodeOffset, delY), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
+        new PathConstraints(2, 0.5), 
+        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(delX + m_nodeOffset, delY), Rotation2d.fromRadians(0), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
     ));
     System.out.println("X: " + (delX + m_nodeOffset) + "   delY: " + delY + "   thetaTwo: " + thetaTwo);
     m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
     m_c.initialize();
-  }
-
-  private static Translation2d mapCoordinates(double x, double y) {
-    return new Translation2d(-(y / 3), x / 3);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

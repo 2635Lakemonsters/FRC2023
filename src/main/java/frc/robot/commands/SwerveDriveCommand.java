@@ -28,11 +28,21 @@ public class SwerveDriveCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    double ySpeed = RobotContainer.rightJoystick.getY();
+    double xSpeed = RobotContainer.rightJoystick.getX();
+    double rotSpeed = RobotContainer.rightJoystick.getTwist();
+
+    // Note that copySign is not needed for cubing.  I've left it in
+    // for drivers who prefer squaring.
+
+    ySpeed = Math.copySign(ySpeed * ySpeed * ySpeed, ySpeed);
+    xSpeed = Math.copySign(xSpeed * xSpeed * xSpeed, xSpeed);
+    rotSpeed = Math.copySign(rotSpeed * rotSpeed * rotSpeed, rotSpeed);
+
     // set the x power commanded
-    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY());
-    DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
-    // DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX()); // uncomment this to use left joystick for rotation
-    DrivetrainSubsystem.setRotCommanded(-RobotContainer.rightJoystick.getTwist()); // uncomment this to use right joystick twist
+    DrivetrainSubsystem.setXPowerCommanded(ySpeed);
+    DrivetrainSubsystem.setYPowerCommanded(xSpeed);
+    DrivetrainSubsystem.setRotCommanded(-rotSpeed);
   }
 
   // Called once the command ends or is interrupted.

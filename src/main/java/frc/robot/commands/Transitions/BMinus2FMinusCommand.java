@@ -12,7 +12,6 @@ import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticWaitCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -24,8 +23,8 @@ public class BMinus2FMinusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
       new ArmPneumaticWaitCommand(armPneumaticSubsystem, true),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
       new ArmMovementCommand(armMotorSubsystem, 170),
       new WaitCommand(1),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose

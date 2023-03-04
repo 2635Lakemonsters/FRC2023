@@ -25,7 +25,7 @@ public class MoveToScore extends CommandBase {
   private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
   private VisionObject m_aprilTagData;
   private boolean m_allDone = false;
-  private double m_length = Constants.LENGTH_OF_BOT;
+  // private double m_length = Constants.LENGTH_OF_BOT;
   private double m_dfo = Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG; //meters
   private double m_targetPoseR = (Math.PI / 2);
   DrivetrainSubsystem m_driveTrainSubsystem;

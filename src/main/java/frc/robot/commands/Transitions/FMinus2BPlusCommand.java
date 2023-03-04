@@ -22,8 +22,9 @@ public class FMinus2BPlusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vplus),
-      new ArmPneumaticCommand(armPneumaticSubsystem, false),
+      // new ParallelCommandGroup(
+        new ArmPneumaticCommand(armPneumaticSubsystem, false),
+        new ArmMovementCommand(armMotorSubsystem, Constants.Vplus + 10),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }

@@ -11,19 +11,19 @@ import edu.wpi.first.wpilibj.Timer;
 /**
   * Moves lower arm between retracted and extended configurations
  */
-public class ArmPneumaticCommand extends CommandBase {
+public class ArmPneumaticWaitCommand extends CommandBase {
   ArmPneumaticSubsystem m_armPneumaticSubsystem;
   public boolean bExtend;
 
   Timer m_ticktock = new Timer(); 
   double m_startTime;
   double m_endTime;
-  double m_delay_retract = 1.0 / 2; // seconds
-  double m_delay_extend = 1.5 / 3;
+  double m_delay_retract = 1.0; // seconds // TODO: THIS IS HORRIBLE IT SUCKS COPYING
+  double m_delay_extend = 1.5; // TODO
   boolean is_extending; 
 
   /** Creates a new IntakePneumaticCommand. */
-  public ArmPneumaticCommand(ArmPneumaticSubsystem armPneumaticSubsystem, boolean bExtend) {
+  public ArmPneumaticWaitCommand(ArmPneumaticSubsystem armPneumaticSubsystem, boolean bExtend) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_armPneumaticSubsystem = armPneumaticSubsystem;
     this.bExtend = bExtend;

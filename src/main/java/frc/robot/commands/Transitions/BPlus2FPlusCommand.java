@@ -22,8 +22,8 @@ public class BPlus2FPlusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hplus),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Hplus + 10),
       new ArmMovementCommand(armMotorSubsystem, p)
     );
   }

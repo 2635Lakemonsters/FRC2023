@@ -24,6 +24,7 @@ public class FPlus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem, false),
+      new WaitCommand(0.5), //required from pickup to top score
       new ArmMovementCommand(armMotorSubsystem, Constants.Vplus + 30),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, Constants.Hminus - 30),

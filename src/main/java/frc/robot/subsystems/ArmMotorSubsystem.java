@@ -20,7 +20,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   // private  final double kFilterArm = 0.1;
   // private  double armPOFiltered = 0;
   private  long loopCtr = 0;
-  private PIDController pid = new PIDController(0.012, 0.0, 0.0);
+  private PIDController pid = new PIDController(0.012, 0.0, 0.001); //added a little bit of kd to damp out velocity
   private  double theta;
   private  double m_poseTarget;
   private double fPO;
@@ -77,8 +77,11 @@ public class ArmMotorSubsystem extends SubsystemBase {
     //   System.out.println("   FB Motor Power = " + fbMotorPower);
     //   System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
-    armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
-
+    double motorPower = fbMotorPower - ffMotorPower;
+    armMotor.set(ControlMode.PercentOutput, motorPower);
+    SmartDashboard.putNumber("arm motor power", motorPower);
+    SmartDashboard.putNumber("arm ff motorpower", ffMotorPower);
+    SmartDashboard.putNumber("arm fb", fbMotorPower);
     putToSDB();
   }
 

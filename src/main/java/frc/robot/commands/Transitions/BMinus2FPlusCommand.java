@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Transitions;
 
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -21,13 +22,14 @@ public class BMinus2FPlusCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(
+    addCommands( // TODO: WRONG BUT WILL NOT USE
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, Constants.Vplus),
       new ArmPneumaticCommand(armPneumaticSubsystem, false),
       new ArmMovementCommand(armMotorSubsystem, Constants.Hplus),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, p) // target pose
+      new ArmMovementCommand(armMotorSubsystem, p), // target pose
+      new PrintCommand("this is wrong do not use")
     );
   }
 }

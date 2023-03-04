@@ -140,8 +140,8 @@ public final class Constants {
     public static final int ARM_RETRACTED_LOWER_LIMIT = 25;
     public static final int ARM_RETRACTED_UPPER_LIMIT = 335;
 
-    public static final double FB_UPPER_LIMIT = 0.2;
-    public static final double FB_LOWER_LIMIT = -0.2;
+    public static final double FB_UPPER_LIMIT = 0.17; //0.2
+    public static final double FB_LOWER_LIMIT = -0.17; //-0.2
 
     public static final double ARM_MOTOR_FF_GAIN = -0.15;
     public static final double ARM_ENCODER_OFFSET = -349;

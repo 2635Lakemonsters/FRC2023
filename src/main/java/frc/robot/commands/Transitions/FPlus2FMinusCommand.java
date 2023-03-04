@@ -23,7 +23,7 @@ public class FPlus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem, false),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus - 10),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );

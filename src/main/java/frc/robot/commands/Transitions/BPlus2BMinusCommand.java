@@ -21,10 +21,11 @@ public class BPlus2BMinusCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(
-      new ArmPneumaticCommand(armPneumaticSubsystem, false),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
+    addCommands( // TODO: this needs works but we probably wont use it for first match
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
+      new ArmPneumaticCommand(armPneumaticSubsystem, false),
+      // new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }

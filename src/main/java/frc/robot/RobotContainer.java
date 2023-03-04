@@ -316,10 +316,17 @@ public class RobotContainer extends TimedRobot {
                             //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             ));
 
+    // VIOLATES - get rid of this button during teleop
     homeArmButton.onTrue( new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
+
+    Trigger vacayButton = new JoystickButton(leftJoystick, 4);
+    vacayButton.onTrue(new SequentialCommandGroup(
+      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE)),
+      new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+    ));
   }
 
     /**

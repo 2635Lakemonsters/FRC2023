@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Transitions;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -16,13 +17,10 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class BPlus2FMinusCommand extends SequentialCommandGroup {
-  /** Creates a new TopScoringArmMovementCommand. */
   public BPlus2FMinusCommand(ArmPneumaticSubsystem armPneumaticSubsystem, ArmMotorSubsystem armMotorSubsystem, RobotContainer.Poser p) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
+      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus - 10),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );

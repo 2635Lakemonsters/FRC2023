@@ -21,7 +21,7 @@ public class FPlus2BMinusCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
-    addCommands(
+    addCommands( //TODO idcy
       new ArmPneumaticCommand(armPneumaticSubsystem, false),
       new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),

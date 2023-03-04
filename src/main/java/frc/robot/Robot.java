@@ -8,6 +8,7 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.drivers.NavX;
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
   public static double[] time;
   public static double[] angle;
   boolean autoHappened; 
+
+  boolean m_didViolate = false; 
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -160,6 +163,29 @@ public class Robot extends TimedRobot {
     // SmartDashboard.putNumber("clock cycle", calendar.getTimeInMillis() - last_time);
     // kXAccel pose to hold pose is 0.48
     // 1.0 will move it back at a mid rate
+
+    boolean isViolating = false;
+    boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
+    double theta = RobotContainer.m_armMotorSubsystem.getTheta();
+
+    if (!isExtended && (theta > 172 && theta < 208)) { // vertical
+      isViolating = true;
+      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+      m_didViolate = true;
+
+    } else if (isExtended && theta < 270 && theta > 218) { // horizontal
+      isViolating = true;
+      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+      m_didViolate = true;
+
+    } else {
+      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+      SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
+    }
+    
+    SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
+    SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
 
     NavX.updateXAccelFiltered();
   }

@@ -42,6 +42,7 @@ public class MoveToScore extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_c = null;
     m_allDone = true;
     m_objectTrackerSubsystemChassis.data();
     m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();

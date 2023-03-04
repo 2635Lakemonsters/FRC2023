@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -22,6 +23,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   private PIDController pid = new PIDController(0.012, 0.0, 0.0);
   private  double theta;
   private  double m_poseTarget;
+  private double fPO;
   
   /** Creates a new ArmMotorSubsystem. */
   public ArmMotorSubsystem() {
@@ -57,7 +59,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
       theta += 360.0;
     theta %= 360.0;
 
-    double fPO = (theta + alpha - 90.0);
+    fPO = (theta + alpha - 90.0);
     while (fPO < 0)
       fPO += 360.0;
     fPO %= 360.0;
@@ -76,6 +78,15 @@ public class ArmMotorSubsystem extends SubsystemBase {
     //   System.out.println("fPO = " + fPO + "   Theta = " + theta + "   Alpha = " + alpha + "   Raw = " + RobotContainer.encoder.getValue());
     }
     armMotor.set(ControlMode.PercentOutput, fbMotorPower - ffMotorPower);
+
+    putToSDB();
+  }
+
+  public void putToSDB() {
+    SmartDashboard.putNumber("theta", theta);
+    SmartDashboard.putNumber("fPO", fPO);
+    SmartDashboard.putNumber("Raw", RobotContainer.encoder.getValue());
+    SmartDashboard.putNumber("pneumatic state", (RobotContainer.m_armPneumaticSubsystem.getIsExtended() == true ? 1 : 0));
   }
 
   public double getTheta() { // arm angle with respect to the lower arm

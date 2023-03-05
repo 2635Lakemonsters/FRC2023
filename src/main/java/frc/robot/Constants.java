@@ -17,6 +17,8 @@ public final class Constants {
     public static final double INCHES_PER_METER = 39.37;
     public static final double LENGTH_OF_BOT = 35 / INCHES_PER_METER;
     public static final double FIELD_OFFSET_FROM_NODE_TO_APRILTAG = 0.36;
+    public static final double FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG = -23.5 / INCHES_PER_METER;
+    public static final double BUMPER_THICKNESS = 3 / INCHES_PER_METER;
 
     // FRONT LEFT
     public static final int DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR = 1; 
@@ -46,7 +48,7 @@ public final class Constants {
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
 
     public static final int kEncoderCPR = 42; // neo encoder ticks per revolution
-    public static final double kWheelDiameterMeters = util.inchesToMeters(4.0);
+    public static final double kWheelDiameterMeters = util.inchesToMeters(4.11);
     public static final double kDriveEncoderDistancePerPulse =
         // Assumes the encoders are directly mounted on the wheel shafts
         (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
@@ -109,7 +111,6 @@ public final class Constants {
     public static final int TOP_TRANSITION_ANGLE = 210; // move top arm to this angle before moving pneumatics
     public static final int MID_SCORING_ANGLE = 268;
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int PICKING_UP_ANGLE = 302;
     public static final int SUBSTATION_ANGLE = 268 + 10; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
@@ -123,7 +124,7 @@ public final class Constants {
     public static final boolean ARM_EXTEND_DEATH_BUTTON_START = false; 
     public static final int ARM_ANGLE_DEATH_BUTTON_START = 302; // TODO no idea what this real angle is, something > 273 or so to avoid horizontal exclusion zone
     public static final boolean ARM_EXTEND_PICKUP_FLOOR = true;
-    public static final int ARM_ANGLE_PICKUP_FLOOR = 302;
+    public static final int ARM_ANGLE_PICKUP_FLOOR = 310;
     
     // illegal arm regions
     public static final int Hplus = 271;

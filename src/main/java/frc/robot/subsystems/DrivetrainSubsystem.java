@@ -92,10 +92,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
             });
 
     // pid constants from 2022 FOLLOWER_TRANSLATION_CONSTANTS and FOLLOWER_ROTATION_CONSTANTS
-    private static final double TRANSLATION_P = 0.018; //0.05
+    private static final double TRANSLATION_P = 0.05;
     private static final double TRANSLATION_I = 0.0; //0.01
     private static final double TRANSLATION_D = 0.0;
-    private static final double ROTATION_P = 0.0; //0.3
+    private static final double ROTATION_P = 0.3;
     private static final double ROTATION_I = 0.0; //0.01
     private static final double ROTATION_D = 0.0;
     
@@ -338,7 +338,7 @@ public ChassisSpeeds getChassisSpeeds() {
     // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
     // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
     // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
-
+    SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
     SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
     SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
   }

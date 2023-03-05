@@ -172,10 +172,9 @@ public class RobotContainer extends TimedRobot {
     PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
 
     traj = PathPlanner.generatePath(
-        new PathConstraints(2, 0.5), 
-        new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) ,// position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+      new PathConstraints(2, 0.5), 
+      new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(-2.022, 0.78), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
     
@@ -237,70 +236,92 @@ public class RobotContainer extends TimedRobot {
                           // new PrintCommand("Before MATPC"),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                           // new PrintCommand("After STPC"),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
     
     scoreMidLeft.onTrue(  new SequentialCommandGroup( 
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
     
     scoreBottomLeft.onTrue( new SequentialCommandGroup( 
                             new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreTopRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
 
     scoreMidRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
 
     scoreBottomRight.onTrue(  new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                              new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                              new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
 
     scoreTopCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreMidCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreBottomCenter.onTrue( new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                              new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
 
     pickUpGamePieceSliderLeft.onTrue( new SequentialCommandGroup(
-                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
+                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, false),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToSlider)
-                          ));
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+                            ));
 
     pickUpGamePieceSliderRight.onTrue( new SequentialCommandGroup(
-                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
+                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, false),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider)
-                          ));
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+                            ));
     
     deathDriveCONE.whileTrue( new ParallelCommandGroup(
                             m_visionDriveClosedLoopCommandCONE

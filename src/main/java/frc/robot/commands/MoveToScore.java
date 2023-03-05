@@ -26,14 +26,15 @@ public class MoveToScore extends CommandBase {
   private VisionObject m_aprilTagData;
   private boolean m_allDone = false;
   // private double m_length = Constants.LENGTH_OF_BOT;
-  private double m_dfo = Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG; //meters
+  private double m_dfo; //meters
   private double m_targetPoseR = (Math.PI / 2);
   DrivetrainSubsystem m_driveTrainSubsystem;
   Command m_c = null;
 
   /** Creates a new MoveToScore. */
-  public MoveToScore(DrivetrainSubsystem driveTrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, double nodeOffset) {
+  public MoveToScore(DrivetrainSubsystem driveTrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, double nodeOffset, double fieldOffset) {
     // Use addRequirements() here to declare subsystem dependencies.
+    m_dfo = fieldOffset;
     m_nodeOffset = nodeOffset;
     m_objectTrackerSubsystemChassis = objectTrackerSubsystemChassis;
     m_driveTrainSubsystem = driveTrainSubsystem;
@@ -66,28 +67,24 @@ public class MoveToScore extends CommandBase {
     // math to normalize apriltag coordinates to robot-centric coordinates
     double x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
     double y = m_aprilTagData.z / Constants.INCHES_PER_METER;
-    double ya = Math.toRadians(m_aprilTagData.ya);
+    // double ya = Math.toRadians(m_aprilTagData.ya);
     
-    double thetaOne = Math.atan(x / y);
-    double thetaTwo = m_targetPoseR - ya;
-    double thetaThree = (Math.PI / 2)- (thetaOne + thetaTwo);
-    double dc = Math.hypot(x, y);
-    double lambda = dc * Math.sin(thetaThree);
-    double delX = dc * Math.cos(thetaThree);
-    double delY = lambda - m_dfo;
-
-    // m_targetPoseX = m_driveTrainSubsystem.m_odometry.getPoseMeters().getX() + delX + m_nodeOffset;
-    // m_targetPoseY = m_driveTrainSubsystem.m_odometry.getPoseMeters().getY() + delY;
-
-    // Simple path without holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
-
+    // double thetaOne = Math.atan(x / y);
+    // double thetaTwo = m_targetPoseR - ya;
+    // double thetaThree = (Math.PI / 2)- (thetaOne + thetaTwo);
+    // double dc = Math.hypot(x, y);
+    // double lambda = dc * Math.sin(thetaThree);
+    // double delX = dc * Math.cos(thetaThree);
+    // double delY = lambda - m_dfo;
+    double delX = m_nodeOffset + x;
+    double delY = y - m_dfo - Constants.BUMPER_THICKNESS;
 
     PathPlannerTrajectory traj = PathPlanner.generatePath(
         new PathConstraints(2, 0.5), 
-        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(delX + m_nodeOffset, delY), Rotation2d.fromRadians(0), Rotation2d.fromRadians(thetaTwo) // position, heading(direction of travel)
+        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(-delY, delX), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     ));
-    System.out.println("X: " + (delX + m_nodeOffset) + "   delY: " + delY + "   thetaTwo: " + thetaTwo);
+    System.out.println("delX: " + delX + "   delY: " + delY);
     m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
     m_c.initialize();
   }

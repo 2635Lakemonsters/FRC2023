@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_resetSwerveGyroCommand.execute();
+    m_autoChooser = m_robotContainer.getAutonomousCommand();
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 
@@ -82,7 +83,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
-    m_autoChooser = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.m_resetSwerveGyroCommand.execute();
 
     m_autonomousCommand = m_autoChooser.getSelected();
     
@@ -124,6 +125,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
+    m_robotContainer.m_resetSwerveGyroCommand.execute();
     RobotContainer.m_drivetrainSubsystem.followJoystick();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

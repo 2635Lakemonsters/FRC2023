@@ -5,6 +5,8 @@
 package frc.robot;
 
 
+import java.util.HashMap;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -46,6 +48,7 @@ import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
+import frc.robot.Pose;
 
 public class RobotContainer extends TimedRobot {
   public static PathPlannerTrajectory traj;
@@ -75,30 +78,11 @@ public class RobotContainer extends TimedRobot {
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
-  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
+  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
   //private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
-
-  public class Pose {
-    public Pose() {
-      this.targetExtend = false;
-      this.targetTheta = Constants.ARM_RETRACTED_LOWER_LIMIT;
-    }
-    
-    /**
-    @param targetExtend whether arm pneumatics are extended (true) or not (false)
-    @param targetTheta angle of upper arm relative to lower arm (NOT floor)
-    **/
-    public Pose(boolean targetExtend, int targetTheta) {
-      this.targetExtend = targetExtend;
-      this.targetTheta = targetTheta;
-    }
-    public boolean targetExtend;
-    public int targetTheta;
-    
-  };
 
   // TODO: This probably isn't the best way to do this.  However, it'll do
   // for now and allow re-thinking later.  Use the set/getTargetPose functions
@@ -357,7 +341,7 @@ public class RobotContainer extends TimedRobot {
    */
   public SendableChooser<Command> getAutonomousCommand() {
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-    m_autoChooser.setDefaultOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
+    m_autoChooser.addOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
 
     // create other options in SmartDashBoard
     m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
@@ -370,7 +354,8 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("Score top grab", m_autonomousCommands.ScoreTopGrab(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
-    
+    m_autoChooser.setDefaultOption("PP score left out engage", m_autonomousCommands.autoPathMarkerCommand());
+
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     return m_autoChooser; 

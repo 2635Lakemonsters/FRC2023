@@ -68,6 +68,8 @@ public class MoveToScore extends CommandBase {
     double x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
     double y = m_aprilTagData.z / Constants.INCHES_PER_METER;
     // double ya = Math.toRadians(m_aprilTagData.ya);
+
+    double translateX = Math.sqrt((Math.pow(x, 2)) + (Math.pow(y, 2)));
     
     // double thetaOne = Math.atan(x / y);
     // double thetaTwo = m_targetPoseR - ya;

@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -149,7 +150,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
                  yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
-                 rotCommanded*this.kMaxAngularSpeed, 
+                 MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 
                  true);
     }
     
@@ -269,15 +270,22 @@ public ChassisSpeeds getChassisSpeeds() {
 
   /** Follows PathPlanner trajectory. Used in auto sequences.
    * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
+   * <p> "Forward" in auto = where the dot is on the on the GUI
    * 
+   * <p> "Forward" when following the GUI-generated sequences is battery being further from you
+   *      and robot traveling away from you.
+   * <p> "Forward" in auto is opposite of "forward" in teleop
    * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
-   * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be zeroed at the start of the command sequence.
+   * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be 
+   * set to be the starting point of the GUI path. Makes it field oriented (kindof...?)
   **/
   public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath) {
+    InstantCommand stopFollowingJoy = new InstantCommand(()->this.followPath());
+
     InstantCommand ic = new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         if(isFirstPath){
-          this.zeroOdometry();
+          this.resetOdometry(traj.getInitialHolonomicPose());
         }
       });
 
@@ -292,27 +300,31 @@ public ChassisSpeeds getChassisSpeeds() {
       this
     );
 
-    return new SequentialCommandGroup(ic, c);
+    InstantCommand followJoyAgain =  new InstantCommand(()->this.followJoystick());
+
+    return new SequentialCommandGroup(stopFollowingJoy, ic, c, followJoyAgain);
   }
 
   /** Follows PathPlanner trajectory. Used in auto sequences.
    * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
-   * 
+   * <p> "Forward" when following the GUI-generated sequences is battery being further from you
+   *      and robot traveling away from you.
+   * <p> "Forward" in auto is opposite of "forward" in teleop
    * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
   **/
-  public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
-    PPSwerveControllerCommand c = new PPSwerveControllerCommand(
-      traj, 
-      this::getPose, 
-      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-      new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
-      this::setDesiredStates, 
-      this
-    );
+  // public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+  //   PPSwerveControllerCommand c = new PPSwerveControllerCommand(
+  //     traj, 
+  //     this::getPose, 
+  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+  //     new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
+  //     this::setDesiredStates, 
+  //     this
+  //   );
 
-    return c;
-  }
+  //   return c;
+  // }
 
   public NavX getGyroscope() {
     return m_gyro; 

@@ -10,6 +10,7 @@ import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
+import frc.robot.commands.ArmPneumaticWaitCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -23,8 +24,8 @@ public class FPlus2FMinusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmPneumaticCommand(armPneumaticSubsystem, false),
-      new WaitCommand(0.5), //required from pickup to top score
+      new ArmPneumaticWaitCommand(armPneumaticSubsystem, false),
+      // new WaitCommand(0.5), //required from pickup to top score
       new ArmMovementCommand(armMotorSubsystem, Constants.Vplus + 30),
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
       new ArmMovementCommand(armMotorSubsystem, Constants.Hminus - 30),

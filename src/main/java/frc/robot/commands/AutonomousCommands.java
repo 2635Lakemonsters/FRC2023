@@ -10,7 +10,6 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.commands.FollowPathWithEvents;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,8 +18,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.Pose;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -75,38 +74,43 @@ public class AutonomousCommands  {
         return c;
     }
 
-    public Command RotatePath(DrivetrainSubsystem drivetrainSubsystem) {
+    public Command RotationTesting(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Rotation Testing", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command BottomScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Bottom score twice engage", new PathConstraints(0.02, 0.05));
+    public Command LeftScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Left score twice engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command MidScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
+    public Command MidScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score twice engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command TopScoreTwice(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Top score twice engage", new PathConstraints(0.02, 0.05));
+    public Command RightScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Right score twice engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command ScoreTopGrab(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Score top grab engage", new PathConstraints(0.02, 0.05));
+    public Command RightScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Right score engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command ScoreMidGrab(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Score mid grab engage", new PathConstraints(0.02, 0.05));
+    public Command MidScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score engage", new PathConstraints(0.02, 0.05));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command ScoreBottomGrab(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Score bottom grab engage", new PathConstraints(0.02, 0.05));
+    public Command LeftScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Left score engage", new PathConstraints(2, 1));
+        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    }
+
+    public Command CircleTest(DrivetrainSubsystem drivetrainSubsystem) {
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Circle test", new PathConstraints(2, 1));
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 

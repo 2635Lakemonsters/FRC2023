@@ -74,6 +74,7 @@ public final class Constants {
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
     public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
     public static final int DRIVE_STRAIGHT_BUTTON = 3;
+    public static final int HOME_ARM_BUTTON = 4;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;
     public static final int HOLD_STILL_BUTTON = 9;
@@ -88,7 +89,6 @@ public final class Constants {
     public static final int LEFT_SLIDER_BUTTON = 3;
     public static final int RIGHT_SLIDER_BUTTON = 4;
     public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
-    public static final int HOME_ARM_BUTTON = 6;
     public static final int SCORE_TOP_LEFT = 7;
     public static final int SCORE_TOP_RIGHT = 8;
     public static final int SCORE_MID_LEFT = 9;

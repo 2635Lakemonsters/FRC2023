@@ -21,10 +21,6 @@ public class BPlus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hminus - 20),
-      // new PrintCommand("we made it"),
-      new WaitCommand(0.5),
-      // new PrintCommand("finished!"),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }

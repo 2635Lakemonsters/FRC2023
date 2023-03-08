@@ -22,9 +22,6 @@ public class BMinus2BPlusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      new ArmPneumaticWaitCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vplus),
-      new ArmPneumaticWaitCommand(armPneumaticSubsystem, false),
       new ArmMovementCommand(armMotorSubsystem, p) // target
     );
   }

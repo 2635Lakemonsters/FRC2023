@@ -24,9 +24,6 @@ public class BMinus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticWaitCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
-      new ArmMovementCommand(armMotorSubsystem, 170),
-      new WaitCommand(0.8),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }

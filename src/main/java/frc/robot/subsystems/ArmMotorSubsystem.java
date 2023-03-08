@@ -98,6 +98,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
   public void setPose(double poseTarget) {
     m_poseTarget = poseTarget;
+    SmartDashboard.putNumber("Pose Target", poseTarget);
   }
 
   public boolean areWeThereYet() {

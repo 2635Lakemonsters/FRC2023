@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.drivers.NavX;
 
@@ -303,6 +304,13 @@ public ChassisSpeeds getChassisSpeeds() {
     InstantCommand followJoyAgain =  new InstantCommand(()->this.followJoystick());
 
     return new SequentialCommandGroup(stopFollowingJoy, ic, c, followJoyAgain);
+  }
+  // have a followTrajectoryCommand() which waits at the end.
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath, double seconds) {
+    return new SequentialCommandGroup(
+      followTrajectoryCommand(traj, isFirstPath),
+      new WaitCommand(seconds)
+    );
   }
 
   /** Follows PathPlanner trajectory. Used in auto sequences.

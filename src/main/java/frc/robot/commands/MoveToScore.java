@@ -27,7 +27,7 @@ public class MoveToScore extends CommandBase {
   private boolean m_allDone = false;
   // private double m_length = Constants.LENGTH_OF_BOT;
   private double m_dfo; //meters
-  private double m_targetPoseR = (Math.PI / 2);
+  // private double m_targetPoseR = (Math.PI / 2);
   DrivetrainSubsystem m_driveTrainSubsystem;
   Command m_c = null;
 

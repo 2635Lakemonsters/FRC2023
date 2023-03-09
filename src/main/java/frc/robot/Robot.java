@@ -8,11 +8,9 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.drivers.NavX;
-import frc.robot.subsystems.DrivetrainSubsystem;
 
 
 /**
@@ -51,6 +49,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.m_resetSwerveGyroCommand.execute();
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
+    RobotContainer.m_drivetrainSubsystem.recalibrateGyro();
+
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 
@@ -167,9 +167,9 @@ public class Robot extends TimedRobot {
     // kXAccel pose to hold pose is 0.48
     // 1.0 will move it back at a mid rate
 
-    boolean isViolating = false;
-    boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
-    double theta = RobotContainer.m_armMotorSubsystem.getTheta();
+    // boolean isViolating = false;
+    // boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
+    // double theta = RobotContainer.m_armMotorSubsystem.getTheta();
 
     // if (!isExtended && (theta > 172 && theta < 208)) { // vertical
     //   isViolating = true;

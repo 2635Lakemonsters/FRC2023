@@ -74,7 +74,7 @@ public final class Constants {
     // buttons - Left Stick
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
     public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
-    public static final int DRIVE_STRAIGHT_BUTTON = 3;
+    //public static final int DRIVE_STRAIGHT_BUTTON = 3;
     public static final int HOME_ARM_BUTTON = 4;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;

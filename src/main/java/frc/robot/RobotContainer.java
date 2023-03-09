@@ -73,7 +73,7 @@ public class RobotContainer extends TimedRobot {
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
+  // private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
@@ -119,7 +119,7 @@ public class RobotContainer extends TimedRobot {
     // left joystick button bindings
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
-    Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
+    // Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
     Trigger homeArmButton = new JoystickButton(leftJoystick, Constants.HOME_ARM_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(leftJoystick, Constants.BALANCING_BUTTON);
@@ -164,13 +164,13 @@ public class RobotContainer extends TimedRobot {
      * 3. Run path follower
      * 4. Re-enable joysticks
      */
-    Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    driveStraightButton.onTrue(new SequentialCommandGroup(
-      new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
-      new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-      dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
-      new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-    ));
+    // Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // driveStraightButton.onTrue(new SequentialCommandGroup(
+    //   new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
+    //   new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+    //   dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
+    //   new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+    // ));
 
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));

@@ -86,7 +86,7 @@ public class SwerveModule {
     return new SwerveModulePosition(m_driveEncoder.getPosition(), new Rotation2d(getTurningEncoderRadians()));
   }
 
-  private double getTurningEncoderRadians(){
+  public double getTurningEncoderRadians(){
     double angle = (1.0 - m_turningEncoder.getVoltage() / RobotController.getVoltage5V()) * 2.0 * Math.PI + turningMotorOffset;
     angle %= 2.0 * Math.PI;
     if (angle < 0.0) {

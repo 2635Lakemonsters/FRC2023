@@ -156,6 +156,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     
     updateOdometry();
+    putDTSToSmartDashboard();
   }
 
   public void recalibrateGyro() {
@@ -354,13 +355,18 @@ public ChassisSpeeds getChassisSpeeds() {
    * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
-    // SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
-    SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
-    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
+    SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
+
+    SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
+    SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
+    SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
+    SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
   }
 
   

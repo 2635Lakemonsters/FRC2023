@@ -49,6 +49,7 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_resetSwerveGyroCommand.execute();
+    RobotContainer.m_drivetrainSubsystem.zeroOdometry();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
@@ -117,8 +118,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SwerveDriveCommand(RobotContainer.m_drivetrainSubsystem,2);
-    RobotContainer.m_drivetrainSubsystem.updateOdometry();
+    // RobotContainer.m_drivetrainSubsystem.updateOdometry();
     NavX.updateXAccelFiltered();
   }
 
@@ -192,8 +192,6 @@ public class Robot extends TimedRobot {
 
     NavX.updateXAccelFiltered();
   }
-
-  private void SwerveDriveCommand(DrivetrainSubsystem mDrivetrainsubsystem, int i) {}
 
   @Override
   public void testInit() {

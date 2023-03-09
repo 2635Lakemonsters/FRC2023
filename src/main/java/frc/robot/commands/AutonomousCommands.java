@@ -82,7 +82,8 @@ public class AutonomousCommands  {
     }
 
     public Command OutPath(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Out Path", new PathConstraints(0.1, 0.1));
+        m_dts.zeroOdometry();
+        PathPlannerTrajectory traj = PathPlanner.loadPath("Out Path", new PathConstraints(0.5, 0.1));
         Command c = drivetrainSubsystem.followTrajectoryCommand(traj, true);
         return c;
     }
@@ -146,19 +147,27 @@ public class AutonomousCommands  {
         return atc.runAutonomousCommand();
     }
 
-    public Command scoreHighOutEngageLeft() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Score left out engage cube", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
+    public Command scoreHighOutEngageLeftCone() {
+        PathPlannerTrajectory path = PathPlanner.loadPath("Score left out engage cone", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
+        
+        Command backHome = new SequentialCommandGroup(
+            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
+        );
+
         Command c = new SequentialCommandGroup(
             m_highScoreCommand,
-            new PrintCommand("high score done"),
-            m_dts.followTrajectoryCommand(path, true),
-            new PrintCommand("follow trajectory done")
+            new ParallelCommandGroup(
+                m_dts.followTrajectoryCommand(path, true),
+                backHome
+            )
         );
 
         return c;   
     }
 
     public Command scoreHighDriveOut() { // with on the fly generated paths
+        m_dts.zeroOdometry();
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
@@ -166,8 +175,12 @@ public class AutonomousCommands  {
         );
 
         Command c = m_dts.followTrajectoryCommand(traj, true);
+        Command backHome = new SequentialCommandGroup(
+            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
+        );
 
-        Command s = new SequentialCommandGroup(scoreHigh(), c);
+        Command s = new SequentialCommandGroup(scoreHigh(), new ParallelCommandGroup(c, backHome));
         return s;
     }
 

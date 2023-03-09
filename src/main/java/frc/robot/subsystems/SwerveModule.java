@@ -125,7 +125,7 @@ public class SwerveModule {
 
 
     String str = String.format("setDesiredState/Verror%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str, velocityError);
+    // SmartDashboard.putNumber(str, velocityError);
 
     final double driveFeedForward = state.speedMetersPerSecond / DrivetrainSubsystem.kMaxSpeed;
 
@@ -145,9 +145,9 @@ public class SwerveModule {
     }
 
     String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str1, driveOutput);
+    // SmartDashboard.putNumber(str1, driveOutput);
     String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str2, driveFeedForward);
+    // SmartDashboard.putNumber(str2, driveFeedForward);
 
     // Calculate the turning motor output from the turning PID controller.
     m_driveMotor.set(MathUtils.clamp(driveOutput + driveFeedForward, -1.0, 1.0));

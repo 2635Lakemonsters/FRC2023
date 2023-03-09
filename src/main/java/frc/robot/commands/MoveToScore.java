@@ -64,12 +64,21 @@ public class MoveToScore extends CommandBase {
     m_objectTrackerSubsystemChassis.data();
     m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
 
-    // math to normalize apriltag coordinates to robot-centric coordinates
-    double x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
-    double y = m_aprilTagData.z / Constants.INCHES_PER_METER;
-    // double ya = Math.toRadians(m_aprilTagData.ya);
+    double x, y;
 
-    double translateX = Math.sqrt((Math.pow(x, 2)) + (Math.pow(y, 2)));
+    try {
+      // math to normalize apriltag coordinates to robot-centric coordinates
+      x = m_aprilTagData.x / Constants.INCHES_PER_METER; 
+      y = m_aprilTagData.z / Constants.INCHES_PER_METER;
+      // double ya = Math.toRadians(m_aprilTagData.ya);
+    } catch (Exception e) {
+      System.out.println("APRILTAG X OR Y IS NULL");
+      return;
+    }
+
+    if ((y * Constants.INCHES_PER_METER) > 55) { // to make sure it doesn't move too early
+      return;
+    }
     
     // double thetaOne = Math.atan(x / y);
     // double thetaTwo = m_targetPoseR - ya;

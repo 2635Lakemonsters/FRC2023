@@ -125,7 +125,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
-    m_robotContainer.m_resetSwerveGyroCommand.execute();
+    // m_robotContainer.m_resetSwerveGyroCommand.execute();
     RobotContainer.m_drivetrainSubsystem.followJoystick();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -171,24 +171,24 @@ public class Robot extends TimedRobot {
     boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
     double theta = RobotContainer.m_armMotorSubsystem.getTheta();
 
-    if (!isExtended && (theta > 172 && theta < 208)) { // vertical
-      isViolating = true;
-      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-      m_didViolate = true;
+    // if (!isExtended && (theta > 172 && theta < 208)) { // vertical
+    //   isViolating = true;
+    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+    //   m_didViolate = true;
 
-    } else if (isExtended && theta < 270 && theta > 218) { // horizontal
-      isViolating = true;
-      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-      m_didViolate = true;
+    // } else if (isExtended && theta < 270 && theta > 218) { // horizontal
+    //   isViolating = true;
+    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+    //   m_didViolate = true;
 
-    } else {
-      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-      SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
-    }
+    // } else {
+    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+    //   SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
+    // }
     
-    SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
-    SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
+    // SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
+    // SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
 
     NavX.updateXAccelFiltered();
   }

@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Pose;
 import frc.robot.RobotContainer;
@@ -28,15 +29,17 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 /** Add your docs here. */
 public class AutonomousCommands  {
     public HashMap<String, Command> eventMap = new HashMap<>();
-    public final double AUTO_MAX_VEL = 4; 
-    public final double AUTO_MAX_ACCEL = 3;
+    public final double AUTO_MAX_VEL = 4.0; 
+    public final double AUTO_MAX_ACCEL = 3.0;
 
     DrivetrainSubsystem m_dts;
     ArmPneumaticSubsystem m_aps;
     ArmMotorSubsystem m_ams;
     ClawPneumaticSubsystem m_cps;
 
-    private Command scoreHigh() {
+    Command m_highScoreCommand; 
+
+    public Command scoreHigh() {
         Command c = new SequentialCommandGroup(
             new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose),
@@ -48,7 +51,7 @@ public class AutonomousCommands  {
             // // where you move the arm and then score immediately without the human in the loop.
             // // If the human in the loop commands the actual gripper release, then won't need 
             // // a wait after MoveArmToPoseCommand()
-            // new WaitCommand(0.02),
+            new WaitCommand(0.25),
             new ParallelCommandGroup(
                 new ClawPneumaticCommand(m_cps, false),
                 new PrintCommand("**********end of scoreHigh()")
@@ -62,6 +65,8 @@ public class AutonomousCommands  {
         m_aps = aps;
         m_ams = ams; 
         m_cps = cps;
+
+        m_highScoreCommand = scoreHigh();
 
         eventMap.put("score high", scoreHigh());
         eventMap.put("event2", new PrintCommand("Passed marker 2"));
@@ -87,35 +92,35 @@ public class AutonomousCommands  {
         return drivetrainSubsystem.followTrajectoryCommand(traj, true);
     }
 
-    public Command LeftScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Left score twice engage", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command LeftScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Left score twice engage", new PathConstraints(0.02, 0.05));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
-    public Command MidScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score twice engage", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command MidScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score twice engage", new PathConstraints(0.02, 0.05));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
-    public Command RightScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Right score twice engage", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command RightScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Right score twice engage", new PathConstraints(0.02, 0.05));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
-    public Command RightScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Right score engage", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command RightScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Right score engage", new PathConstraints(0.02, 0.05));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
-    public Command MidScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score engage", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command MidScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score engage", new PathConstraints(0.02, 0.05));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
-    public Command LeftScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Left score engage", new PathConstraints(2, 1));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
+    // public Command LeftScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
+    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Left score engage", new PathConstraints(2, 1));
+    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // }
 
     public Command CircleTest(DrivetrainSubsystem drivetrainSubsystem) {
         PathPlannerTrajectory traj = PathPlanner.loadPath("Circle test", new PathConstraints(2, 1));
@@ -141,21 +146,38 @@ public class AutonomousCommands  {
         return atc.runAutonomousCommand();
     }
 
-    public Command autoPathMarkerCommand() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Score left out engage", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
-        // FollowPathWithEvents command = new FollowPathWithEvents(
-        //     m_dts.followTrajectoryCommand(path, true),
-        //     path.getMarkers(),
-        //     eventMap
-        // );
-        // return command; 
-        Command high = scoreHigh();
+    public Command scoreHighOutEngageLeft() {
+        PathPlannerTrajectory path = PathPlanner.loadPath("Score left out engage cube", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
         Command c = new SequentialCommandGroup(
-            high,
-            m_dts.followTrajectoryCommand(path, true)
+            m_highScoreCommand,
+            new PrintCommand("high score done"),
+            m_dts.followTrajectoryCommand(path, true),
+            new PrintCommand("follow trajectory done")
         );
 
-        return c; 
+        return c;   
     }
+
+    public Command scoreHighDriveOut() { // with on the fly generated paths
+        PathPlannerTrajectory traj = PathPlanner.generatePath(
+            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))
+        );
+
+        Command c = m_dts.followTrajectoryCommand(traj, true);
+
+        Command s = new SequentialCommandGroup(scoreHigh(), c);
+        return s;
+    }
+
+    /**
+     * PATHS WE NEED
+     * score high out engage left - cone and cube
+     * score high out engage right - cone and cube
+     * score high engage, no leaving the field, cone and cube in co-op grid
+     */
+
+
 
 }

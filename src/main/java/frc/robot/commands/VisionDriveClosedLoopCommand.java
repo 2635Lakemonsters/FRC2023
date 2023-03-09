@@ -105,7 +105,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     System.out.println("Initialized FCC");
 
     isClose = false;
-    SmartDashboard.putString("FCC Status", "FCC Init");
+    // SmartDashboard.putString("FCC Status", "FCC Init");
   }
 
   @Override
@@ -118,9 +118,9 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
      
     if (closestObject == null || closestObject.z > 150) {
-      SmartDashboard.putNumber("driveRotation", 99);
+      // SmartDashboard.putNumber("driveRotation", 99);
       m_drivetrainSubsystem.drive(0, 0, 0, false);
-      SmartDashboard.putString("FCC Status", "No cargo in frame OR cargo out of range");
+      // SmartDashboard.putString("FCC Status", "No cargo in frame OR cargo out of range");
       return; // no object found
     }
     
@@ -140,7 +140,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     }
 
     totalRotation += rotation;
-    SmartDashboard.putNumber("driveRotation", rotation);
+    // SmartDashboard.putNumber("driveRotation", rotation);
     
     // strafe
     strafeController.setSetpoint(closestObject.x);
@@ -152,7 +152,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       strafe = -1;
     }
 
-    SmartDashboard.putNumber("driveStrafe", strafe);
+    // SmartDashboard.putNumber("driveStrafe", strafe);
 
     // forward
     //forwardController.setSetpoint(closestObject.z-RobotMap.TARGET_TRIGGER_DISTANCE); // TODO figure out how to implement code that begins intake process 
@@ -164,7 +164,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       forward = -1;
     }
 
-    SmartDashboard.putNumber("driveForward", forward);
+    // SmartDashboard.putNumber("driveForward", forward);
     
     final boolean robotOriented = false;
 

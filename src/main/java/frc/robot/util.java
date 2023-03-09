@@ -153,9 +153,9 @@ public final class util {
     }
 
     public static ARM_STATE getArmState() {
-        if (!RobotContainer.m_armMotorSubsystem.areWeThereYet()) {
-            return ARM_STATE.Moving;
-        }
+        // if (!RobotContainer.m_armMotorSubsystem.areWeThereYet()) {
+        //     return ARM_STATE.Moving;
+        // }
         boolean bExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
         double theta = RobotContainer.m_armMotorSubsystem.getTheta();
         return getArmState(bExtended, theta);

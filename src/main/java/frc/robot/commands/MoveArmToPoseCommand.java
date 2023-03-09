@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.Pose;
 import frc.robot.RobotContainer.Poser;
-
+import frc.robot.Constants.ARM_STATE;
 import frc.robot.Constants.ARM_TRANSITION;
 
 import frc.robot.commands.Transitions.*;
@@ -29,6 +29,7 @@ public class MoveArmToPoseCommand extends SequentialCommandGroup {
   
   public ARM_TRANSITION select() {
     Pose pose = RobotContainer.getTargetPose();
+    ARM_STATE as = util.getArmState();
     ARM_TRANSITION trans = util.getTransition(pose.targetExtend, pose.targetTheta);
     System.out.println("select: " + trans);
     return trans;

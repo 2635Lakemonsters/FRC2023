@@ -127,7 +127,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    putDTSToSmartDashboard();
+    // putDTSToSmartDashboard();
 
     if (followJoysticks) {
 

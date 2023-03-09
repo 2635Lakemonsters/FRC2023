@@ -79,10 +79,10 @@ public class ArmMotorSubsystem extends SubsystemBase {
     }
     double motorPower = fbMotorPower - ffMotorPower;
     armMotor.set(ControlMode.PercentOutput, motorPower);
-    SmartDashboard.putNumber("arm motor power", motorPower);
-    SmartDashboard.putNumber("arm ff motorpower", ffMotorPower);
-    SmartDashboard.putNumber("arm fb", fbMotorPower);
-    putToSDB();
+    // SmartDashboard.putNumber("arm motor power", motorPower);
+    // SmartDashboard.putNumber("arm ff motorpower", ffMotorPower);
+    // SmartDashboard.putNumber("arm fb", fbMotorPower);
+    // putToSDB();
   }
 
   public void putToSDB() {

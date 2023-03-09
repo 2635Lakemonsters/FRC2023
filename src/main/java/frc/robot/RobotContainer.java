@@ -225,7 +225,7 @@ public class RobotContainer extends TimedRobot {
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                           new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
                           new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
     
@@ -249,7 +249,7 @@ public class RobotContainer extends TimedRobot {
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                           new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
                           new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
 
@@ -273,7 +273,7 @@ public class RobotContainer extends TimedRobot {
                             new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                             new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
                             new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
@@ -302,20 +302,22 @@ public class RobotContainer extends TimedRobot {
                             new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
                             new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
+
+    
     
     deathDriveCONE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCONE
-                            // new SequentialCommandGroup(
-                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            ));
+                            m_visionDriveClosedLoopCommandCONE,
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+    )));
 
     deathDriveCUBE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCUBE 
-                            // new SequentialCommandGroup(
-                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            ));
+                            m_visionDriveClosedLoopCommandCUBE, 
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            )));
 
     // VIOLATES - get rid of this button during teleop
     homeArmButton.onTrue( new SequentialCommandGroup(
@@ -323,9 +325,9 @@ public class RobotContainer extends TimedRobot {
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    Trigger vacayButton = new JoystickButton(leftJoystick, 4);
+    Trigger vacayButton = new JoystickButton(rightJoystick, Constants.TRAVEL_BUTTON_ID);
     vacayButton.onTrue(new SequentialCommandGroup(
-      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE)),
+      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM)),
       new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
     ));
   }
@@ -342,17 +344,20 @@ public class RobotContainer extends TimedRobot {
     // create other options in SmartDashBoard
     m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
     m_autoChooser.addOption("Rotation Testing", m_autonomousCommands.RotationTesting(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Left score twice engage", m_autonomousCommands.LeftScoreTwiceEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Mid score twice engage", m_autonomousCommands.MidScoreTwiceEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Right score twice engage", m_autonomousCommands.RightScoreTwiceEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Right score engage", m_autonomousCommands.RightScoreEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Mid score engage", m_autonomousCommands.MidScoreEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Left score engage", m_autonomousCommands.LeftScoreEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Left score twice engage", m_autonomousCommands.LeftScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Mid score twice engage", m_autonomousCommands.MidScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Right score twice engage", m_autonomousCommands.RightScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Right score engage", m_autonomousCommands.RightScoreEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Mid score engage", m_autonomousCommands.MidScoreEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Left score engage", m_autonomousCommands.LeftScoreEngage(m_drivetrainSubsystem));
     m_autoChooser.addOption("Circle test", m_autonomousCommands.CircleTest(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
-    m_autoChooser.setDefaultOption("PP score left out engage", m_autonomousCommands.autoPathMarkerCommand());
-
+    m_autoChooser.addOption("PP score left out engage", m_autonomousCommands.scoreHighOutEngageLeft());
+    m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
+    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh(),
+    new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+    new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     return m_autoChooser; 

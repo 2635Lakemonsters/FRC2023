@@ -40,8 +40,8 @@ public class SwerveDriveCommand extends CommandBase {
     rotSpeed = Math.copySign(rotSpeed * rotSpeed * rotSpeed, rotSpeed);
 
     // set the x power commanded
-    DrivetrainSubsystem.setXPowerCommanded(ySpeed);
-    DrivetrainSubsystem.setYPowerCommanded(xSpeed);
+    DrivetrainSubsystem.setXPowerCommanded(-ySpeed);
+    DrivetrainSubsystem.setYPowerCommanded(-xSpeed);
     DrivetrainSubsystem.setRotCommanded(-rotSpeed);
   }
 

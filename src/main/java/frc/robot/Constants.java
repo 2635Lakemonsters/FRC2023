@@ -17,7 +17,8 @@ public final class Constants {
     public static final double INCHES_PER_METER = 39.37;
     public static final double LENGTH_OF_BOT = 35 / INCHES_PER_METER;
     public static final double FIELD_OFFSET_FROM_NODE_TO_APRILTAG = 0.36;
-    public static final double FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG = -23.5 / INCHES_PER_METER;
+    public static final double FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG = -15 / INCHES_PER_METER;
+    public static final double MID_SCORING_STANDOFF_DISTANCE = 25 / INCHES_PER_METER;
     public static final double BUMPER_THICKNESS = 3 / INCHES_PER_METER;
 
     // FRONT LEFT
@@ -89,6 +90,7 @@ public final class Constants {
     public static final int LEFT_SLIDER_BUTTON = 3;
     public static final int RIGHT_SLIDER_BUTTON = 4;
     public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
+    public static final int TRAVEL_BUTTON_ID = 6;
     public static final int SCORE_TOP_LEFT = 7;
     public static final int SCORE_TOP_RIGHT = 8;
     public static final int SCORE_MID_LEFT = 9;
@@ -106,16 +108,16 @@ public final class Constants {
 
     // arm angle positions
     public static final int HOME_ARM_ANGLE = 40; 
-    public static final int TRAVELING_ARM_ANGLE = 331;
+    public static final int TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM = 295;
     public static final int TOP_SCORING_ANGLE = 207;
     public static final int TOP_TRANSITION_ANGLE = 210; // move top arm to this angle before moving pneumatics
-    public static final int MID_SCORING_ANGLE = 281;
+    public static final int MID_SCORING_ANGLE = 232;        // 281 if retracted - marginal
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int SUBSTATION_ANGLE = 283; // TODO: check this value
+    public static final int SUBSTATION_ANGLE = 281; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;
-    public static final boolean MID_SCORING_EXTEND = false;
+    public static final boolean MID_SCORING_EXTEND = true;
     public static final boolean BOTTOM_SCORING_EXTEND = true;
     public static final boolean PICKING_UP_EXTEND = true;
     public static final boolean SUBSTATION_EXTEND = false; // TODO: check this value

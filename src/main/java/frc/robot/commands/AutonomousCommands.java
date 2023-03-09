@@ -162,7 +162,7 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))
+            new PathPoint(new Translation2d(4.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))
         );
 
         Command c = m_dts.followTrajectoryCommand(traj, true);

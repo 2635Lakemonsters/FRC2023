@@ -17,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,9 @@ import frc.robot.Constants;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+    private static final double FIELD_WIDTH_METERS = 8.02;    // TODO: Check this value.  I got it from 
+                                                              // PathPlannerTrajectory.class, but I think
+                                                              // it should be 8.23 (27 feet).
 
     public static final double kMaxSpeed = 3.63; // 3.63 meters per second
     // public final double kMaxSpeed = 0.5;
@@ -287,7 +291,11 @@ public ChassisSpeeds getChassisSpeeds() {
     InstantCommand ic = new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         if(isFirstPath){
-          this.resetOdometry(traj.getInitialHolonomicPose());
+          Pose2d initialPose = traj.getInitialHolonomicPose();
+          if (DriverStation.getAlliance() == DriverStation.Alliance.Red && traj.fromGUI) {
+            initialPose = new Pose2d(initialPose.getX(), FIELD_WIDTH_METERS - initialPose.getTranslation().getY(), initialPose.getRotation());
+          }
+          this.resetOdometry(initialPose);
         }
       });
 
@@ -298,7 +306,7 @@ public ChassisSpeeds getChassisSpeeds() {
       new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
       new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
       this::setDesiredStates, 
-      isFirstPath, 
+      true,       // Always mirror
       this
     );
 

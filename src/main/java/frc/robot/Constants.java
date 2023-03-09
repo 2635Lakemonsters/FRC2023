@@ -107,11 +107,11 @@ public final class Constants {
     // arm angle positions
     public static final int HOME_ARM_ANGLE = 40; 
     public static final int TRAVELING_ARM_ANGLE = 331;
-    public static final int TOP_SCORING_ANGLE = 202;
+    public static final int TOP_SCORING_ANGLE = 207;
     public static final int TOP_TRANSITION_ANGLE = 210; // move top arm to this angle before moving pneumatics
-    public static final int MID_SCORING_ANGLE = 268;
+    public static final int MID_SCORING_ANGLE = 281;
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int SUBSTATION_ANGLE = 268 + 10; // TODO: check this value
+    public static final int SUBSTATION_ANGLE = 283; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;
@@ -124,7 +124,7 @@ public final class Constants {
     public static final boolean ARM_EXTEND_DEATH_BUTTON_START = false; 
     public static final int ARM_ANGLE_DEATH_BUTTON_START = 302; // TODO no idea what this real angle is, something > 273 or so to avoid horizontal exclusion zone
     public static final boolean ARM_EXTEND_PICKUP_FLOOR = true;
-    public static final int ARM_ANGLE_PICKUP_FLOOR = 310 - 5;
+    public static final int ARM_ANGLE_PICKUP_FLOOR = 332;
     
     // illegal arm regions
     public static final int Hplus = 271;

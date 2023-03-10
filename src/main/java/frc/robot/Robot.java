@@ -32,6 +32,8 @@ public class Robot extends TimedRobot {
   public static double[] angle;
   boolean autoHappened; 
 
+  public static double init_gyro_z_accel; 
+
   boolean m_didViolate = false; 
 
   /**
@@ -50,6 +52,8 @@ public class Robot extends TimedRobot {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
     m_autoChooser = m_robotContainer.getAutonomousCommand();
     RobotContainer.m_drivetrainSubsystem.recalibrateGyro();
+
+    this.init_gyro_z_accel = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRawAccelZ();
 
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());

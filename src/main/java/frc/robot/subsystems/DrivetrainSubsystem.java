@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -375,6 +376,24 @@ public ChassisSpeeds getChassisSpeeds() {
     SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
     SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
     SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+
+    SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
+    SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());
+    SmartDashboard.putNumber("gyro yaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("gyro z accel comp", m_gyro.getRawAccelZ());
+    // roll right is pitch negative
+    // camera end up is roll negative
+
+    // 0.81 at 30 deg
+    // 0.94 at level
+
+    double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
+    double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
+    double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());
+
+    SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
+    SmartDashboard.putNumber("x ff sine", sin);
+    SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
   }
 
   

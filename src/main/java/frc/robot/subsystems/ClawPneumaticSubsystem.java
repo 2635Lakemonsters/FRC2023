@@ -31,7 +31,7 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
   }
 
   public void grabberOpen() {
-		doubleSolenoid.set(Value.kForward);
+		doubleSolenoid.set(Value.kReverse);
     isClosed = false;
 	}
 
@@ -41,7 +41,7 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
   }
   
 	public void grabberClose() {
-		doubleSolenoid.set(Value.kReverse);
+		doubleSolenoid.set(Value.kForward);
     isClosed = true;
 	}
 

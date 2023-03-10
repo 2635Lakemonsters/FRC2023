@@ -28,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ARM_TRANSITION;
+import frc.robot.commands.AlignGripperToObjectCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
 import frc.robot.commands.ManualArmMotorCommand;
@@ -120,6 +121,7 @@ public class RobotContainer extends TimedRobot {
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
     // Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
+    Trigger alignToObjectOnFloor = new JoystickButton(leftJoystick, Constants.ALIGN_TO_OBJECT_ON_FLOOR_BUTTON);
     Trigger homeArmButton = new JoystickButton(leftJoystick, Constants.HOME_ARM_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(leftJoystick, Constants.BALANCING_BUTTON);
@@ -172,6 +174,8 @@ public class RobotContainer extends TimedRobot {
     //   new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
     // ));
 
+
+    alignToObjectOnFloor.onTrue(new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem));
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -286,7 +290,7 @@ public class RobotContainer extends TimedRobot {
                             ));
 
     pickUpGamePieceSliderLeft.onTrue( new SequentialCommandGroup(
-                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, false),
+                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                             new InstantCommand(()->m_drivetrainSubsystem.followPath()),
@@ -295,7 +299,7 @@ public class RobotContainer extends TimedRobot {
                             ));
 
     pickUpGamePieceSliderRight.onTrue( new SequentialCommandGroup(
-                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, false),
+                            new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                             new InstantCommand(()->m_drivetrainSubsystem.followPath()),
@@ -355,6 +359,8 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
     m_autoChooser.addOption("PP score left out engage CONE", m_autonomousCommands.scoreHighOutEngageLeftCone());
     m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
+    m_autoChooser.addOption("Near substation score high taxi out engage CONE", m_autonomousCommands.scoreHighOutScoreSustationSIDE());
+
     m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh(),
     new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
     new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));

@@ -76,7 +76,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       this.aprilTagID = Integer.valueOf(label.substring(label.indexOf(" "),label.length()-1)); 
     } else {
       // This should never happen.
-      System.out.println("ERROR: UNKNOWN targetObjectLabel in VisionDriveClosedLoopCommand.checkUpdateObjectLabel(). Vision drive closed loop command will not behave as expected.");
+      // System.out.println("ERROR: UNKNOWN targetObjectLabel in VisionDriveClosedLoopCommand.checkUpdateObjectLabel(). Vision drive closed loop command will not behave as expected.");
     }
   }
 
@@ -89,7 +89,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   @Override
   public void initialize() {
     initPID();
-    System.out.println("FCC start");
+    // System.out.println("FCC start");
     
     // SmartDashboard.putNumber("Vision angle", angle);
     // SmartDashboard.putNumber("Desired angle", desiredAngle);
@@ -101,7 +101,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // m_drivetrainSubsystem.resetKinematics(position, 0);
     m_drivetrainSubsystem.zeroOdometry(); // TODO not sure if we want to do this??
 
-    System.out.println("Initialized FCC");
+    // System.out.println("Initialized FCC");
 
     isClose = false;
     // SmartDashboard.putString("FCC Status", "FCC Init");
@@ -172,7 +172,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     v = -0.4;  
 
     if (inTeleop) {
-      v = -0.3; // -0.7
+      v = -0.7; // -0.7
     }
     
     //  if (closestObject.z < 60) {
@@ -207,7 +207,7 @@ public boolean isFinished() {
         triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_APRIL_TAG;
         break;
       default:
-      System.out.println("this is happening and it shouldn't :(");  
+      // System.out.println("this is happening and it shouldn't :(");  
       // this shouldn't happen
         break;
   }
@@ -217,7 +217,7 @@ public boolean isFinished() {
   //   System.out.println("done FCC");
   // }
   if (isClose) {
-    System.out.println("FCC done");
+    // System.out.println("FCC done");
   }
   return isClose;
   // return false;
@@ -235,7 +235,7 @@ public boolean isFinished() {
     // System.out.println("FCC end() drive forward extra 5 in");
 
     m_drivetrainSubsystem.drive(0, 0, 0, true);
-    System.out.println("FCC end()");
+    // System.out.println("FCC end()");
   }
 
 }

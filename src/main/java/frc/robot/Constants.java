@@ -76,6 +76,7 @@ public final class Constants {
     public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
     //public static final int DRIVE_STRAIGHT_BUTTON = 3;
     public static final int HOME_ARM_BUTTON = 4;
+    public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;
     public static final int HOLD_STILL_BUTTON = 9;

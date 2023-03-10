@@ -53,7 +53,7 @@ public class AutonomousCommands  {
             // // a wait after MoveArmToPoseCommand()
             new WaitCommand(0.25),
             new ParallelCommandGroup(
-                new ClawPneumaticCommand(m_cps, false),
+                new ClawPneumaticCommand(m_cps, true),
                 new PrintCommand("**********end of scoreHigh()")
             )
         );
@@ -160,7 +160,8 @@ public class AutonomousCommands  {
             new ParallelCommandGroup(
                 m_dts.followTrajectoryCommand(path, true),
                 backHome
-            )
+            ),
+            new SwerveAutoBalanceCommand(m_dts)
         );
 
         return c;   
@@ -190,6 +191,27 @@ public class AutonomousCommands  {
      * score high out engage right - cone and cube
      * score high engage, no leaving the field, cone and cube in co-op grid
      */
+    
+     public Command scoreHighOutScoreSustationSIDE() { 
+        PathPlannerTrajectory path = PathPlanner.loadPath("Score right out engage", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
+        
+        Command backHome = new SequentialCommandGroup(
+            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
+        );
+
+        Command c = new SequentialCommandGroup(
+            scoreHigh(),
+            new ParallelCommandGroup(
+                m_dts.followTrajectoryCommand(path, true),
+                backHome
+            ),
+            new SwerveAutoBalanceCommand(m_dts)
+        );
+
+        return c;   
+
+     }
 
 
 

@@ -114,7 +114,7 @@ public final class Constants {
     public static final int TOP_TRANSITION_ANGLE = 210; // move top arm to this angle before moving pneumatics
     public static final int MID_SCORING_ANGLE = 232;        // 281 if retracted - marginal
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int SUBSTATION_ANGLE = 281; // TODO: check this value
+    public static final int SUBSTATION_ANGLE = 277; // TODO: check this value
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;

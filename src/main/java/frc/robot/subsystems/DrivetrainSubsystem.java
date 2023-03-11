@@ -396,5 +396,11 @@ public ChassisSpeeds getChassisSpeeds() {
     SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
   }
 
+  /** camera end up returns a negative number
+   * </p> This is technically "roll" on the gyro due to the way it's oriented on the bot*/
+  public double getPitch() {
+    return m_gyro.getPitch();
+  } 
+
   
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
@@ -23,7 +24,18 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
   double ff_gain = 0.01;
   public double x_feedforward_final; 
 
-  /** Creates a new SwerveDriveBalanceCommand. */
+  // for the drive 54 inches forward methodd
+  double current_pitch;
+  double start_loc; // only in x direction, forward/back
+  double dist_travelled;
+  PIDController controller = new PIDController(0.01, 0, 0);
+  double forward_output;
+
+  boolean reached_station; // changes to TRUE when the pitch angle changes
+
+  /** 
+   * SwerveAutoBalanceCommandFEEDBACK. Starts the pid loop when the pitch angle of bot changes
+   */
   public SwerveAutoBalanceCommandFEEDBACK(DrivetrainSubsystem drivetrainSubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drivetrainSubsystem = drivetrainSubsystem;
@@ -34,16 +46,18 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
   @Override
   public void initialize() {
     m_drivetrainSubsystem.followPath(); // disable joysticks just in case
+    start_loc = m_drivetrainSubsystem.getPose().getTranslation().getX();
+    reached_station = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double gravity_ratio = m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel; // between current read vals and vals when bot intialized
-    double sin = Math.sqrt(1 - gravity_ratio * gravity_ratio) * ff_gain;
-    x_feedforward_final = Math.copySign(sin, m_drivetrainSubsystem.getGyroscope().getRoll());
+    // double gravity_ratio = m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel; // between current read vals and vals when bot intialized
+    // double sin = Math.sqrt(1 - gravity_ratio * gravity_ratio) * ff_gain;
+    // x_feedforward_final = Math.copySign(sin, m_drivetrainSubsystem.getGyroscope().getRoll());
 
-    m_drivetrainSubsystem.drive(x_feedforward_final, 0, 0, false);
+    // m_drivetrainSubsystem.drive(x_feedforward_final, 0, 0, false);
     //System.out.println(1.7 * NavX.getXAccelFiltered() - 0.008 * NavX.getRawGyroY());
 
     /*FF
@@ -52,6 +66,25 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
      * FB
      * 
      * 54.5 in to get to center
+     */
+    // current_pitch = m_drivetrainSubsystem.getPitch();
+
+    // drive slowly forward until pitch angle changes, then move on to execute() where position pid loop takes over
+    if (!reached_station) {
+      m_drivetrainSubsystem.drive(0.05, 0, 0, false);
+      double gravity_ratio = m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel;
+    
+      if (Math.abs(gravity_ratio) < 0.95) {
+        reached_station = true;
+      }
+    } else {
+      dist_travelled = m_drivetrainSubsystem.getPose().getTranslation().getX() - start_loc;
+      controller.setSetpoint(54.5);
+      forward_output = controller.calculate(dist_travelled);
+      m_drivetrainSubsystem.drive(forward_output, 0, 0, false);
+    }
+    /*
+     * 
      */
   }
 

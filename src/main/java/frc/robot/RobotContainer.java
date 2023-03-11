@@ -202,8 +202,9 @@ public class RobotContainer extends TimedRobot {
 
     // comment out one of the balancing buttons based on which balance command we're using 
     // balancingButton.onTrue(new InstantCommand(() -> m_swerveDriveCommand.enableBalance(true)));
-    balancingButton.onTrue(m_swerveDriveBalanceCommand);
 
+    // ENGAGING BALANCE
+    balancingButton.onTrue(m_swerveDriveBalanceCommand);
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
 

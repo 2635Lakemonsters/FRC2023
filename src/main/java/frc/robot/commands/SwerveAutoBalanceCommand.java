@@ -28,7 +28,7 @@ public class SwerveAutoBalanceCommand extends CommandBase {
   @Override
   public void execute() {
     // set the x power commanded
-    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY() + 0.9 * NavX.getXAccelFiltered() - 0.01 * Math.max(-6, Math.min(6, NavX.getRawGyroY())));
+    DrivetrainSubsystem.setXPowerCommanded(RobotContainer.rightJoystick.getY() + 0.9 * NavX.getXAccelFiltered() - 0.008 * NavX.getRawGyroY());
     DrivetrainSubsystem.setYPowerCommanded(RobotContainer.rightJoystick.getX());
     DrivetrainSubsystem.setRotCommanded(RobotContainer.leftJoystick.getX());
     //System.out.println(1.7 * NavX.getXAccelFiltered() - 0.008 * NavX.getRawGyroY());

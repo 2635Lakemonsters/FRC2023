@@ -37,6 +37,7 @@ import frc.robot.commands.MoveToScore;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
+import frc.robot.commands.SwerveAutoBalanceCommandFEEDBACK;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.commands.ToggleClawPneumaticsCommand;
@@ -198,7 +199,11 @@ public class RobotContainer extends TimedRobot {
 
 
     // Set commmands to button
+
+    // comment out one of the balancing buttons based on which balance command we're using 
+    // balancingButton.onTrue(new InstantCommand(() -> m_swerveDriveCommand.enableBalance(true)));
     balancingButton.onTrue(m_swerveDriveBalanceCommand);
+
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
 

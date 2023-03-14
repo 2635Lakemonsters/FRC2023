@@ -210,5 +210,14 @@ public final class Constants {
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
     public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "aprilTag";
+//Robot Gripper Motor States
+    public enum GRIPPER_MOTOR_STATE { Off, 
+                            IdleOn, 
+                            IntakeCube, 
+                            IntakeCone,
+                            OuttakeCube,
+                            OuttakeConeDrop,
+                            OuttakeConeEject
+                          };
 
-}
+                        }

@@ -41,7 +41,7 @@ public class AutonomousCommands  {
 
     public Command scoreHigh() {
         Command c = new SequentialCommandGroup(
-            new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
+            new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE + 5)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose),
 
             // // TODO: @Darren / @Megan, with the new transitions and the shorter arm,
@@ -51,7 +51,7 @@ public class AutonomousCommands  {
             // // where you move the arm and then score immediately without the human in the loop.
             // // If the human in the loop commands the actual gripper release, then won't need 
             // // a wait after MoveArmToPoseCommand()
-            new WaitCommand(0.25),
+            new WaitCommand(1),
             new ParallelCommandGroup(
                 new ClawPneumaticCommand(m_cps, true),
                 new PrintCommand("**********end of scoreHigh()")

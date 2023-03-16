@@ -74,6 +74,7 @@ public class RobotContainer extends TimedRobot {
   public final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
+  private final SwerveAutoBalanceCommandFEEDBACK m_swerveAutoBalanceCommandFEEDBACK = new SwerveAutoBalanceCommandFEEDBACK(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
@@ -198,7 +199,12 @@ public class RobotContainer extends TimedRobot {
     // balancingButton.onTrue(new InstantCommand(() -> m_swerveDriveCommand.enableBalance(true)));
 
     // ENGAGING BALANCE
-    balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    // balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    balancingButton.onTrue( new SequentialCommandGroup(
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            m_swerveAutoBalanceCommandFEEDBACK
+                          ));
+
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
 
@@ -342,6 +348,7 @@ public class RobotContainer extends TimedRobot {
     // create other options in SmartDashBoard
     m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
     m_autoChooser.addOption("Rotation Testing", m_autonomousCommands.RotationTesting(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Swerve Auto Balance", m_autonomousCommands.SwerveAutoBalanceCommand(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Left score twice engage", m_autonomousCommands.LeftScoreTwiceEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Mid score twice engage", m_autonomousCommands.MidScoreTwiceEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Right score twice engage", m_autonomousCommands.RightScoreTwiceEngage(m_drivetrainSubsystem));

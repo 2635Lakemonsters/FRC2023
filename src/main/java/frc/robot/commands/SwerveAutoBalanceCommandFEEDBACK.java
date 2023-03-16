@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -28,8 +24,8 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
   double dist_travelled;
   PIDController controller = new PIDController(0.01, 0, 0);
   double forward_output;
-
   boolean reached_station; // changes to TRUE when the pitch angle changes
+  double center = 54.5;
 
   /** 
    * SwerveAutoBalanceCommandFEEDBACK. Starts the pid loop when the pitch angle of bot changes
@@ -44,7 +40,6 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
   @Override
   public void initialize() {
     m_drivetrainSubsystem.followPath(); // disable joysticks just in case
-    start_loc = m_drivetrainSubsystem.getPose().getTranslation().getX();
     reached_station = false;
   }
 
@@ -69,15 +64,18 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
 
     // drive slowly forward until pitch angle changes, then move on to execute() where position pid loop takes over
     if (!reached_station) {
-      m_drivetrainSubsystem.drive(0.05, 0, 0, false);
+      m_drivetrainSubsystem.drive(0.1, 0, 0, false);
       double gravity_ratio = m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel;
     
       if (Math.abs(gravity_ratio) < 0.95) {
         reached_station = true;
+        start_loc = m_drivetrainSubsystem.getPose().getTranslation().getX();
+        System.out.println("TIPPING UP NOW");
       }
+
     } else {
       dist_travelled = m_drivetrainSubsystem.getPose().getTranslation().getX() - start_loc;
-      controller.setSetpoint(54.5);
+      controller.setSetpoint(center);
       forward_output = controller.calculate(dist_travelled);
       m_drivetrainSubsystem.drive(forward_output, 0, 0, false);
     }
@@ -93,5 +91,6 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
   @Override
   public boolean isFinished() {
     return false;
+    // return reached_station && (m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel > 0.95);
   }
 }

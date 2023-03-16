@@ -12,6 +12,7 @@ import com.pathplanner.lib.PathPoint;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
@@ -85,5 +86,27 @@ public class AutonomousCommands  {
         AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(ds);
         return atc.runAutonomousCommand();
     }
+
+    public Command ppEventMarkerTest(DrivetrainSubsystem dts) {
+        /* 
+        // Simple path with holonomic rotation. Stationary start/end. Max velocity of 4 m/s and max accel of 3 m/s^2
+        PathPlannerTrajectory traj2 = PathPlanner.loadPath("marker test.path");  
+        
+        // This is just an example event map. It would be better to have a constant, global event map
+        // in your code that will be used by all path following commands.
+        
+        HashMap<String, Command> eventMap = new HashMap<>();
+        eventMap.put("marker1", new PrintCommand("Passed marker 1"));
+        eventMap.put("intakeDown", new IntakeDown());
+
+        FollowPathWithEvents command = new FollowPathWithEvents(
+            getPathFollowingCommand(examplePath),
+            examplePath.getMarkers(),
+            eventMap
+        );
+        */
+        return new PrintCommand("placeholder so we dont commit errors");
+    }
+    
 
 }

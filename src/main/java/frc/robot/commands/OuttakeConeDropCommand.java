@@ -18,8 +18,6 @@ public class OuttakeConeDropCommand extends SequentialCommandGroup {
       //DROPPING
       // set power to flywheels to zero
       // open pneumatics
-    
-
     );
   }
 }

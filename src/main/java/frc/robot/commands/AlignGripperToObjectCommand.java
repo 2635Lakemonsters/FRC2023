@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.models.VisionObject;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -50,7 +49,6 @@ public class AlignGripperToObjectCommand extends CommandBase {
 
     strafeController = new PIDController(2, 0.0, 0.0); // TODO update constants
     forwardController = new PIDController(2, 0.00, 0.0); // TODO update constants   
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.

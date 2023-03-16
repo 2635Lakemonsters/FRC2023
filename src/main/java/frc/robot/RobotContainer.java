@@ -75,12 +75,10 @@ public class RobotContainer extends TimedRobot {
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  // private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
-  //private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
 
   // TODO: This probably isn't the best way to do this.  However, it'll do
   // for now and allow re-thinking later.  Use the set/getTargetPose functions
@@ -121,7 +119,6 @@ public class RobotContainer extends TimedRobot {
     // left joystick button bindings
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
-    // Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
     Trigger alignToObjectOnFloor = new JoystickButton(leftJoystick, Constants.ALIGN_TO_OBJECT_ON_FLOOR_BUTTON);
     Trigger homeArmButton = new JoystickButton(leftJoystick, Constants.HOME_ARM_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
@@ -197,9 +194,6 @@ public class RobotContainer extends TimedRobot {
                           // new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-
-    // Set commmands to button
-
     // comment out one of the balancing buttons based on which balance command we're using 
     // balancingButton.onTrue(new InstantCommand(() -> m_swerveDriveCommand.enableBalance(true)));
 
@@ -221,11 +215,8 @@ public class RobotContainer extends TimedRobot {
     resetDriveOrientation.onTrue(m_resetSwerveGyroCommand);
 
     scoreTopLeft.onTrue(  new SequentialCommandGroup(
-                          // new PrintCommand("Before STPC"),
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
-                          // new PrintCommand("Before MATPC"),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          // new PrintCommand("After STPC"),
                           new InstantCommand(()->m_drivetrainSubsystem.followPath()),
                           new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
                           new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
@@ -312,8 +303,6 @@ public class RobotContainer extends TimedRobot {
                             new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
                             new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
-
-    
     
     deathDriveCONE.whileTrue( new ParallelCommandGroup(
                             m_visionDriveClosedLoopCommandCONE,
@@ -329,14 +318,13 @@ public class RobotContainer extends TimedRobot {
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             )));
 
-    // VIOLATES - get rid of this button during teleop
     homeArmButton.onTrue( new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    Trigger vacayButton = new JoystickButton(rightJoystick, Constants.TRAVEL_BUTTON_ID);
-    vacayButton.onTrue(new SequentialCommandGroup(
+    Trigger travelButton = new JoystickButton(rightJoystick, Constants.TRAVEL_BUTTON_ID);
+    travelButton.onTrue(new SequentialCommandGroup(
       new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM)),
       new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
     ));

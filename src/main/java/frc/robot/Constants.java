@@ -1,17 +1,5 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
-/**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
- * globally (i.e. public static). Do not put anything functional in this class.
- *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
- * constants are needed, to reduce verbosity.
- */
 public final class Constants {
 
     public static final double INCHES_PER_METER = 39.37;
@@ -71,12 +59,11 @@ public final class Constants {
     public static final int RIGHT_JOYSTICK_CHANNEL = 2;
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
-    // buttons - Left Stick
+    // buttons - left
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
     public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
-    //public static final int DRIVE_STRAIGHT_BUTTON = 3;
-    public static final int HOME_ARM_BUTTON = 4;
     public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
+    public static final int HOME_ARM_BUTTON = 4;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;
     public static final int HOLD_STILL_BUTTON = 9;
@@ -84,8 +71,7 @@ public final class Constants {
     public static final int DEATH_CUBE_BUTTON = 11;
     public static final int DEATH_CONE_BUTTON = 12;
 
-
-    // buttons - Right Stick
+    // buttons - right
     public static final int ARM_PNEUMATIC_BUTTON = 1;
     public static final int SCORE_CENTER_BUTTON = 2;
     public static final int LEFT_SLIDER_BUTTON = 3;
@@ -99,7 +85,6 @@ public final class Constants {
     public static final int SCORE_BOTTOM_LEFT = 11;
     public static final int SCORE_BOTTOM_RIGHT = 12;
 
-
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;
     public static final int CLOSE_CHANNEL = 1;
@@ -111,17 +96,17 @@ public final class Constants {
     public static final int HOME_ARM_ANGLE = 40; 
     public static final int TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM = 295;
     public static final int TOP_SCORING_ANGLE = 207;
-    public static final int TOP_TRANSITION_ANGLE = 210; // move top arm to this angle before moving pneumatics
-    public static final int MID_SCORING_ANGLE = 228;        // 281 if retracted - marginal
+    public static final int TOP_TRANSITION_ANGLE = 210;
+    public static final int MID_SCORING_ANGLE = 228;
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int SUBSTATION_ANGLE = 274; // TODO: check this value
+    public static final int SUBSTATION_ANGLE = 274;
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;
     public static final boolean MID_SCORING_EXTEND = true;
     public static final boolean BOTTOM_SCORING_EXTEND = true;
     public static final boolean PICKING_UP_EXTEND = true;
-    public static final boolean SUBSTATION_EXTEND = false; // TODO: check this value
+    public static final boolean SUBSTATION_EXTEND = false;
 
     // pickup off floor
     public static final boolean ARM_EXTEND_DEATH_BUTTON_START = false; 
@@ -144,8 +129,8 @@ public final class Constants {
     public static final int ARM_RETRACTED_LOWER_LIMIT = 25;
     public static final int ARM_RETRACTED_UPPER_LIMIT = 335;
 
-    public static final double FB_UPPER_LIMIT = 0.2; //0.2
-    public static final double FB_LOWER_LIMIT = -0.2; //-0.2
+    public static final double FB_UPPER_LIMIT = 0.2;
+    public static final double FB_LOWER_LIMIT = -0.2;
 
     public static final double ARM_MOTOR_FF_GAIN = -0.15;
     public static final double ARM_ENCODER_OFFSET = -349;
@@ -203,9 +188,9 @@ public final class Constants {
     public static final int  APRIL_TAG_ID_BlueMiddle = 7;
     public static final int  APRIL_TAG_ID_BlueLeft = 8;
 
-    public static final double offsetFromAprilTagToConeNode = 22 / INCHES_PER_METER;   // Inches
+    public static final double offsetFromAprilTagToConeNode = 22 / INCHES_PER_METER;
     public static final double offsetFromAprilTagToCenter = 0;
-    public static final double offsetFromAprilTagToSlider = 34 / INCHES_PER_METER;     // Inches
+    public static final double offsetFromAprilTagToSlider = 34 / INCHES_PER_METER;
 
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
@@ -219,5 +204,4 @@ public final class Constants {
                             OuttakeConeDrop,
                             OuttakeConeEject
                           };
-
                         }

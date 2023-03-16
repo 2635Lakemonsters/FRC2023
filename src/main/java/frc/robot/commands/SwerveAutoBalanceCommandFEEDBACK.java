@@ -7,8 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
-import frc.robot.RobotContainer;
-import frc.robot.drivers.NavX;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 /**
@@ -83,9 +81,6 @@ public class SwerveAutoBalanceCommandFEEDBACK extends CommandBase {
       forward_output = controller.calculate(dist_travelled);
       m_drivetrainSubsystem.drive(forward_output, 0, 0, false);
     }
-    /*
-     * 
-     */
   }
 
   // Called once the command ends or is interrupted.

@@ -35,7 +35,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                               // it should be 8.23 (27 feet).
 
     public static final double kMaxSpeed = 3.63; // 3.63 meters per second
-    // public final double kMaxSpeed = 0.5;
     public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
@@ -66,8 +65,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER, 
                                                               Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION);
-  
-    // private final AnalogGyro m_gyro = new AnalogGyro(0);
   
     public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 
@@ -132,30 +129,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // putDTSToSmartDashboard();
 
     if (followJoysticks) {
-
-      // // Get the x speed
-      // final var xPower =
-      //   RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-      //     * DrivetrainSubsystem.kMaxSpeed;
-
-      // // Get the y speed or sideways/strafe speed
-      // final var yPower =
-      //   RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-      //     * DrivetrainSubsystem.kMaxSpeed;
-
-      // // Get the rate of angular rotation
-      // final var rot =
-      // //must be positive to read accuate joystick yaw
-      //   RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
-      //     * this.kMaxAngularSpeed;
-
-      // this.drive(xPower, yPower, rot, true);
-
-      this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
-                 yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
+      this.drive(xPowerCommanded * DrivetrainSubsystem.kMaxSpeed, 
+                 yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
                  MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 
                  true);
     }

@@ -16,10 +16,6 @@ public class OuttakeCubeCommand extends SequentialCommandGroup {
     addCommands(
       //Keep pnuematics open
       //Run flywheel motors to eject
-      
-
     );
-    
-    addCommands();
   }
 }

@@ -169,16 +169,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
         xPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
       }
       if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_RIGHT){
-        yPowerCommanded = Constants.HAT_POWER_MOVE;
-      }
-      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_LEFT){
         yPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
       }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_LEFT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE;
+      }
       if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_RIGHT){
-        rotCommanded = Constants.HAT_POWER_ROTATE;
+        rotCommanded = Constants.HAT_POWER_ROTATE*-1.0;
       }
       if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_LEFT){
-        rotCommanded = Constants.HAT_POWER_ROTATE*-1.0;
+        rotCommanded = Constants.HAT_POWER_ROTATE;
       }
       
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 

@@ -9,6 +9,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -45,7 +46,16 @@ public class ArmMotorSubsystem extends SubsystemBase {
       lowerLimit = Constants.ARM_RETRACTED_LOWER_LIMIT;
       upperLimit = Constants.ARM_RETRACTED_UPPER_LIMIT;
     }
-
+    // Arm pose trim override
+    Joystick hatJoystickTrimRotationArm = (Constants.HAT_JOYSTICK_TRIM_ROTATION_ARM == Constants.LEFT_JOYSTICK_CHANNEL)
+      ? RobotContainer.leftJoystick
+      : RobotContainer.rightJoystick;
+    if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ARM_UP){
+      m_poseTarget += Constants.HAT_POSE_TARGET_PER_TIME_STEP;
+    }
+    if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ARM_DOWN){
+      m_poseTarget += Constants.HAT_POSE_TARGET_PER_TIME_STEP*-1.0;
+    }
     m_poseTarget = MathUtil.clamp(m_poseTarget, lowerLimit, upperLimit);
 
     // manual control of the upper arm with z axis slider

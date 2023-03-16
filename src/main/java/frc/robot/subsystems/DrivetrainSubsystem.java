@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -153,7 +155,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //     * this.kMaxAngularSpeed;
 
       // this.drive(xPower, yPower, rot, true);
-
+      //Hat Power Overides for Trimming Position and Rotation
+      Joystick hatJoystickTrimPosition = (Constants.HAT_JOYSTICK_TRIM_POSITION == Constants.LEFT_JOYSTICK_CHANNEL)
+        ? RobotContainer.leftJoystick
+        : RobotContainer.rightJoystick;
+      Joystick hatJoystickTrimRotationArm = (Constants.HAT_JOYSTICK_TRIM_ROTATION_ARM == Constants.LEFT_JOYSTICK_CHANNEL)
+        ? RobotContainer.leftJoystick
+        : RobotContainer.rightJoystick;
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_FORWARD){
+        xPowerCommanded = Constants.HAT_POWER_MOVE;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_BACK){
+        xPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_RIGHT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_LEFT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      }
+      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_RIGHT){
+        rotCommanded = Constants.HAT_POWER_ROTATE;
+      }
+      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_LEFT){
+        rotCommanded = Constants.HAT_POWER_ROTATE*-1.0;
+      }
+      
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
                  yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
                  MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 

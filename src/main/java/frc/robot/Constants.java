@@ -99,6 +99,22 @@ public final class Constants {
     public static final int SCORE_BOTTOM_LEFT = 11;
     public static final int SCORE_BOTTOM_RIGHT = 12;
 
+    // hat constants 
+    public static final int HAT_JOYSTICK_TRIM_POSITION = LEFT_JOYSTICK_CHANNEL;
+    public static final int HAT_JOYSTICK_TRIM_ROTATION_ARM = RIGHT_JOYSTICK_CHANNEL;
+    public static final double HAT_POWER_MOVE = 0.05;
+    public static final double HAT_POWER_ROTATE = 0.05;
+    public static final double HAT_POWER_ARM = 0.05;
+    public static final int HAT_POV_MOVE_LEFT = 270;
+    public static final int HAT_POV_MOVE_RIGHT = 90;
+    public static final int HAT_POV_MOVE_FORWARD = 0;
+    public static final int HAT_POV_MOVE_BACK = 180;
+    public static final int HAT_POV_ARM_UP = 0;
+    public static final int HAT_POV_ARM_DOWN = 180;
+    public static final int HAT_POV_ROTATE_LEFT = 270;
+    public static final int HAT_POV_ROTATE_RIGHT = 90;
+
+
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;

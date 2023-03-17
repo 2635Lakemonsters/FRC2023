@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
 
   boolean m_didViolate = false; 
 
+  public static double initialGravityZAccel;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -53,6 +55,8 @@ public class Robot extends TimedRobot {
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 
     PathPlannerServer.startServer(5811);
+
+    initialGravityZAccel = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRawAccelZ();
   }
 
   /**

@@ -62,7 +62,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
   
     // private final AnalogGyro m_gyro = new AnalogGyro(0);
   
-    private final NavX m_gyro = new NavX(SPI.Port.kMXP);
+    public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 
     private boolean followJoysticks = true;
 

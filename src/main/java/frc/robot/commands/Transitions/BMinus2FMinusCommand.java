@@ -5,8 +5,6 @@
 package frc.robot.commands.Transitions;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticWaitCommand;
@@ -24,9 +22,6 @@ public class BMinus2FMinusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticWaitCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Vminus),
-      new ArmMovementCommand(armMotorSubsystem, 170),
-      new WaitCommand(1),
       new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }

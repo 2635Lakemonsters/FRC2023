@@ -4,8 +4,8 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.Constants;
 import frc.robot.models.VisionObject;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -18,11 +18,11 @@ public class AlignGripperToObjectCommand extends CommandBase {
   ArmPneumaticSubsystem m_armPneumaticSubsystem;
   ClawPneumaticSubsystem m_clawPneumaticSubsystem;
 
-  VisionObject m_object; 
-  double m_ytranslation;
-  double m_xtranslation;
-  String m_label;
-  
+  PIDController strafeController;
+  PIDController forwardController; 
+
+  boolean allDone = false;
+
   /** Creates a new AlignGripperToObjectCommand. 
    * Once arm is in position, this command centers/aligns the bot for the gripper to close around
    * 
@@ -37,6 +37,8 @@ public class AlignGripperToObjectCommand extends CommandBase {
     m_objectTrackerSubsystem = ots;
     m_armPneumaticSubsystem = aps;
     m_clawPneumaticSubsystem = cps;
+
+    addRequirements(ds, ots, aps, cps);
   }
 
   // Called when the command is initially scheduled.
@@ -44,19 +46,25 @@ public class AlignGripperToObjectCommand extends CommandBase {
   public void initialize() {
     m_clawPneumaticSubsystem.grabberOpen();
     m_objectTrackerSubsystem.data();
-    m_object = m_objectTrackerSubsystem.getClosestObject();
 
-    m_label = m_object.objectLabel;
-
-    m_ytranslation = m_object.y; // grippper looking down as robot approaches object, y decreases to zero 
-    m_xtranslation = m_object.x; 
-
+    strafeController = new PIDController(2, 0.0, 0.0); // TODO update constants
+    forwardController = new PIDController(2, 0.00, 0.0); // TODO update constants   
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drivetrainSubsystem.drive(m_xtranslation, m_ytranslation, m_xtranslation, isFinished());
+    m_objectTrackerSubsystem.data();
+    VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject();
+    if (closestObject == null)
+    {
+      allDone = true;
+      return;
+    }
+    double strafe = -strafeController.calculate(closestObject.x, 0.5);
+    double forward = -forwardController.calculate(closestObject.y, 0.216);
+    // System.out.println("strafe: " + strafe + "   forward: " + forward);
+    m_drivetrainSubsystem.drive(forward, strafe, 0, false);
   }
 
   // Called once the command ends or is interrupted.
@@ -66,6 +74,6 @@ public class AlignGripperToObjectCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_objectTrackerSubsystem.isGripperCloseEnough(m_label.equals(Constants.TARGET_OBJECT_LABEL_CUBE));
+    return allDone || (strafeController.atSetpoint() && forwardController.atSetpoint());
   }
 }

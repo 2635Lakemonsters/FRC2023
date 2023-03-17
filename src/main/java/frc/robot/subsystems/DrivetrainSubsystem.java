@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -16,19 +17,26 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 
 public class DrivetrainSubsystem extends SubsystemBase {
+    private static final double FIELD_WIDTH_METERS = 8.02;    // TODO: Check this value.  I got it from 
+                                                              // PathPlannerTrajectory.class, but I think
+                                                              // it should be 8.23 (27 feet).
 
     public static final double kMaxSpeed = 3.63; // 3.63 meters per second
-    // public final double kMaxSpeed = 0.5;
     public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
@@ -60,8 +68,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER, 
                                                               Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION);
   
-    // private final AnalogGyro m_gyro = new AnalogGyro(0);
-  
     public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 
     private boolean followJoysticks = true;
@@ -92,11 +98,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
             });
 
     // pid constants from 2022 FOLLOWER_TRANSLATION_CONSTANTS and FOLLOWER_ROTATION_CONSTANTS
-    private static final double TRANSLATION_P = 0.018; //0.05
-    private static final double TRANSLATION_I = 0.0; //0.01
+    private static final double TRANSLATION_P = 0.4;
+    private static final double TRANSLATION_I = 0.04;
     private static final double TRANSLATION_D = 0.0;
-    private static final double ROTATION_P = 0.0; //0.3
-    private static final double ROTATION_I = 0.0; //0.01
+    private static final double ROTATION_P = 0.3;
+    private static final double ROTATION_I = 0.01;
     private static final double ROTATION_D = 0.0;
     
 
@@ -125,7 +131,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    putDTSToSmartDashboard();
 
     if (followJoysticks) {
 
@@ -146,14 +151,40 @@ public class DrivetrainSubsystem extends SubsystemBase {
       //     * this.kMaxAngularSpeed;
 
       // this.drive(xPower, yPower, rot, true);
-
+      //Hat Power Overides for Trimming Position and Rotation
+      Joystick hatJoystickTrimPosition = (Constants.HAT_JOYSTICK_TRIM_POSITION == Constants.LEFT_JOYSTICK_CHANNEL)
+        ? RobotContainer.leftJoystick
+        : RobotContainer.rightJoystick;
+      Joystick hatJoystickTrimRotationArm = (Constants.HAT_JOYSTICK_TRIM_ROTATION_ARM == Constants.LEFT_JOYSTICK_CHANNEL)
+        ? RobotContainer.leftJoystick
+        : RobotContainer.rightJoystick;
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_FORWARD){
+        xPowerCommanded = Constants.HAT_POWER_MOVE;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_BACK){
+        xPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_RIGHT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      }
+      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_LEFT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE;
+      }
+      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_RIGHT){
+        rotCommanded = Constants.HAT_POWER_ROTATE*-1.0;
+      }
+      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_LEFT){
+        rotCommanded = Constants.HAT_POWER_ROTATE;
+      }
+      
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
                  yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
-                 rotCommanded*this.kMaxAngularSpeed, 
+                 MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 
                  true);
     }
     
     updateOdometry();
+    putDTSToSmartDashboard();
   }
 
   public void recalibrateGyro() {
@@ -269,15 +300,26 @@ public ChassisSpeeds getChassisSpeeds() {
 
   /** Follows PathPlanner trajectory. Used in auto sequences.
    * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
+   * <p> "Forward" in auto = where the dot is on the on the GUI
    * 
+   * <p> "Forward" when following the GUI-generated sequences is battery being further from you
+   *      and robot traveling away from you.
+   * <p> "Forward" in auto is opposite of "forward" in teleop
    * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
-   * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be zeroed at the start of the command sequence.
+   * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be 
+   * set to be the starting point of the GUI path. Makes it field oriented (kindof...?)
   **/
   public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath) {
+    InstantCommand stopFollowingJoy = new InstantCommand(()->this.followPath());
+
     InstantCommand ic = new InstantCommand(() -> {
         // Reset odometry for the first path you run during auto
         if(isFirstPath){
-          this.zeroOdometry();
+          Pose2d initialPose = traj.getInitialHolonomicPose();
+          if (DriverStation.getAlliance() == DriverStation.Alliance.Red && traj.fromGUI) {
+            initialPose = new Pose2d(initialPose.getX(), FIELD_WIDTH_METERS - initialPose.getTranslation().getY(), initialPose.getRotation());
+          }
+          this.resetOdometry(initialPose);
         }
       });
 
@@ -288,31 +330,42 @@ public ChassisSpeeds getChassisSpeeds() {
       new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
       new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
       this::setDesiredStates, 
-      isFirstPath, 
+      true,       // Always mirror
       this
     );
 
-    return new SequentialCommandGroup(ic, c);
+    InstantCommand followJoyAgain =  new InstantCommand(()->this.followJoystick());
+
+    return new SequentialCommandGroup(stopFollowingJoy, ic, c, followJoyAgain);
+  }
+  // have a followTrajectoryCommand() which waits at the end.
+  public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath, double seconds) {
+    return new SequentialCommandGroup(
+      followTrajectoryCommand(traj, isFirstPath),
+      new WaitCommand(seconds)
+    );
   }
 
   /** Follows PathPlanner trajectory. Used in auto sequences.
    * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
-   * 
+   * <p> "Forward" when following the GUI-generated sequences is battery being further from you
+   *      and robot traveling away from you.
+   * <p> "Forward" in auto is opposite of "forward" in teleop
    * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
   **/
-  public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
-    PPSwerveControllerCommand c = new PPSwerveControllerCommand(
-      traj, 
-      this::getPose, 
-      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-      new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-      new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
-      this::setDesiredStates, 
-      this
-    );
+  // public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
+  //   PPSwerveControllerCommand c = new PPSwerveControllerCommand(
+  //     traj, 
+  //     this::getPose, 
+  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
+  //     new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
+  //     this::setDesiredStates, 
+  //     this
+  //   );
 
-    return c;
-  }
+  //   return c;
+  // }
 
   public NavX getGyroscope() {
     return m_gyro; 
@@ -334,14 +387,43 @@ public ChassisSpeeds getChassisSpeeds() {
    * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
-    // SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+    SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
+    SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
+    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
 
-    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
-    SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
+    SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
+    SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
+    SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
+    SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+
+    SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
+    SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());
+    SmartDashboard.putNumber("gyro yaw", m_gyro.getYaw());
+    SmartDashboard.putNumber("gyro z accel comp", m_gyro.getRawAccelZ());
+    // roll right is pitch negative
+    // camera end up is roll negative
+
+    // 0.81 at 30 deg
+    // 0.94 at level
+
+    double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
+    double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
+    double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());
+
+    SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
+    SmartDashboard.putNumber("x ff sine", sin);
+    SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
   }
+
+  /** camera end up returns a negative number
+   * </p> This is technically "roll" on the gyro due to the way it's oriented on the bot*/
+  public double getPitch() {
+    return m_gyro.getPitch();
+  } 
 
   
 }

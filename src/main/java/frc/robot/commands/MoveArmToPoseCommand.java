@@ -9,16 +9,29 @@ import java.util.Map;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotContainer;
-import frc.robot.RobotContainer.Pose;
-import frc.robot.RobotContainer.Poser;
-
 import frc.robot.Constants.ARM_TRANSITION;
-
-import frc.robot.commands.Transitions.*;
+import frc.robot.Pose;
+import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Poser;
+import frc.robot.util;
+import frc.robot.commands.Transitions.BMinus2BMinusCommand;
+import frc.robot.commands.Transitions.BMinus2BPlusCommand;
+import frc.robot.commands.Transitions.BMinus2FMinusCommand;
+import frc.robot.commands.Transitions.BMinus2FPlusCommand;
+import frc.robot.commands.Transitions.BPlus2BMinusCommand;
+import frc.robot.commands.Transitions.BPlus2BPlusCommand;
+import frc.robot.commands.Transitions.BPlus2FMinusCommand;
+import frc.robot.commands.Transitions.BPlus2FPlusCommand;
+import frc.robot.commands.Transitions.FMinus2BMinusCommand;
+import frc.robot.commands.Transitions.FMinus2BPlusCommand;
+import frc.robot.commands.Transitions.FMinus2FMinusCommand;
+import frc.robot.commands.Transitions.FMinus2FPlusCommand;
+import frc.robot.commands.Transitions.FPlus2BMinusCommand;
+import frc.robot.commands.Transitions.FPlus2BPlusCommand;
+import frc.robot.commands.Transitions.FPlus2FMinusCommand;
+import frc.robot.commands.Transitions.FPlus2FPlusCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
-import frc.robot.util;
 
 
 public class MoveArmToPoseCommand extends SequentialCommandGroup {

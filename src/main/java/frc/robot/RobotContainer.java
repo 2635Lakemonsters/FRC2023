@@ -37,6 +37,7 @@ import frc.robot.commands.MoveToScore;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
+import frc.robot.commands.SwerveAutoBalanceCommandFEEDBACK;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.commands.ToggleClawPneumaticsCommand;
@@ -73,32 +74,12 @@ public class RobotContainer extends TimedRobot {
   public final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
+  private final SwerveAutoBalanceCommandFEEDBACK m_swerveAutoBalanceCommandFEEDBACK = new SwerveAutoBalanceCommandFEEDBACK(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  private final ClawPneumaticCommand m_clawCloseCommand = new ClawPneumaticCommand(m_clawPneumaticSubsystem, false);
-  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands();
+  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
-  //private final DriveStraightCommand m_driveStraightCommand = new DriveStraightCommand(m_drivetrainSubsystem);
-
-  public class Pose {
-    public Pose() {
-      this.targetExtend = false;
-      this.targetTheta = Constants.ARM_RETRACTED_LOWER_LIMIT;
-    }
-    
-    /**
-    @param targetExtend whether arm pneumatics are extended (true) or not (false)
-    @param targetTheta angle of upper arm relative to lower arm (NOT floor)
-    **/
-    public Pose(boolean targetExtend, int targetTheta) {
-      this.targetExtend = targetExtend;
-      this.targetTheta = targetTheta;
-    }
-    public boolean targetExtend;
-    public int targetTheta;
-    
-  };
 
   // TODO: This probably isn't the best way to do this.  However, it'll do
   // for now and allow re-thinking later.  Use the set/getTargetPose functions
@@ -139,7 +120,8 @@ public class RobotContainer extends TimedRobot {
     // left joystick button bindings
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
     Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
-    Trigger driveStraightButton = new JoystickButton(leftJoystick, Constants.DRIVE_STRAIGHT_BUTTON);
+    Trigger alignToObjectOnFloor = new JoystickButton(leftJoystick, Constants.ALIGN_TO_OBJECT_ON_FLOOR_BUTTON);
+    Trigger homeArmButton = new JoystickButton(leftJoystick, Constants.HOME_ARM_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
     Trigger balancingButton = new JoystickButton(leftJoystick, Constants.BALANCING_BUTTON);
     Trigger stationaryButton = new JoystickButton(leftJoystick, Constants.HOLD_STILL_BUTTON);
@@ -153,7 +135,6 @@ public class RobotContainer extends TimedRobot {
     Trigger pickUpGamePieceSliderLeft = new JoystickButton(rightJoystick, Constants.LEFT_SLIDER_BUTTON);
     Trigger pickUpGamePieceSliderRight = new JoystickButton(rightJoystick, Constants.RIGHT_SLIDER_BUTTON);
     Trigger pickUpFromFloor = new JoystickButton(rightJoystick, Constants.PICKUP_FROM_FLOOR_BUTTON);
-    Trigger homeArmButton = new JoystickButton(rightJoystick, Constants.HOME_ARM_BUTTON);
     Trigger topLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_TOP_LEFT);
     Trigger scoreTopRight = new JoystickButton(rightJoystick, Constants.SCORE_TOP_RIGHT);
     Trigger midLeftButton = new JoystickButton(rightJoystick, Constants.SCORE_MID_LEFT);
@@ -172,10 +153,9 @@ public class RobotContainer extends TimedRobot {
     PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
 
     traj = PathPlanner.generatePath(
-        new PathConstraints(2, 0.5), 
-        new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 1.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) ,// position, heading(direction of travel)
-        new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(Math.PI/2), Rotation2d.fromRadians(0)) // position, heading(direction of travel)
+      new PathConstraints(2, 0.5), 
+      new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        new PathPoint(new Translation2d(-2.022, 0.78), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
         // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     );
     
@@ -185,14 +165,16 @@ public class RobotContainer extends TimedRobot {
      * 3. Run path follower
      * 4. Re-enable joysticks
      */
-    Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    driveStraightButton.onTrue(new SequentialCommandGroup(
-      new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
-      new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-      dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
-      new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-    ));
+    // Command dsc = m_drivetrainSubsystem.followTrajectoryCommand(traj, true);
+    // driveStraightButton.onTrue(new SequentialCommandGroup(
+    //   new InstantCommand(()->m_drivetrainSubsystem.zeroOdometry()),
+    //   new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+    //   dsc.andThen(() -> m_drivetrainSubsystem.drive(0, 0, 0, false)),
+    //   new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+    // ));
 
+
+    alignToObjectOnFloor.onTrue(new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem));
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -213,9 +195,16 @@ public class RobotContainer extends TimedRobot {
                           // new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
+    // comment out one of the balancing buttons based on which balance command we're using 
+    // balancingButton.onTrue(new InstantCommand(() -> m_swerveDriveCommand.enableBalance(true)));
 
-    // Set commmands to button
-    balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    // ENGAGING BALANCE
+    // balancingButton.onTrue(m_swerveDriveBalanceCommand);
+    balancingButton.onTrue( new SequentialCommandGroup(
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            m_swerveAutoBalanceCommandFEEDBACK
+                          ));
+
     nonBalancingButton.onTrue(m_swerveDriveCommand);
     stationaryButton.onTrue(m_swerveNoMoveCommand);
 
@@ -232,99 +221,117 @@ public class RobotContainer extends TimedRobot {
     resetDriveOrientation.onTrue(m_resetSwerveGyroCommand);
 
     scoreTopLeft.onTrue(  new SequentialCommandGroup(
-                          // new PrintCommand("Before STPC"),
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
-                          // new PrintCommand("Before MATPC"),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          // new PrintCommand("After STPC"),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
     
     scoreMidLeft.onTrue(  new SequentialCommandGroup( 
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
     
     scoreBottomLeft.onTrue( new SequentialCommandGroup( 
                             new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreTopRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
 
     scoreMidRight.onTrue( new SequentialCommandGroup(
                           new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                          new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
+                          new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
 
     scoreBottomRight.onTrue(  new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode)
+                              new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                              new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                              new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
 
     scoreTopCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreMidCenter.onTrue(  new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG + Constants.MID_SCORING_STANDOFF_DISTANCE),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                           ));
 
     scoreBottomCenter.onTrue( new SequentialCommandGroup(
                               new SetTargetPoseCommand(new Pose(Constants.BOTTOM_SCORING_EXTEND, Constants.BOTTOM_SCORING_ANGLE)),
                               new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter)
+                              new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                             ));
 
     pickUpGamePieceSliderLeft.onTrue( new SequentialCommandGroup(
                             new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToSlider)
-                          ));
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+                            ));
 
     pickUpGamePieceSliderRight.onTrue( new SequentialCommandGroup(
                             new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
                             new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
-                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider)
-                          ));
+                            new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                            new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToSlider, Constants.FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG),
+                            new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+                            ));
     
     deathDriveCONE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCONE
-                            // new SequentialCommandGroup(
-                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            ));
+                            m_visionDriveClosedLoopCommandCONE,
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+    )));
 
     deathDriveCUBE.whileTrue( new ParallelCommandGroup(
-                            m_visionDriveClosedLoopCommandCUBE 
-                            // new SequentialCommandGroup(
-                            //   new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
-                            //   new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-                            ));
+                            m_visionDriveClosedLoopCommandCUBE, 
+                            new SequentialCommandGroup(
+                              new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_DEATH_BUTTON_START, Constants.ARM_ANGLE_DEATH_BUTTON_START)),
+                              new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+                            )));
 
-    // VIOLATES - get rid of this button during teleop
     homeArmButton.onTrue( new SequentialCommandGroup(
                             new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                           ));
 
-    Trigger vacayButton = new JoystickButton(leftJoystick, 4);
-    vacayButton.onTrue(new SequentialCommandGroup(
-      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE)),
+    Trigger travelButton = new JoystickButton(rightJoystick, Constants.TRAVEL_BUTTON_ID);
+    travelButton.onTrue(new SequentialCommandGroup(
+      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM)),
       new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
     ));
   }
@@ -336,20 +343,29 @@ public class RobotContainer extends TimedRobot {
    */
   public SendableChooser<Command> getAutonomousCommand() {
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
-    m_autoChooser.setDefaultOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
+    m_autoChooser.addOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
 
     // create other options in SmartDashBoard
     m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Rotation 180", m_autonomousCommands.RotatePath(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Bottom score twice", m_autonomousCommands.BottomScoreTwice(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Mid score twice", m_autonomousCommands.MidScoreTwice(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Top score twice", m_autonomousCommands.TopScoreTwice(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Score bottom grab", m_autonomousCommands.ScoreBottomGrab(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Score mid grab", m_autonomousCommands.ScoreMidGrab(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Score top grab", m_autonomousCommands.ScoreTopGrab(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Rotation Testing", m_autonomousCommands.RotationTesting(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Swerve Auto Balance", m_autonomousCommands.SwerveAutoBalanceCommand(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Left score twice engage", m_autonomousCommands.LeftScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Mid score twice engage", m_autonomousCommands.MidScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Right score twice engage", m_autonomousCommands.RightScoreTwiceEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Right score engage", m_autonomousCommands.RightScoreEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Mid score engage", m_autonomousCommands.MidScoreEngage(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Left score engage", m_autonomousCommands.LeftScoreEngage(m_drivetrainSubsystem));
+    m_autoChooser.addOption("Circle test", m_autonomousCommands.CircleTest(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
     m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
-    
+    m_autoChooser.addOption("PP score left out engage CONE", m_autonomousCommands.scoreHighOutEngageLeftCone());
+    m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
+    m_autoChooser.addOption("Near substation score high taxi out engage CONE", m_autonomousCommands.scoreHighOutScoreSustationSIDE());
+    m_autoChooser.addOption("SwerveAutoBalanceCommandFEEDBACK", new SwerveAutoBalanceCommand(m_drivetrainSubsystem));
+
+    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh(),
+    new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
+    new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     return m_autoChooser; 

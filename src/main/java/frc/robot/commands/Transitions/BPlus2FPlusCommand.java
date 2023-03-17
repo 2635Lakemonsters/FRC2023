@@ -5,7 +5,6 @@
 package frc.robot.commands.Transitions;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.commands.ArmMovementCommand;
 import frc.robot.commands.ArmPneumaticCommand;
@@ -23,7 +22,6 @@ public class BPlus2FPlusCommand extends SequentialCommandGroup {
 
     addCommands(
       new ArmPneumaticCommand(armPneumaticSubsystem, true),
-      new ArmMovementCommand(armMotorSubsystem, Constants.Hplus + 10),
       new ArmMovementCommand(armMotorSubsystem, p)
     );
   }

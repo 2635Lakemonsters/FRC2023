@@ -5,18 +5,16 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.networktables.NetworkTableEntry;
-
 import frc.robot.Constants;
 import frc.robot.legacymath2910.MathUtils;
 
@@ -86,7 +84,7 @@ public class SwerveModule {
     return new SwerveModulePosition(m_driveEncoder.getPosition(), new Rotation2d(getTurningEncoderRadians()));
   }
 
-  private double getTurningEncoderRadians(){
+  public double getTurningEncoderRadians(){
     double angle = (1.0 - m_turningEncoder.getVoltage() / RobotController.getVoltage5V()) * 2.0 * Math.PI + turningMotorOffset;
     angle %= 2.0 * Math.PI;
     if (angle < 0.0) {
@@ -121,10 +119,11 @@ public class SwerveModule {
 
     // This computes the velocity error regardless of direction of travel
     // such that >0 means too fast and <0 means too slow
-    double velocityError = Math.copySign(state.speedMetersPerSecond - m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
+   // double velocityError = Math.copySign(state.speedMetersPerSecond - m_driveEncoder.getVelocity(), state.speedMetersPerSecond);
 
-    String str = String.format("setDesiredState/Verror%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str, velocityError);
+
+    // String str = String.format("setDesiredState/Verror%d", m_driveMotor.getDeviceId());
+    // SmartDashboard.putNumber(str, velocityError);
 
     final double driveFeedForward = state.speedMetersPerSecond / DrivetrainSubsystem.kMaxSpeed;
 
@@ -143,10 +142,10 @@ public class SwerveModule {
       // );
     }
 
-    String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str1, driveOutput);
-    String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
-    SmartDashboard.putNumber(str2, driveFeedForward);
+    //String str1 = String.format("setDesiredState/Drive%d", m_driveMotor.getDeviceId());
+    // SmartDashboard.putNumber(str1, driveOutput);
+    //String str2 = String.format("setDesiredState/FF%d", m_driveMotor.getDeviceId());
+    // SmartDashboard.putNumber(str2, driveFeedForward);
 
     // Calculate the turning motor output from the turning PID controller.
     m_driveMotor.set(MathUtils.clamp(driveOutput + driveFeedForward, -1.0, 1.0));

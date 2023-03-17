@@ -5,12 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DrivetrainSubsystem;
 
 public class SwerveDriveCommand extends CommandBase {
 
   private static DrivetrainSubsystem m_drivetrainSubsystem;
+  private static boolean ARE_BALANCING = false;
+  private double ff_gain = 0.00;
 
   /** Creates a new SwerveDriveCommand. */
   public SwerveDriveCommand(DrivetrainSubsystem drivetrainSubsystem) {
@@ -39,17 +42,26 @@ public class SwerveDriveCommand extends CommandBase {
     xSpeed = Math.copySign(xSpeed * xSpeed * xSpeed, xSpeed);
     rotSpeed = Math.copySign(rotSpeed * rotSpeed * rotSpeed, rotSpeed);
 
+    double x_feedforward_final = 0;
+    if (ARE_BALANCING) {
+      double x_feedforward = m_drivetrainSubsystem.m_gyro.getRawAccelZ() / Robot.init_gyro_z_accel; 
+      double sin = Math.sqrt(1 - x_feedforward * x_feedforward) * ff_gain;
+      x_feedforward_final = Math.copySign(sin, m_drivetrainSubsystem.getGyroscope().getRoll());
+    }
+
     // set the x power commanded
-    DrivetrainSubsystem.setXPowerCommanded(ySpeed);
-    DrivetrainSubsystem.setYPowerCommanded(xSpeed);
+    DrivetrainSubsystem.setXPowerCommanded(-ySpeed + x_feedforward_final);
+    DrivetrainSubsystem.setYPowerCommanded(-xSpeed);
     DrivetrainSubsystem.setRotCommanded(-rotSpeed);
+  }
+
+  public void enableBalance(boolean enable) {
+    ARE_BALANCING = enable;
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    System.out.println("SDC.end()");
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

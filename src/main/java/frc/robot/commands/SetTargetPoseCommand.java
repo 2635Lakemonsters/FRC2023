@@ -5,14 +5,15 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Pose;
 import frc.robot.RobotContainer;
 
 public class SetTargetPoseCommand extends CommandBase {
 
-  RobotContainer.Pose m_targetPose;
+  Pose m_targetPose;
 
   /** Creates a new SetTargetPoseCommand. */
-  public SetTargetPoseCommand(RobotContainer.Pose targetPose) {
+  public SetTargetPoseCommand(Pose targetPose) {
     m_targetPose = targetPose;
   }
 

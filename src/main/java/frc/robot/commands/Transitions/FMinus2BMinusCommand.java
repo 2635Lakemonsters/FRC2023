@@ -4,10 +4,10 @@
 
 package frc.robot.commands.Transitions;
 
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.RobotContainer;
+import frc.robot.commands.ArmMovementCommand;
+import frc.robot.commands.ArmPneumaticCommand;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 
@@ -21,12 +21,8 @@ public class FMinus2BMinusCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      //Disabling returning to Home/Bminus due to frame violation tuning
-      new WaitCommand(0.5),
-      // new ArmPneumaticCommand(armPneumaticSubsystem, false),
-      // new ArmMovementCommand(armMotorSubsystem, Constants.Hminus),
-      // new ArmMovementCommand(armMotorSubsystem, p) // target pose
-      new PrintCommand("this is wrong do not use")
+      new ArmPneumaticCommand(armPneumaticSubsystem, false),
+      new ArmMovementCommand(armMotorSubsystem, p) // target pose
     );
   }
 }

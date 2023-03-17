@@ -8,11 +8,9 @@ import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.drivers.NavX;
-import frc.robot.subsystems.DrivetrainSubsystem;
 
 
 /**
@@ -34,6 +32,9 @@ public class Robot extends TimedRobot {
   public static double[] angle;
   boolean autoHappened; 
 
+  public static double init_gyro_z_accel; 
+  public static double init_roll;
+
   boolean m_didViolate = false; 
 
   public static double initialGravityZAccel;
@@ -51,6 +52,13 @@ public class Robot extends TimedRobot {
 
     m_robotContainer = new RobotContainer();
     m_robotContainer.m_resetSwerveGyroCommand.execute();
+    RobotContainer.m_drivetrainSubsystem.zeroOdometry();
+    m_autoChooser = m_robotContainer.getAutonomousCommand();
+    RobotContainer.m_drivetrainSubsystem.recalibrateGyro();
+
+    this.init_gyro_z_accel = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRawAccelZ();
+    init_roll = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRoll();
+
 
     System.out.println("Initial Rotation: " + RobotContainer.m_drivetrainSubsystem.m_odometry.getPoseMeters().getRotation().getDegrees());
 
@@ -86,7 +94,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
-    m_autoChooser = m_robotContainer.getAutonomousCommand();
+    m_robotContainer.m_resetSwerveGyroCommand.execute();
 
     m_autonomousCommand = m_autoChooser.getSelected();
     
@@ -120,14 +128,15 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SwerveDriveCommand(RobotContainer.m_drivetrainSubsystem,2);
-    RobotContainer.m_drivetrainSubsystem.updateOdometry();
+    // RobotContainer.m_drivetrainSubsystem.updateOdometry();
     NavX.updateXAccelFiltered();
   }
 
   @Override
   public void teleopInit() {
     RobotContainer.m_drivetrainSubsystem.zeroOdometry();
+    // m_robotContainer.m_resetSwerveGyroCommand.execute();
+    RobotContainer.m_drivetrainSubsystem.followJoystick();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
@@ -168,33 +177,31 @@ public class Robot extends TimedRobot {
     // kXAccel pose to hold pose is 0.48
     // 1.0 will move it back at a mid rate
 
-    boolean isViolating = false;
-    boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
-    double theta = RobotContainer.m_armMotorSubsystem.getTheta();
+    // boolean isViolating = false;
+    // boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
+    // double theta = RobotContainer.m_armMotorSubsystem.getTheta();
 
-    if (!isExtended && (theta > 172 && theta < 208)) { // vertical
-      isViolating = true;
-      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-      m_didViolate = true;
+    // if (!isExtended && (theta > 172 && theta < 208)) { // vertical
+    //   isViolating = true;
+    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+    //   m_didViolate = true;
 
-    } else if (isExtended && theta < 270 && theta > 218) { // horizontal
-      isViolating = true;
-      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-      m_didViolate = true;
+    // } else if (isExtended && theta < 270 && theta > 218) { // horizontal
+    //   isViolating = true;
+    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+    //   m_didViolate = true;
 
-    } else {
-      SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-      SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-      SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
-    }
+    // } else {
+    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
+    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
+    //   SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
+    // }
     
-    SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
-    SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
+    // SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
+    // SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
 
     NavX.updateXAccelFiltered();
   }
-
-  private void SwerveDriveCommand(DrivetrainSubsystem mDrivetrainsubsystem, int i) {}
 
   @Override
   public void testInit() {

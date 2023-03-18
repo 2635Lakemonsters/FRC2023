@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
 import frc.robot.Pose;
 import frc.robot.RobotContainer;
+import frc.robot.RobotContainer.Poser;
 import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -42,6 +43,8 @@ public class AutonomousCommands  {
     ObjectTrackerSubsystem m_otsc;
 
     Command m_highScoreCommand; 
+
+    Poser m_getPose;
 
     public Command scoreHigh() {
         Command c = new SequentialCommandGroup(
@@ -65,13 +68,14 @@ public class AutonomousCommands  {
         return c;
     }
 
-    public AutonomousCommands(DrivetrainSubsystem dts, ArmPneumaticSubsystem aps, ArmMotorSubsystem ams, ClawPneumaticSubsystem cps, ObjectTrackerSubsystem otsg, ObjectTrackerSubsystem otsc) {
+    public AutonomousCommands(DrivetrainSubsystem dts, ArmPneumaticSubsystem aps, ArmMotorSubsystem ams, ClawPneumaticSubsystem cps, ObjectTrackerSubsystem otsg, ObjectTrackerSubsystem otsc, Poser p) {
         m_dts = dts;
         m_aps = aps;
         m_ams = ams; 
         m_cps = cps;
         m_otsg = otsg;
         m_otsc = otsc;
+        m_getPose = p;
 
         m_highScoreCommand = scoreHigh();
 
@@ -206,20 +210,28 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1))
+            new PathPoint(new Translation2d(1.5, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            new PathPoint(new Translation2d(3.7, 0.4), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
         );
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(0.01, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
-            new PathPoint(new Translation2d(0.02, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001 -1.0))
+            new PathPoint(new Translation2d(1.5, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            new PathPoint(new Translation2d(3.8, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
+
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
+            // new PathPoint(new Translation2d(3.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001 - 0.9))
+
+            // new PathPoint(new Translation2d(3.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),
                                                 m_dts.followTrajectoryCommand(traj, true));
-        Command c2 = m_dts.followTrajectoryCommand(traj2, true);
+        Command c2 = m_dts.followTrajectoryCommand(traj2, false);
 
         Command pickUpMid = new SequentialCommandGroup(
             new ArmPneumaticCommand(m_aps, false),
@@ -236,8 +248,24 @@ public class AutonomousCommands  {
                                                                             new PrintCommand("Reached the cube"),
                                                                             new AlignGripperToObjectCommand(m_dts, m_otsg, m_aps, m_cps),
                                                                             new InstantCommand(() -> m_dts.followJoystick())),
+                                                // pneumatic and then wait so the claw can close
+                                                // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
-                                                c2
+                                                new WaitCommand(0.7),
+                                                // put the arm in a scoring position
+                                                // should change this to upper
+                                                new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
+                                                new MoveArmToPoseCommand(
+                                                    m_aps, 
+                                                    m_ams, 
+                                                    m_getPose
+                                                ),
+                                                c2,
+                                                // if we have it, april tag code goes here.
+
+                                                // release and score
+                                                new ClawPneumaticCommand(m_cps, true)
+                                            
                                             );
         return s;
     }

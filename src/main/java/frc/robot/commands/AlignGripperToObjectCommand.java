@@ -5,7 +5,10 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.legacymath2910.MathUtils;
 import frc.robot.models.VisionObject;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
@@ -22,6 +25,8 @@ public class AlignGripperToObjectCommand extends CommandBase {
   PIDController forwardController; 
 
   boolean allDone = false;
+  boolean objectLost = false;
+  Timer lostTime = new Timer();
 
   /** Creates a new AlignGripperToObjectCommand. 
    * Once arm is in position, this command centers/aligns the bot for the gripper to close around
@@ -44,11 +49,14 @@ public class AlignGripperToObjectCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    allDone = false;
+    objectLost = false;
     m_clawPneumaticSubsystem.grabberOpen();
     m_objectTrackerSubsystem.data();
 
-    strafeController = new PIDController(2, 0.0, 0.0); // TODO update constants
-    forwardController = new PIDController(2, 0.00, 0.0); // TODO update constants   
+    strafeController = new PIDController(2.0, 0.0, 0.0); // TODO update constants
+    forwardController = new PIDController(2.0, 0.00, 0.0); // TODO update constants   
+    System.out.println("Strafe Tol:" + strafeController.getPositionTolerance() + "Forward Tol:" + forwardController.getPositionTolerance());
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -56,13 +64,28 @@ public class AlignGripperToObjectCommand extends CommandBase {
   public void execute() {
     m_objectTrackerSubsystem.data();
     VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject();
+    // If we don't see an object for 1/4 second, give up.  Otherwise, be a little patient
     if (closestObject == null)
     {
-      allDone = true;
+      if (objectLost)
+      {
+        if (lostTime.hasElapsed(0.25)) 
+        {
+          allDone = true;
+        }
+      }
+      else
+      {
+        lostTime.restart();
+        objectLost = true;
+        m_drivetrainSubsystem.drive(0, 0, 0, false);
+      }
       return;
     }
-    double strafe = -strafeController.calculate(closestObject.x, 0.5);
-    double forward = -forwardController.calculate(closestObject.y, 0.216);
+    double strafe = MathUtils.clamp(-strafeController.calculate(closestObject.x, 0.5), -0.2, 0.2);
+    double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.700), -0.2, 0.2);
+    SmartDashboard.putNumber("strafe", strafe);
+    SmartDashboard.putNumber("forward", forward);
     // System.out.println("strafe: " + strafe + "   forward: " + forward);
     m_drivetrainSubsystem.drive(forward, strafe, 0, false);
   }
@@ -74,6 +97,15 @@ public class AlignGripperToObjectCommand extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return allDone || (strafeController.atSetpoint() && forwardController.atSetpoint());
+    boolean sa = strafeController.atSetpoint();
+    boolean fa = forwardController.atSetpoint();
+    // if (sa)
+    //   System.out.println("Strafe aligned");
+    // if (fa)
+    //   System.out.println("Forward aligned");
+    boolean finished = allDone || (sa && fa);
+    // if (finished)
+    //   System.out.println("Align complete");
+    return finished;
   }
 }

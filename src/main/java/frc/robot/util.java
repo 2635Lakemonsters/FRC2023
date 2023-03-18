@@ -123,7 +123,7 @@ public final class util {
         if (bExtended) {
             double midPoint = (Constants.Hplus + Constants.Hminus) / 2.;
             if ((theta < Constants.Hplus) && (theta > Constants.Hminus)) {
-                System.out.println("TODO: LOG ERROR STATE. Arm violating extended position robot bounds. util.getArmState() theta: "+ theta);
+                // System.out.println("TODO: LOG ERROR STATE. Arm violating extended position robot bounds. util.getArmState() theta: "+ theta);
             }
             // return the current state
             if (theta >= midPoint) {
@@ -132,13 +132,13 @@ public final class util {
                 return ARM_STATE.Fminus;
             } else {
                 // TODO: This should never happen. Log this error state
-                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state horizontal. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
+                // System.out.println("TODO: LOG ERROR STATE. returning invalid arm state horizontal. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
                 return ARM_STATE.InvalidHorz;
             }
         } else {
             double midPoint = (Constants.Vplus + Constants.Vminus) / 2.;
             if ((theta < Constants.Hplus) && (theta > Constants.Hminus)) {
-                System.out.println("TODO: LOG ERROR STATE. Arm violating retracted position robot bounds. util.getArmState() theta: "+ theta);
+                // System.out.println("TODO: LOG ERROR STATE. Arm violating retracted position robot bounds. util.getArmState() theta: "+ theta);
             }
             if (theta >= midPoint) {
                 return ARM_STATE.Bplus;
@@ -146,7 +146,7 @@ public final class util {
                 return ARM_STATE.Bminus;
             } else {
                 // TODO: This should never happen. Log this error state
-                System.out.println("TODO: LOG ERROR STATE. returning invalid arm state vertical. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
+                // System.out.println("TODO: LOG ERROR STATE. returning invalid arm state vertical. util.getArmState() theta: "+ theta + " THIS SHOULD NEVER HAPPEN!!!!!");
                 return ARM_STATE.InvalidVert;
             }
         }
@@ -164,7 +164,7 @@ public final class util {
     public static ARM_TRANSITION getTransition(boolean bExtended, double theta)
     {
         ARM_STATE state = getArmState(bExtended, theta);
-        System.out.println(getArmState() + "->" + state);
+        //System.out.println(getArmState() + "->" + state);
         switch (state)
         {
             case Fplus:

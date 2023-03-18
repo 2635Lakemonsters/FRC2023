@@ -23,6 +23,8 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     public VisionObject[] foundObjects; 
     private String jsonString;
     private String source;
+    private Gson gson = new Gson();
+
 
     /*
      * Red Alliance Community (right to left) – IDs 1, 2, 3
@@ -55,7 +57,6 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     
     
     public void data() {
-        Gson gson = new Gson();
         NetworkTableEntry entry = monsterVision.getEntry("ObjectTracker-" + source);
         if(entry==null) {
             return;

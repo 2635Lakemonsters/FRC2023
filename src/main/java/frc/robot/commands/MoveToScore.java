@@ -45,7 +45,9 @@ public class MoveToScore extends CommandBase {
   public void initialize() {
     m_c = null;
     m_allDone = true;
+    System.out.println("about to call ots.data");
     m_objectTrackerSubsystemChassis.data();
+    System.out.println("ots.data complete");
     m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
 
     if (m_aprilTagData == null) {

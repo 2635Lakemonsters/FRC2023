@@ -21,7 +21,7 @@ public class SetTargetPoseCommand extends CommandBase {
   @Override
   public void initialize() {
     RobotContainer.setTargetPose(m_targetPose);
-    System.out.println("SetTargetPoseCommand:initialize: " + m_targetPose);
+    // System.out.println("SetTargetPoseCommand:initialize: " + m_targetPose);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

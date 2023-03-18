@@ -8,6 +8,8 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.models.VisionObject;
@@ -33,9 +35,12 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   double desiredAngle;
   double setPointAngle = 6;
   boolean isClose;
+  boolean lostObject = false;
 
   String targetObjectLabel; // cone, cube, or AprilTag
   int aprilTagID;
+  Timer timer = new Timer();
+  double now;
 
   public double totalRotation = 0;
 
@@ -116,7 +121,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
     VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
      
-    if (closestObject == null || closestObject.z > 150) {
+    if (closestObject == null || closestObject.z > 200) {
       // SmartDashboard.putNumber("driveRotation", 99);
       m_drivetrainSubsystem.drive(0, 0, 0, false);
       // SmartDashboard.putString("FCC Status", "No cargo in frame OR cargo out of range");
@@ -172,8 +177,11 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     v = -0.4;  
 
     if (inTeleop) {
-      v = -0.7; // -0.7
+      v = -1.0; // -0.7
     }
+
+    if (closestObject.z < 50)
+      v = -0.3;
     
     //  if (closestObject.z < 60) {
     //    isClose = true;
@@ -190,9 +198,20 @@ public boolean isFinished() {
   double tolerance = 4; // TODO units...? i think it's inches
   VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
   if(closestObject == null) {
+    if (lostObject)
+    {
+      now =  timer.get();
+      SmartDashboard.putNumber("Now", now);
+      if (now > 0.25)
+        System.out.println("Object lost");
+      return now > 0.25;
+    }
+    timer.restart();
+    lostObject = true;
     return false;
-  }//TODO could lose sight for small amount of time causing command to finish early
+  }
   
+  lostObject = false;
   // boolean done = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance;
   int triggerDistance = 0;
   switch (this.targetObjectLabel)

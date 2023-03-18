@@ -40,7 +40,7 @@ public class ArmMovementCommand extends CommandBase {
   public void initialize() {
     if (m_getPose != null)
       m_targetPose = m_getPose.execute().targetTheta;
-    System.out.println("AMC: " + m_targetPose);
+    // System.out.println("AMC: " + m_targetPose);
     m_armMotorSubsystem.setPose(m_targetPose);
   }
 

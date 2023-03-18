@@ -43,7 +43,7 @@ public class MoveArmToPoseCommand extends SequentialCommandGroup {
   public ARM_TRANSITION select() {
     Pose pose = RobotContainer.getTargetPose();
     ARM_TRANSITION trans = util.getTransition(pose.targetExtend, pose.targetTheta);
-    System.out.println("select: " + trans);
+    // System.out.println("select: " + trans);
     return trans;
   }
 
@@ -58,7 +58,6 @@ public class MoveArmToPoseCommand extends SequentialCommandGroup {
 
     
     addCommands(
-      new PrintCommand("Inside MATPC"),
       new SelectCommand(
         // Maps selector values to commands
         Map.ofEntries(
@@ -78,9 +77,7 @@ public class MoveArmToPoseCommand extends SequentialCommandGroup {
           Map.entry(ARM_TRANSITION.FPlus2BPlus, new FPlus2BPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
           Map.entry(ARM_TRANSITION.FPlus2FMinus, new FPlus2FMinusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)),
           Map.entry(ARM_TRANSITION.FPlus2FPlus, new FPlus2FPlusCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose))),
-        this::select),
-        new PrintCommand("Ending MATPC")
-
+        this::select)
     );
   }
 

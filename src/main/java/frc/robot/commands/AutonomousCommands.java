@@ -26,17 +26,20 @@ import frc.robot.subsystems.ArmMotorSubsystem;
 import frc.robot.subsystems.ArmPneumaticSubsystem;
 import frc.robot.subsystems.ClawPneumaticSubsystem;
 import frc.robot.subsystems.DrivetrainSubsystem;
+import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 /** Add your docs here. */
 public class AutonomousCommands  {
     public HashMap<String, Command> eventMap = new HashMap<>();
-    public final double AUTO_MAX_VEL = 4.0; 
-    public final double AUTO_MAX_ACCEL = 3.0;
+    public final double AUTO_MAX_VEL = 4.0; //4.0; 
+    public final double AUTO_MAX_ACCEL = 3.0; //3.0;
 
     DrivetrainSubsystem m_dts;
     ArmPneumaticSubsystem m_aps;
     ArmMotorSubsystem m_ams;
     ClawPneumaticSubsystem m_cps;
+    ObjectTrackerSubsystem m_otsg;
+    ObjectTrackerSubsystem m_otsc;
 
     Command m_highScoreCommand; 
 
@@ -52,7 +55,8 @@ public class AutonomousCommands  {
             // // where you move the arm and then score immediately without the human in the loop.
             // // If the human in the loop commands the actual gripper release, then won't need 
             // // a wait after MoveArmToPoseCommand()
-            new WaitCommand(1),
+            new WaitCommand(0.5),
+            new ArmMovementCommand(m_ams, Constants.TOP_SCORING_ANGLE + 20),
             new ParallelCommandGroup(
                 new ClawPneumaticCommand(m_cps, true),
                 new PrintCommand("**********end of scoreHigh()")
@@ -61,11 +65,13 @@ public class AutonomousCommands  {
         return c;
     }
 
-    public AutonomousCommands(DrivetrainSubsystem dts, ArmPneumaticSubsystem aps, ArmMotorSubsystem ams, ClawPneumaticSubsystem cps) {
+    public AutonomousCommands(DrivetrainSubsystem dts, ArmPneumaticSubsystem aps, ArmMotorSubsystem ams, ClawPneumaticSubsystem cps, ObjectTrackerSubsystem otsg, ObjectTrackerSubsystem otsc) {
         m_dts = dts;
         m_aps = aps;
         m_ams = ams; 
         m_cps = cps;
+        m_otsg = otsg;
+        m_otsc = otsc;
 
         m_highScoreCommand = scoreHigh();
 
@@ -192,6 +198,47 @@ public class AutonomousCommands  {
         );
 
         Command s = new SequentialCommandGroup(scoreHigh(), new ParallelCommandGroup(c, backHome));
+        return s;
+    }
+
+    public Command scoreHighMobilityGrabScoreHigh() {
+        m_dts.zeroOdometry();
+        PathPlannerTrajectory traj = PathPlanner.generatePath(
+            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            new PathPoint(new Translation2d(3.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1))
+        );
+
+        PathPlannerTrajectory traj2 = PathPlanner.generatePath(
+            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(0.01, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
+            new PathPoint(new Translation2d(0.02, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001 -1.0))
+        );
+
+        Command c = new SequentialCommandGroup( new WaitCommand(0.5),
+                                                m_dts.followTrajectoryCommand(traj, true));
+        Command c2 = m_dts.followTrajectoryCommand(traj2, true);
+
+        Command pickUpMid = new SequentialCommandGroup(
+            new ArmPneumaticCommand(m_aps, false),
+            new WaitCommand(1),
+            new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
+            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
+        );
+
+        Command s = new SequentialCommandGroup( scoreHigh(), 
+                                                new ParallelCommandGroup(   c,
+                                                                            pickUpMid), 
+                                                new SequentialCommandGroup( new InstantCommand(() -> m_dts.followPath()),
+                                                                            new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc),
+                                                                            new PrintCommand("Reached the cube"),
+                                                                            new AlignGripperToObjectCommand(m_dts, m_otsg, m_aps, m_cps),
+                                                                            new InstantCommand(() -> m_dts.followJoystick())),
+                                                new ClawPneumaticCommand(m_cps, false),
+                                                c2
+                                            );
         return s;
     }
 

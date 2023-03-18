@@ -41,7 +41,7 @@ public class ArmPneumaticCommand extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("APC: " + bExtend);
+    // System.out.println("APC: " + bExtend);
     if(bExtend) { // if extended then retract
       is_extending = false;
       m_armPneumaticSubsystem.armExtend();

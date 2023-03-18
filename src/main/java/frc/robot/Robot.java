@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
   boolean m_didViolate = false; 
 
   public static double initialGravityZAccel;
+  public static double initGyroRoll;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -65,6 +66,7 @@ public class Robot extends TimedRobot {
     PathPlannerServer.startServer(5811);
 
     initialGravityZAccel = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRawAccelZ();
+    initGyroRoll = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRoll();
   }
 
   /**

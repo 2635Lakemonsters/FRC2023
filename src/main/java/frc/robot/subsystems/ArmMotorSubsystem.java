@@ -65,14 +65,14 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
 
     theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;
-    while (theta < 0)
-      theta += 360.0;
     theta %= 360.0;
+    if (theta < 0)
+      theta += 360.0;
 
     fPO = (theta + alpha - 90.0);
-    while (fPO < 0)
-      fPO += 360.0;
     fPO %= 360.0;
+    if (fPO < 0)
+      fPO += 360.0;
 
     final double gain = Constants.ARM_MOTOR_FF_GAIN;
     double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));

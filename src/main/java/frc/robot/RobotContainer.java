@@ -38,6 +38,7 @@ import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SetTargetPoseCommand;
 import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveAutoBalanceCommandFEEDBACK;
+import frc.robot.commands.SwerveDriveBalanceJerky;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
 import frc.robot.commands.ToggleClawPneumaticsCommand;
@@ -76,7 +77,7 @@ public class RobotContainer extends TimedRobot {
   private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommandFEEDBACK m_swerveAutoBalanceCommandFEEDBACK = new SwerveAutoBalanceCommandFEEDBACK(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
-  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem);
+  private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, m_objectTrackerSubsystemGripper, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
@@ -174,7 +175,14 @@ public class RobotContainer extends TimedRobot {
     // ));
 
 
-    alignToObjectOnFloor.onTrue(new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem));
+    alignToObjectOnFloor.onTrue(new SequentialCommandGroup(
+      new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis),
+      new PrintCommand("Reached the cube"),
+      new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem),
+      new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+      ));
+
 
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 
@@ -224,6 +232,7 @@ public class RobotContainer extends TimedRobot {
                           new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)), 
                           new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose),
                           new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+                          new PrintCommand("About to MoveToScore"),
                           new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, -Constants.offsetFromAprilTagToConeNode, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
                           new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
                         ));
@@ -362,6 +371,14 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
     m_autoChooser.addOption("Near substation score high taxi out engage CONE", m_autonomousCommands.scoreHighOutScoreSustationSIDE());
     m_autoChooser.addOption("SwerveAutoBalanceCommandFEEDBACK", new SwerveAutoBalanceCommand(m_drivetrainSubsystem));
+
+    m_autoChooser.addOption("SwerveAutoBalanceCommandJerkey", new SequentialCommandGroup(
+        new InstantCommand(()->m_drivetrainSubsystem.followPath()), 
+        new SwerveDriveBalanceJerky(m_drivetrainSubsystem), 
+        new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+    ));
+
+    m_autoChooser.addOption("scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHigh());
 
     m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh(),
     new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),

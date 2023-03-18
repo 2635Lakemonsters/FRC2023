@@ -217,8 +217,9 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.8, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
+            new PathPoint(new Translation2d(1.5, -0.05), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            new PathPoint(new Translation2d(3.8, -0.10), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95)),
+            new PathPoint(new Translation2d(4.2, -0.10), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
 
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
@@ -236,7 +237,8 @@ public class AutonomousCommands  {
         Command pickUpMid = new SequentialCommandGroup(
             new ArmPneumaticCommand(m_aps, false),
             new WaitCommand(1),
-            new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
+            // new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
+            new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.BOTTOM_SCORING_ANGLE)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
         );
 
@@ -251,10 +253,10 @@ public class AutonomousCommands  {
                                                 // pneumatic and then wait so the claw can close
                                                 // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
-                                                new WaitCommand(0.7),
+                                                new WaitCommand(0.5),
                                                 // put the arm in a scoring position
                                                 // should change this to upper
-                                                new SetTargetPoseCommand(new Pose(Constants.MID_SCORING_EXTEND, Constants.MID_SCORING_ANGLE)),
+                                                new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
                                                 new MoveArmToPoseCommand(
                                                     m_aps, 
                                                     m_ams, 

@@ -20,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -108,9 +109,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private static final double ROTATION_I = 0.01;
     private static final double ROTATION_D = 0.0;
     
-
+  private static SerialPort m_serialPort;
   /** Creates a new DrivetrianSubsystem. */
-  public DrivetrainSubsystem() {
+  public DrivetrainSubsystem(SerialPort serialPort) {
+    m_serialPort = serialPort;
     m_gyro.calibrate();
     getPose();
   }
@@ -135,7 +137,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // putDTSToSmartDashboard();
-
+    String blingString =(int)Math.round(xPowerCommanded*100)+" "
+        +(int)Math.round(yPowerCommanded*100)+" "
+        +(int)Math.round(rotCommanded*100); 
+    System.out.println(blingString);
+    m_serialPort.writeString(blingString);
     if (followJoysticks) {
 
       // // Get the x speed

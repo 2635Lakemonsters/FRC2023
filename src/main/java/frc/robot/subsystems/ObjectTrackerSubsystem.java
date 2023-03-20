@@ -109,6 +109,7 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
     // }
 	
 	public VisionObject getClosestObject(String objectLabel) {
+
         VisionObject[] objects = getObjectsOfType(objectLabel);
         if (objects == null || objects.length == 0) {
             return null; 

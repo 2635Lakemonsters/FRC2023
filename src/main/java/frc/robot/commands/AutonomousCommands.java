@@ -246,7 +246,7 @@ public class AutonomousCommands  {
                                                 new ParallelCommandGroup(   c,
                                                                             pickUpMid), 
                                                 new SequentialCommandGroup( new InstantCommand(() -> m_dts.followPath()),
-                                                                            new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc),
+                                                                            new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc, true),
                                                                             new PrintCommand("Reached the cube"),
                                                                             new AlignGripperToObjectCommand(m_dts, m_otsg, m_aps, m_cps),
                                                                             new InstantCommand(() -> m_dts.followJoystick())),

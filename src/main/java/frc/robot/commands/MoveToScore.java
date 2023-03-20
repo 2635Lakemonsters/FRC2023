@@ -45,6 +45,7 @@ public class MoveToScore extends CommandBase {
   public void initialize() {
     m_c = null;
     m_allDone = true;
+    m_aprilTagData = null;
     System.out.println("about to call ots.data");
     m_objectTrackerSubsystemChassis.data();
     System.out.println("ots.data complete");
@@ -62,10 +63,9 @@ public class MoveToScore extends CommandBase {
       return;
     }
 
-    m_allDone = false;
-    m_objectTrackerSubsystemChassis.data();
-    m_aprilTagData = m_objectTrackerSubsystemChassis.getClosestAprilTag();
+    System.out.println("Found a tag");
 
+    m_allDone = false;
     double x, y;
 
     try {
@@ -78,7 +78,8 @@ public class MoveToScore extends CommandBase {
       return;
     }
 
-    if ((y * Constants.INCHES_PER_METER) > 55) { // to make sure it doesn't move too early
+    if ((y * Constants.INCHES_PER_METER) > 150) { // to make sure it doesn't move too early
+      System.out.println("Too far away");
       return;
     }
     
@@ -97,6 +98,7 @@ public class MoveToScore extends CommandBase {
         new PathPoint(new Translation2d(0.0, 0.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
         new PathPoint(new Translation2d(-delY, delX), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0) // position, heading(direction of travel)
     ));
+    System.out.println("X: " + x + "   Y: " + y);
     System.out.println("delX: " + delX + "   delY: " + delY);
     m_c = m_driveTrainSubsystem.followTrajectoryCommand(traj, true);
     m_c.initialize();

@@ -78,8 +78,8 @@ public class RobotContainer extends TimedRobot {
   private final SwerveAutoBalanceCommandFEEDBACK m_swerveAutoBalanceCommandFEEDBACK = new SwerveAutoBalanceCommandFEEDBACK(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, m_objectTrackerSubsystemGripper, m_objectTrackerSubsystemChassis, m_getPose);
-  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
-  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis);
+  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true);
+  private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true);
   private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
 
   // TODO: This probably isn't the best way to do this.  However, it'll do
@@ -120,7 +120,6 @@ public class RobotContainer extends TimedRobot {
   private void configureBindings() {
     // left joystick button bindings
     Trigger clawPneumaticButton = new JoystickButton(leftJoystick, Constants.CLAW_PNEUMATIC_BUTTON);
-    Trigger manualArmMovement = new JoystickButton(leftJoystick, Constants.MANUAL_ARM_MOVEMENT_BUTTON);
     Trigger alignToObjectOnFloor = new JoystickButton(leftJoystick, Constants.ALIGN_TO_OBJECT_ON_FLOOR_BUTTON);
     Trigger homeArmButton = new JoystickButton(leftJoystick, Constants.HOME_ARM_BUTTON);
     Trigger nonBalancingButton = new JoystickButton(leftJoystick, Constants.NORMAL_MODE);
@@ -129,6 +128,7 @@ public class RobotContainer extends TimedRobot {
     Trigger resetDriveOrientation = new JoystickButton(leftJoystick, Constants.RESET_DRIVE_BUTTON);
     Trigger deathDriveCUBE = new JoystickButton(leftJoystick, Constants.DEATH_CUBE_BUTTON);
     Trigger deathDriveCONE = new JoystickButton(leftJoystick, Constants.DEATH_CONE_BUTTON);
+    Trigger alignToAPRILTAG = new JoystickButton(leftJoystick, Constants.ALIGN_TO_APRILTAG_BUTTON);
     
     // right joystick button bindings
     Trigger armPneumaticButton = new JoystickButton(rightJoystick, Constants.ARM_PNEUMATIC_BUTTON);
@@ -177,16 +177,21 @@ public class RobotContainer extends TimedRobot {
 
     alignToObjectOnFloor.onTrue(new SequentialCommandGroup(
       new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis),
+      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true),
       new PrintCommand("Reached the cube"),
       new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem),
       new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
       ));
 
-
+      alignToAPRILTAG.onTrue(new SequentialCommandGroup(
+        new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+        new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, false),
+        new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
+        new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+      ));
+  
+  
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
-
-    manualArmMovement.whileTrue(m_manualArmMotorCommand);
 
     armPneumaticButton.toggleOnTrue(Commands.startEnd(m_armPneumaticSubsystem::armExtend,
                                       m_armPneumaticSubsystem::armRetract,

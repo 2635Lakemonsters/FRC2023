@@ -387,23 +387,23 @@ public ChassisSpeeds getChassisSpeeds() {
    * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
-    SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
-    SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
-    // SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
-    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
-    // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
+    // SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
+    // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
+    // // SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
+    // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
+    // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
 
-    SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
-    SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
-    SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
-    SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+    // SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
+    // SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
 
-    SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
-    SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());
-    SmartDashboard.putNumber("gyro yaw", m_gyro.getYaw());
-    SmartDashboard.putNumber("gyro z accel comp", m_gyro.getRawAccelZ());
+    // SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
+    // SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());
+    // SmartDashboard.putNumber("gyro yaw", m_gyro.getYaw());
+    // SmartDashboard.putNumber("gyro z accel comp", m_gyro.getRawAccelZ());
     // roll right is pitch negative
     // camera end up is roll negative
 
@@ -414,9 +414,9 @@ public ChassisSpeeds getChassisSpeeds() {
     double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
     double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());
 
-    SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
-    SmartDashboard.putNumber("x ff sine", sin);
-    SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
+    // SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
+    // SmartDashboard.putNumber("x ff sine", sin);
+    // SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
   }
 
   /** camera end up returns a negative number

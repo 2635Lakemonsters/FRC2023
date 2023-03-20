@@ -36,11 +36,14 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   double setPointAngle = 6;
   boolean isClose;
   boolean lostObject = false;
+  boolean m_stopAtEnd = true;       // Do we set the drive speed to zero at the end?
 
   String targetObjectLabel; // cone, cube, or AprilTag
   int aprilTagID;
   Timer timer = new Timer();
   double now;
+
+  int triggerDistance = 0;
 
   public double totalRotation = 0;
 
@@ -48,22 +51,24 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
   // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
   // the constructor argument and the instance variable this.targetObjectLabel
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
+  public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots, boolean stopAtEnd) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel);     
     m_drivetrainSubsystem = ds;
     m_objectTrackerSubsystem = ots;
+    m_stopAtEnd = stopAtEnd;
     addRequirements(m_drivetrainSubsystem);
   }
 
   // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
   // the constructor argument and the instance variable this.targetObjectLabel
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots) {
+  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots, boolean stopAtEnd) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel); 
     this.inTeleop = inTeleop;    
     m_drivetrainSubsystem = ds;
     m_objectTrackerSubsystem = ots;
+    m_stopAtEnd = stopAtEnd;
     addRequirements(m_drivetrainSubsystem);
   }
 
@@ -72,13 +77,20 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // checks targetObjectLabel given to constructor, normalizes case
     if (label.equalsIgnoreCase("cone")) {
       this.targetObjectLabel = "cone";
+      this.triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CONE;
 
     } else if (label.equalsIgnoreCase("cube")) {
       this.targetObjectLabel = "cube"; 
+      this.triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CUBE;
 
     } else if (label.contains("tag16h5")) {
-      this.targetObjectLabel = "aprilTag";
-      this.aprilTagID = Integer.valueOf(label.substring(label.indexOf(" "),label.length()-1)); 
+      this.targetObjectLabel = "tag";
+      try {
+        this.aprilTagID = Integer.valueOf(label.substring(label.indexOf(" "),label.length()-1)); 
+      } catch (Exception e) {
+        this.aprilTagID = -1;
+      }
+      this.triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_APRIL_TAG;
     } else {
       // This should never happen.
       // System.out.println("ERROR: UNKNOWN targetObjectLabel in VisionDriveClosedLoopCommand.checkUpdateObjectLabel(). Vision drive closed loop command will not behave as expected.");
@@ -201,7 +213,6 @@ public boolean isFinished() {
     if (lostObject)
     {
       now =  timer.get();
-      SmartDashboard.putNumber("Now", now);
       if (now > 0.25)
         System.out.println("Object lost");
       return now > 0.25;
@@ -212,24 +223,7 @@ public boolean isFinished() {
   }
   
   lostObject = false;
-  // boolean done = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance;
-  int triggerDistance = 0;
-  switch (this.targetObjectLabel)
-  {
-      case Constants.TARGET_OBJECT_LABEL_CONE:
-        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CONE;
-        break;
-      case Constants.TARGET_OBJECT_LABEL_CUBE:
-        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CUBE;
-        break;
-      case Constants.TARGET_OBJECT_LABEL_APRIL_TAG:
-        triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_APRIL_TAG;
-        break;
-      default:
-      // System.out.println("this is happening and it shouldn't :(");  
-      // this shouldn't happen
-        break;
-  }
+  // boolean done = Math.abs(closestObject.z - Constants.TARGET_TRIGGER_DISTANCE) <= tolerance  }
 
   isClose = Math.abs(closestObject.z - triggerDistance) <= tolerance;
   // if (done) {
@@ -252,8 +246,10 @@ public boolean isFinished() {
   public void end(boolean interrupted) {
     // Robot.drivetrainSubsystem.holonomicDrive(new Vector2(-100.0, 0.0), 0, true);
     // System.out.println("FCC end() drive forward extra 5 in");
-
-    m_drivetrainSubsystem.drive(0, 0, 0, true);
+    if (m_stopAtEnd) {
+      m_drivetrainSubsystem.drive(0, 0, 0, true);
+      System.out.println("stopping at end of VisionDriveClosedLoopCommand");
+    }
     // System.out.println("FCC end()");
   }
 

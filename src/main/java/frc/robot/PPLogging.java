@@ -12,8 +12,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+
 /** Add your docs here. */
 public class PPLogging {
+
+    static boolean enableSmartDashboard = false;
 
     public static void logActiveTrajectory(PathPlannerTrajectory traj)
     {
@@ -22,26 +25,31 @@ public class PPLogging {
 
     public static void logTargetPose(Pose2d pose)
     {
-        SmartDashboard.putNumber("PPSwerveControllerCommand/xTargetPose", pose.getX());
-        SmartDashboard.putNumber("PPSwerveControllerCommand/yTargetPose", pose.getY());
-        SmartDashboard.putNumber("PPSwerveControllerCommand/tTargetPose", pose.getRotation().getDegrees());
-        //Pose2d currentPose = DrivetrainSubsystem.
+        if (enableSmartDashboard) {
+            SmartDashboard.putNumber("PPSwerveControllerCommand/xTargetPose", pose.getX());
+            SmartDashboard.putNumber("PPSwerveControllerCommand/yTargetPose", pose.getY());
+            SmartDashboard.putNumber("PPSwerveControllerCommand/tTargetPose", pose.getRotation().getDegrees());
+            //Pose2d currentPose = DrivetrainSubsystem.
+        }
     }
     
     public static void logSetpoint(ChassisSpeeds speeds)
     {
-        SmartDashboard.putNumber("PPSwerveControllerCommand/xSpeed", speeds.vxMetersPerSecond);
-        SmartDashboard.putNumber("PPSwerveControllerCommand/ySpeed", speeds.vyMetersPerSecond);
-        SmartDashboard.putNumber("PPSwerveControllerCommand/omega", Math.toDegrees(speeds.omegaRadiansPerSecond));
+        if (enableSmartDashboard) {
+            SmartDashboard.putNumber("PPSwerveControllerCommand/xSpeed", speeds.vxMetersPerSecond);
+            SmartDashboard.putNumber("PPSwerveControllerCommand/ySpeed", speeds.vyMetersPerSecond);
+            SmartDashboard.putNumber("PPSwerveControllerCommand/omega", Math.toDegrees(speeds.omegaRadiansPerSecond));
+        }
     }
     
     public static void logError(Translation2d translationError, Rotation2d rotationError)
     {
-        SmartDashboard.putNumber("PPSwerveControllerCommand/xErrorMeters", translationError.getX());
-        SmartDashboard.putNumber("PPSwerveControllerCommand/yErrorMeters", translationError.getY());
-        SmartDashboard.putNumber(
-            "PPSwerveControllerCommand/rotationErrorDegrees", rotationError.getDegrees());
-    
+        if (enableSmartDashboard) {
+            SmartDashboard.putNumber("PPSwerveControllerCommand/xErrorMeters", translationError.getX());
+            SmartDashboard.putNumber("PPSwerveControllerCommand/yErrorMeters", translationError.getY());
+            SmartDashboard.putNumber(
+                "PPSwerveControllerCommand/rotationErrorDegrees", rotationError.getDegrees());
+        }    
     }
       
 }

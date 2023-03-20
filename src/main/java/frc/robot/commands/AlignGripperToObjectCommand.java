@@ -84,8 +84,8 @@ public class AlignGripperToObjectCommand extends CommandBase {
     }
     double strafe = MathUtils.clamp(-strafeController.calculate(closestObject.x, 0.5), -0.2, 0.2);
     double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.700), -0.2, 0.2);
-    SmartDashboard.putNumber("strafe", strafe);
-    SmartDashboard.putNumber("forward", forward);
+    // SmartDashboard.putNumber("strafe", strafe);
+    // SmartDashboard.putNumber("forward", forward);
     // System.out.println("strafe: " + strafe + "   forward: " + forward);
     m_drivetrainSubsystem.drive(forward, strafe, 0, false);
   }

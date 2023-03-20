@@ -61,9 +61,9 @@ public final class Constants {
 
     // buttons - left
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    public static final int MANUAL_ARM_MOVEMENT_BUTTON = 2;
     public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
     public static final int HOME_ARM_BUTTON = 4;
+    public static final int ALIGN_TO_APRILTAG_BUTTON = 5;
     public static final int NORMAL_MODE = 7;
     public static final int BALANCING_BUTTON = 8;
     public static final int HOLD_STILL_BUTTON = 9;
@@ -168,7 +168,7 @@ public final class Constants {
     // TODO: figure out these distances
     public static final int TARGET_TRIGGER_DISTANCE_CONE = 10;       // cone is skinny
     public static final int TARGET_TRIGGER_DISTANCE_CUBE = 10;       // cube is not as skinny
-    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 10;  // april tag approach distance for feeding station?
+    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 50;  // april tag approach distance for score.  Can't see tag if closer
 
 
     public enum ARM_STATE { Fplus, 
@@ -214,7 +214,7 @@ public final class Constants {
 
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
-    public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "aprilTag";
+    public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "tag16h5";
 //Robot Gripper Motor States
     public enum GRIPPER_MOTOR_STATE { Off, 
                             IdleOn, 

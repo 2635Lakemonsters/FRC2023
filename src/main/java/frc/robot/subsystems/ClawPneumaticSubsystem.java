@@ -13,7 +13,7 @@ import frc.robot.Constants;
 public class ClawPneumaticSubsystem extends SubsystemBase {
   /** Creates a new CompressorSubsystem. */
   private DoubleSolenoid doubleSolenoid;
-  private boolean isClosed;
+  // private boolean isClosed;
 
   public ClawPneumaticSubsystem() {
     // define the constants in the constants folder
@@ -23,26 +23,26 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
       PneumaticsModuleType.CTREPCM, 
       Constants.CLOSE_CHANNEL, 
       Constants.OPEN_CHANNEL);
-    isClosed = true;
+    // isClosed = true;
   }
   
   public boolean getIsClosed() {
-    return isClosed;
+    return doubleSolenoid.get() == Value.kForward;
   }
 
   public void grabberOpen() {
 		doubleSolenoid.set(Value.kReverse);
-    isClosed = false;
+    // isClosed = false;
 	}
 
   public void togglePosition() {
-    doubleSolenoid.set(isClosed ? Value.kForward : Value.kReverse);
-    isClosed = !isClosed;
+    doubleSolenoid.set(getIsClosed() ? Value.kReverse : Value.kForward);
+    // isClosed = !isClosed;
   }
   
 	public void grabberClose() {
 		doubleSolenoid.set(Value.kForward);
-    isClosed = true;
+    // isClosed = true;
 	}
 
   @Override

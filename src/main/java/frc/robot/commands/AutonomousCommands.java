@@ -48,7 +48,7 @@ public class AutonomousCommands  {
 
     public Command scoreHigh() {
         Command c = new SequentialCommandGroup(
-            new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE + 5)),
+            new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE + 20)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose),
 
             // // TODO: @Darren / @Megan, with the new transitions and the shorter arm,
@@ -59,7 +59,7 @@ public class AutonomousCommands  {
             // // If the human in the loop commands the actual gripper release, then won't need 
             // // a wait after MoveArmToPoseCommand()
             new WaitCommand(0.5),
-            new ArmMovementCommand(m_ams, Constants.TOP_SCORING_ANGLE + 20),
+            // new ArmMovementCommand(m_ams, Constants.TOP_SCORING_ANGLE + 20),
             new ParallelCommandGroup(
                 new ClawPneumaticCommand(m_cps, true),
                 new PrintCommand("**********end of scoreHigh()")
@@ -244,7 +244,8 @@ public class AutonomousCommands  {
 
         Command s = new SequentialCommandGroup( scoreHigh(), 
                                                 new ParallelCommandGroup(   c,
-                                                                            pickUpMid), 
+                                                    
+                                                pickUpMid), 
                                                 new SequentialCommandGroup( new InstantCommand(() -> m_dts.followPath()),
                                                                             new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc, true),
                                                                             new PrintCommand("Reached the cube"),

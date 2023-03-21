@@ -183,12 +183,13 @@ public class RobotContainer extends TimedRobot {
       new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
       ));
 
-      alignToAPRILTAG.onTrue(new SequentialCommandGroup(
-        new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-        new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, false),
-        new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG),
-        new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-      ));
+    alignToAPRILTAG.onTrue(new SequentialCommandGroup(
+      new InstantCommand(()->m_drivetrainSubsystem.followPath()),
+      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, false),
+      // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, true),
+      // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, false),
+      new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+    ));
   
   
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
@@ -385,9 +386,11 @@ public class RobotContainer extends TimedRobot {
 
     m_autoChooser.addOption("scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHigh());
 
-    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh(),
-    new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
-    new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)));
+    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh()
+    // , new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE))
+    // , new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
+    ));
+    
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     return m_autoChooser; 

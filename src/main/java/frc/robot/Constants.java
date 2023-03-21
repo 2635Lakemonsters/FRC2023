@@ -168,7 +168,7 @@ public final class Constants {
     // TODO: figure out these distances
     public static final int TARGET_TRIGGER_DISTANCE_CONE = 10;       // cone is skinny
     public static final int TARGET_TRIGGER_DISTANCE_CUBE = 10;       // cube is not as skinny
-    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 50;  // april tag approach distance for score.  Can't see tag if closer
+    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 0;  // april tag approach distance for score.  Can't see tag if closer
 
 
     public enum ARM_STATE { Fplus, 

@@ -23,7 +23,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
   private  long loopCtr = 0;
   private PIDController pid = new PIDController(0.012, 0.0, 0.001); //added a little bit of kd to damp out velocity
   private  double theta;
-  private  double m_poseTarget;
+  private  double m_poseTarget = Constants.TOP_SCORING_ANGLE + 20;
   private double fPO;
   
   /** Creates a new ArmMotorSubsystem. */

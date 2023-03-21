@@ -23,7 +23,7 @@ package frc.robot.subsystems;
         PneumaticsModuleType.CTREPCM, 
         Constants.EXTEND_CHANNEL, 
         Constants.RETRACT_CHANNEL);
-        isExtended = false;
+        isExtended = doubleSolenoid.get()==Value.kForward;
     }
   
     public boolean getIsExtended() {

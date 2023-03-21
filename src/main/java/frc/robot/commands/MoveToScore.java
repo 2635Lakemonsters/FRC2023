@@ -21,6 +21,8 @@ import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 public class MoveToScore extends CommandBase {
 
+  private final double moveCloserDistance = 60;
+
   private double m_nodeOffset;
   private ObjectTrackerSubsystem m_objectTrackerSubsystemChassis;
   private VisionObject m_aprilTagData;
@@ -30,14 +32,25 @@ public class MoveToScore extends CommandBase {
   // private double m_targetPoseR = (Math.PI / 2);
   DrivetrainSubsystem m_driveTrainSubsystem;
   Command m_c = null;
+  boolean m_moveCloser;
 
   /** Creates a new MoveToScore. */
+  public MoveToScore(DrivetrainSubsystem driveTrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, double nodeOffset, double fieldOffset, boolean moveCloser) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    m_dfo = fieldOffset;
+    m_nodeOffset = nodeOffset;
+    m_objectTrackerSubsystemChassis = objectTrackerSubsystemChassis;
+    m_driveTrainSubsystem = driveTrainSubsystem;
+    m_moveCloser = moveCloser;
+  }
+
   public MoveToScore(DrivetrainSubsystem driveTrainSubsystem, ObjectTrackerSubsystem objectTrackerSubsystemChassis, double nodeOffset, double fieldOffset) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_dfo = fieldOffset;
     m_nodeOffset = nodeOffset;
     m_objectTrackerSubsystemChassis = objectTrackerSubsystemChassis;
     m_driveTrainSubsystem = driveTrainSubsystem;
+    m_moveCloser = false;
   }
 
   // Called when the command is initially scheduled.
@@ -78,20 +91,26 @@ public class MoveToScore extends CommandBase {
       return;
     }
 
-    if ((y * Constants.INCHES_PER_METER) > 150) { // to make sure it doesn't move too early
-      System.out.println("Too far away");
-      return;
+    // if ((y * Constants.INCHES_PER_METER) > 150) { // to make sure it doesn't move too early
+    //   System.out.println("Too far away");
+    //   return;
+    // }
+
+    if (m_moveCloser && (y * Constants.INCHES_PER_METER) < moveCloserDistance)
+    {
+      return;             // Already < moveCloserDistance inches away.  No need to move closer
     }
     
-    // double thetaOne = Math.atan(x / y);
-    // double thetaTwo = m_targetPoseR - ya;
-    // double thetaThree = (Math.PI / 2)- (thetaOne + thetaTwo);
-    // double dc = Math.hypot(x, y);
-    // double lambda = dc * Math.sin(thetaThree);
-    // double delX = dc * Math.cos(thetaThree);
-    // double delY = lambda - m_dfo;
+    double delY;
+
+    if (m_moveCloser)
+    {
+      delY = y - moveCloserDistance/Constants.INCHES_PER_METER;     // If further than 50 inches, move to 50 inches
+    }
+    else{
+      delY = y - m_dfo - Constants.BUMPER_THICKNESS;
+    }
     double delX = m_nodeOffset + x;
-    double delY = y - m_dfo - Constants.BUMPER_THICKNESS;
 
     PathPlannerTrajectory traj = PathPlanner.generatePath(
         new PathConstraints(2, 0.5), 

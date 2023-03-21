@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -37,6 +38,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   boolean isClose;
   boolean lostObject = false;
   boolean m_stopAtEnd = true;       // Do we set the drive speed to zero at the end?
+  double m_targetPoseAngle;
 
   String targetObjectLabel; // cone, cube, or AprilTag
   int aprilTagID;
@@ -44,8 +46,6 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   double now;
 
   int triggerDistance = 0;
-
-  public double totalRotation = 0;
 
   private boolean inTeleop = false; 
 
@@ -98,8 +98,8 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   }
 
   protected void initPID(){
-    angleController = new PIDController(0.25, 0.0, 0.0);
-    strafeController = new PIDController(0.011, 0.0, 0.0); // TODO update constants
+    angleController = new PIDController(0.08, 0.0, 0.0);
+    strafeController = new PIDController(0.02, 0.0, 0.0); // TODO update constants
     forwardController = new PIDController(0.05, 0.01, 0.0); // TODO update constants   
   }
 
@@ -121,6 +121,13 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // System.out.println("Initialized FCC");
 
     isClose = false;
+
+    // If we are going to an AprilTag:
+    //
+    // Try to align with field.  Make our pose angle 0deg or 180deg; whichever is closest
+
+    m_targetPoseAngle = m_drivetrainSubsystem.m_gyro.getAngle().getCos() > 0 ? 0 : 180;
+
     // SmartDashboard.putString("FCC Status", "FCC Init");
   }
 
@@ -143,11 +150,24 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     double v; // velocity? 3/14
     // System.out.println("Closest z: " + closestObject.z);
     // closestObject.motionCompensate(m_drivetrainSubsystem, true);
-  
-    double angle =  Math.atan2(closestObject.x, closestObject.z);
-    
-    angleController.setSetpoint(angle);
-    rotation = angleController.calculate(0) * 0;
+
+    rotation = 0;
+
+    if (this.targetObjectLabel == "tag")
+    {
+      // Get current pose, normalized to 0-360deg
+
+      double poseAngle = m_drivetrainSubsystem.m_gyro.getAngle().getDegrees() % 360;
+      if (poseAngle < 0)
+        poseAngle += 360;
+
+      // If target pose is 0 and current pose > 270,
+      // subtract 360 from current pose such that 270..360 becomes -90..0
+      if (m_targetPoseAngle == 0 && poseAngle > 270)
+        poseAngle -= 360;
+
+      rotation = -angleController.calculate(poseAngle, m_targetPoseAngle);
+    }
     
     if (rotation > 1){
       rotation = 1;
@@ -155,10 +175,10 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       rotation = -1;
     }
 
-    totalRotation += rotation;
-    // SmartDashboard.putNumber("driveRotation", rotation);
+    SmartDashboard.putNumber("driveRotation", rotation);
     
     // strafe
+
     strafeController.setSetpoint(closestObject.x);
     strafe = strafeController.calculate(0);
 
@@ -192,7 +212,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       v = -1.0; // -0.7
     }
 
-    if (closestObject.z < 50)
+    if (closestObject.z < 50 && this.targetObjectLabel != "tag")    // Slow down when close, unless AprilTag
       v = -0.3;
     
     //  if (closestObject.z < 60) {
@@ -213,9 +233,9 @@ public boolean isFinished() {
     if (lostObject)
     {
       now =  timer.get();
-      if (now > 0.25)
+      if (now > 0.5)
         System.out.println("Object lost");
-      return now > 0.25;
+      return now > 0.5;
     }
     timer.restart();
     lostObject = true;
@@ -230,16 +250,9 @@ public boolean isFinished() {
   //   System.out.println("done FCC");
   // }
   if (isClose) {
-    // System.out.println("FCC done");
+    System.out.println("FCC done");
   }
   return isClose;
-  // return false;
-  // boolean isFinished = super.isTimedOut();
-  // if (isFinished) {
-  //   SmartDashboard.putNumber("totalRotation", totalRotation);
-  // }
-  //  return isFinished;
-     // TODO: add the actual completion test code
 }
 
   @Override

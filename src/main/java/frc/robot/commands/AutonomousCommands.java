@@ -225,12 +225,12 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/5), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.6, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube/2.)),
-            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube)),
+            new PathPoint(new Translation2d(1.6, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation)),
             // TODO, if we want to end the path planner directory closer or farther away from april tag, adjust the x.
             //       if we want to end the path planner laterally in a different location, adjust the y-component here and possibly feather 
             //          any y-adjustment in in a previous segment.
-            new PathPoint(new Translation2d(4.2, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube))
+            new PathPoint(new Translation2d(4.2, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
 
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),

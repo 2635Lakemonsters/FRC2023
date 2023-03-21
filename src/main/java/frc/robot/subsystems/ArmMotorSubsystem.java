@@ -25,9 +25,11 @@ public class ArmMotorSubsystem extends SubsystemBase {
   private  double theta;
   private  double m_poseTarget = Constants.TOP_SCORING_ANGLE + 20;
   private double fPO;
+  private ClawPneumaticSubsystem cns;
   
   /** Creates a new ArmMotorSubsystem. */
-  public ArmMotorSubsystem() {
+  public ArmMotorSubsystem(ClawPneumaticSubsystem cns) {
+    this.cns = cns;
     pid.setTolerance(10);
   }
 
@@ -77,7 +79,9 @@ public class ArmMotorSubsystem extends SubsystemBase {
     final double gain = Constants.ARM_MOTOR_FF_GAIN;
     double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));
 
-    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, m_poseTarget), Constants.FB_LOWER_LIMIT, Constants.FB_UPPER_LIMIT);
+    double lowerLimitFB = cns.getIsClosed() ? Constants.FB_LOWER_LIMIT_CLOSED : Constants.FB_LOWER_LIMIT_OPEN;
+    double upperLimitFB = cns.getIsClosed() ? Constants.FB_UPPER_LIMIT_CLOSED : Constants.FB_UPPER_LIMIT_OPEN;
+    double fbMotorPower = MathUtil.clamp(pid.calculate(theta, m_poseTarget), lowerLimitFB, upperLimitFB);
 
     // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
     // System.out.println(armPOFiltered);

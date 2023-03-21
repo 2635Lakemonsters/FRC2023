@@ -69,7 +69,7 @@ public class RobotContainer extends TimedRobot {
   public static final ClawPneumaticSubsystem m_clawPneumaticSubsystem = new ClawPneumaticSubsystem();
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemGripper = new ObjectTrackerSubsystem("Gripper");
   public static final ObjectTrackerSubsystem m_objectTrackerSubsystemChassis = new ObjectTrackerSubsystem("Chassis");
-  public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem();
+  public static final ArmMotorSubsystem m_armMotorSubsystem = new ArmMotorSubsystem(m_clawPneumaticSubsystem);
 
   // Commands
   public final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);

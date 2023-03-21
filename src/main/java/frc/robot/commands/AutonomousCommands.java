@@ -207,20 +207,30 @@ public class AutonomousCommands  {
 
     public Command scoreHighMobilityGrabScoreHigh() {
         m_dts.zeroOdometry();
+        // This is a hack... we should turn 180deg, but... something is wrong with path planner integration with our code.
+        double totalRotation = Math.PI + 1.1;
+        double totalDistanceToCube = 4.2;
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI))),
-            new PathPoint(new Translation2d(4.2, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI)+1.1))
+            // The following trajectory is intended to avoid the charging station.  
+            // Tune so it does not violate out of bounds as well.
+            // new PathPoint(new Translation2d(totalDistanceToCube / 2., 0.0), Rotation2d.fromRadians(-Math.PI/6.), Rotation2d.fromRadians(totalRotation / 2.)),
+            // The following 
+            new PathPoint(new Translation2d(totalDistanceToCube / 2., 0.0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation / 2.)),
+            new PathPoint(new Translation2d(totalDistanceToCube, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.0, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.3)),
-            new PathPoint(new Translation2d(4.2, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.3))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/5), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(1.6, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube/2.)),
+            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube)),
+            // TODO, if we want to end the path planner directory closer or farther away from april tag, adjust the x.
+            //       if we want to end the path planner laterally in a different location, adjust the y-component here and possibly feather 
+            //          any y-adjustment in in a previous segment.
+            new PathPoint(new Translation2d(4.2, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalDistanceToCube))
 
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
@@ -251,11 +261,11 @@ public class AutonomousCommands  {
                                                                             new PrintCommand("Reached the cube"),
                                                                             new AlignGripperToObjectCommand(m_dts, m_otsg, m_aps, m_cps),
                                                                             new InstantCommand(() -> m_dts.followJoystick())),
-                                                // pneumatic and then wait so the claw can close
+                                                // pneumatic claw close and then wait so the claw can close before moving
                                                 // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
                                                 new ArmPneumaticCommand(m_aps, false),
-                                                new WaitCommand(0.5),
+                                                new WaitCommand(0.5),                     // TODO, maybe move before ArmPneumaticCommand?
                                                 // put the arm in a scoring position
                                                 // should change this to upper
                                                 new SetTargetPoseCommand(new Pose(false, Constants.TOP_SCORING_ANGLE)),

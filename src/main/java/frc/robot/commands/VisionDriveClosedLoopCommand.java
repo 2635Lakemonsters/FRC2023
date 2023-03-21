@@ -212,9 +212,9 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       v = -1.0; // -0.7
     }
 
-    if (closestObject.z < 50 && this.targetObjectLabel != "tag")    // Slow down when close, unless AprilTag
+    if (closestObject.z < 15 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
       v = -0.3;
-    
+    }
     //  if (closestObject.z < 60) {
     //    isClose = true;
     // //   v = -0.05;

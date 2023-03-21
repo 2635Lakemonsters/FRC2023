@@ -23,7 +23,7 @@ public class ClawPneumaticSubsystem extends SubsystemBase {
       PneumaticsModuleType.CTREPCM, 
       Constants.CLOSE_CHANNEL, 
       Constants.OPEN_CHANNEL);
-    isClosed = doubleSolenoid.get()==Value.kForward;
+    isClosed = true;
   }
   
   public boolean getIsClosed() {

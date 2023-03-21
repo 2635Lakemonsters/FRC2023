@@ -210,16 +210,17 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.7, 0.4), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
+            new PathPoint(new Translation2d(1.5, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI))),
+            new PathPoint(new Translation2d(4.2, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI)+1.1))
         );
+       
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, -0.05), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.8, -0.10), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95)),
-            new PathPoint(new Translation2d(4.2, -0.10), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+0.95))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(1.0, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
+            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.3)),
+            new PathPoint(new Translation2d(4.2, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.3))
 
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0*Math.PI-0.001)),
@@ -236,16 +237,15 @@ public class AutonomousCommands  {
 
         Command pickUpMid = new SequentialCommandGroup(
             new ArmPneumaticCommand(m_aps, false),
-            new WaitCommand(1),
+            new ArmMovementCommand(m_ams, 190),
+            new WaitCommand(0.5), // this makes the arm not hit the ref
             // new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
-            new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.BOTTOM_SCORING_ANGLE)),
+            new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
         );
 
         Command s = new SequentialCommandGroup( scoreHigh(), 
-                                                new ParallelCommandGroup(   c,
-                                                    
-                                                pickUpMid), 
+                                                new ParallelCommandGroup(c, pickUpMid), 
                                                 new SequentialCommandGroup( new InstantCommand(() -> m_dts.followPath()),
                                                                             new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc, true),
                                                                             new PrintCommand("Reached the cube"),
@@ -254,18 +254,24 @@ public class AutonomousCommands  {
                                                 // pneumatic and then wait so the claw can close
                                                 // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
+                                                new ArmPneumaticCommand(m_aps, false),
                                                 new WaitCommand(0.5),
                                                 // put the arm in a scoring position
                                                 // should change this to upper
-                                                new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE)),
-                                                new MoveArmToPoseCommand(
+                                                new SetTargetPoseCommand(new Pose(false, Constants.TOP_SCORING_ANGLE)),
+                                                new ParallelCommandGroup(
+                                                    new MoveArmToPoseCommand(
                                                     m_aps, 
                                                     m_ams, 
                                                     m_getPose
+                                                    ),
+                                                    c2
                                                 ),
-                                                c2,
                                                 // if we have it, april tag code goes here.
-
+                                                new ParallelCommandGroup(
+                                                    new MoveToScore(m_dts, m_otsc, 0, 0, false),
+                                                    new ArmPneumaticCommand(m_aps, true)
+                                                ), 
                                                 // release and score
                                                 new ClawPneumaticCommand(m_cps, true)
                                             

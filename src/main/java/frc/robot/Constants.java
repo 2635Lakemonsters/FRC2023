@@ -132,7 +132,7 @@ public final class Constants {
     public static final boolean ARM_EXTEND_DEATH_BUTTON_START = false; 
     public static final int ARM_ANGLE_DEATH_BUTTON_START = 302; // TODO no idea what this real angle is, something > 273 or so to avoid horizontal exclusion zone
     public static final boolean ARM_EXTEND_PICKUP_FLOOR = true;
-    public static final int ARM_ANGLE_PICKUP_FLOOR = 332;
+    public static final int ARM_ANGLE_PICKUP_FLOOR = 332+5;
     
     // illegal arm regions
     public static final int Hplus = 271;

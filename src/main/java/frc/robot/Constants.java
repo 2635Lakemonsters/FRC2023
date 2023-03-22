@@ -72,7 +72,7 @@ public final class Constants {
     public static final int DEATH_CONE_BUTTON = 12;
 
     // new buttons - left
-    // public static final int ARM_PNEUMATIC_BUTTON = 1;
+    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
     // public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
     // public static final int NORMAL_BOTTOM_ARM_MOVEMENT = 3;
     // public static final int NORMAL_MID_ARM_MOVEMENT = 4;
@@ -86,7 +86,7 @@ public final class Constants {
     // public static final int DEATH_CONE_BUTTON = 12; //TODO: maybe
 
     // new buttons - right
-    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
+    // public static final int ARM_PNEUMATIC_BUTTON = 1;
     // public static final int SCORE_CENTER_BUTTON = 2;
     // public static final int SUBSTATION_BUTTON = 3;
     // public static final int PICKUP_FROM_FLOOR_BUTTON = 4;

@@ -384,7 +384,8 @@ public class RobotContainer extends TimedRobot {
         new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
     ));
 
-    m_autoChooser.addOption("scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHigh());
+    m_autoChooser.addOption("RIGHT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighRight());
+    m_autoChooser.addOption("LEFT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighLeft());
 
     m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh()
     // , new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE))

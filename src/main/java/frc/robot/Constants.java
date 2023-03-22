@@ -25,7 +25,7 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR = 5; 
     public static final int DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER = 2;
     public static final int DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR = 6; 
-    public static final double BACK_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(160 + 9.06); //2.9835
+    public static final double BACK_LEFT_ANGLE_OFFSET_COMPETITION = Math.toRadians(117.06); //2.9835
 
     // BACK RIGHT
     public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 7;
@@ -70,6 +70,35 @@ public final class Constants {
     public static final int RESET_DRIVE_BUTTON = 10;
     public static final int DEATH_CUBE_BUTTON = 11;
     public static final int DEATH_CONE_BUTTON = 12;
+
+    // new buttons - left
+    // public static final int ARM_PNEUMATIC_BUTTON = 1;
+    // public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
+    // public static final int NORMAL_BOTTOM_ARM_MOVEMENT = 3;
+    // public static final int NORMAL_MID_ARM_MOVEMENT = 4;
+    // public static final int ALIGN_GRIPPER = 5; //TODO: maybe
+    // public static final int NORMAL_TOP_ARM_MOVEMENT = 6;
+    // public static final int NORMAL_MODE = 7;
+    // public static final int BALANCING_BUTTON = 8;
+    // public static final int HOLD_STILL_BUTTON = 9;
+    // public static final int RESET_DRIVE_BUTTON = 10;
+    // public static final int DEATH_CUBE_BUTTON = 11; //TODO: maybe
+    // public static final int DEATH_CONE_BUTTON = 12; //TODO: maybe
+
+    // new buttons - right
+    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
+    // public static final int SCORE_CENTER_BUTTON = 2;
+    // public static final int SUBSTATION_BUTTON = 3;
+    // public static final int PICKUP_FROM_FLOOR_BUTTON = 4;
+    // public static final int TRAVEL_BUTTON_ID = 5;
+    // public static final int HOME_ARM_BUTTON = 6;
+    // public static final int SCORE_TOP_LEFT = 7;
+    // public static final int SCORE_TOP_RIGHT = 8;
+    // public static final int SCORE_MID_LEFT = 9;
+    // public static final int SCORE_MID_RIGHT = 10;
+    // public static final int SCORE_BOTTOM_LEFT = 11;
+    // public static final int SCORE_BOTTOM_RIGHT = 12;
+
 
     // buttons - right
     public static final int ARM_PNEUMATIC_BUTTON = 1;

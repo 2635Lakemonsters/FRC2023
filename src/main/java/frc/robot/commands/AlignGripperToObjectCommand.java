@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.legacymath2910.MathUtils;
 import frc.robot.models.VisionObject;
@@ -55,7 +54,7 @@ public class AlignGripperToObjectCommand extends CommandBase {
     m_objectTrackerSubsystem.data();
 
     strafeController = new PIDController(2.0, 0.0, 0.0); // TODO update constants
-    forwardController = new PIDController(2.0, 0.00, 0.0); // TODO update constants   
+    forwardController = new PIDController(1.8, 0.00, 0.0); // TODO update constants   
     System.out.println("Strafe Tol:" + strafeController.getPositionTolerance() + "Forward Tol:" + forwardController.getPositionTolerance());
   }
 
@@ -83,7 +82,7 @@ public class AlignGripperToObjectCommand extends CommandBase {
       return;
     }
     double strafe = MathUtils.clamp(-strafeController.calculate(closestObject.x, 0.5), -0.2, 0.2);
-    double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.700), -0.2, 0.2);
+    double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.5), -0.2, 0.2);
     // SmartDashboard.putNumber("strafe", strafe);
     // SmartDashboard.putNumber("forward", forward);
     // System.out.println("strafe: " + strafe + "   forward: " + forward);

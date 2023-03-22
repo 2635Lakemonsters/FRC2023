@@ -8,7 +8,6 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -153,7 +152,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
     rotation = 0;
 
-    if (this.targetObjectLabel == "tag")
+    // if (this.targetObjectLabel == "tag")
     {
       // Get current pose, normalized to 0-360deg
 
@@ -209,10 +208,10 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     v = -0.4;  
 
     if (inTeleop) {
-      v = -1.0; // -0.7
+      v = -1.2; // -0.7
     }
 
-    if (closestObject.z < 30 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
+    if (closestObject.z < 40 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
       v = -0.3;
     }
     //  if (closestObject.z < 60) {

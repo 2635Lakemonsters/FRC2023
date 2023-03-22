@@ -410,6 +410,12 @@ public ChassisSpeeds getChassisSpeeds() {
     // 0.81 at 30 deg
     // 0.94 at level
 
+    SmartDashboard.putNumber("FL encoder pos", Math.toDegrees(m_frontLeft.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("FR encoder pos", Math.toDegrees(m_frontRight.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("BL encoder pos", Math.toDegrees(m_backLeft.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("BR encoder pos", Math.toDegrees(m_backRight.getTurningEncoderRadians())); 
+
+
     double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
     double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
     double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());

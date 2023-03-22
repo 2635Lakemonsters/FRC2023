@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import java.util.Map;
 
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ARM_TRANSITION;

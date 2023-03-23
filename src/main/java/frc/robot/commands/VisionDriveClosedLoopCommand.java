@@ -8,7 +8,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
@@ -19,7 +21,8 @@ import frc.robot.subsystems.ObjectTrackerSubsystem;
 // import com.kauailabs.navx.frc.AHRS;  
 // import edu.wpi.first.wpilibj.SPI;
 
-/* 
+/**
+ * Closed-loop drive to cone, cube, or AprilTag 
   Copy of FetchPowerCellCommand with modified contructor to take cargo color
 */
 
@@ -38,9 +41,12 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   boolean lostObject = false;
   boolean m_stopAtEnd = true;       // Do we set the drive speed to zero at the end?
   double m_targetPoseAngle;
+  double m_lastDistanceSeen;
+  boolean m_wrongObject;
 
   String targetObjectLabel; // cone, cube, or AprilTag
   int aprilTagID;
+  int targetTagID = -1; // depends on whether you're red/blue and starting on the right/left side of the charge station
   Timer timer = new Timer();
   double now;
 
@@ -50,24 +56,18 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
   // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
   // the constructor argument and the instance variable this.targetObjectLabel
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots, boolean stopAtEnd) {
-    //initPID();
-    checkUpdateObjectLabel(targetObjectLabel);     
-    m_drivetrainSubsystem = ds;
-    m_objectTrackerSubsystem = ots;
-    m_stopAtEnd = stopAtEnd;
-    addRequirements(m_drivetrainSubsystem);
-  }
-
-  // TODO: note that the targetObjectLabel here masks the targetObjectLabel, likely should have a different name for 
-  // the constructor argument and the instance variable this.targetObjectLabel
-  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots, boolean stopAtEnd) {
+  public VisionDriveClosedLoopCommand(String targetObjectLabel, boolean inTeleop, DrivetrainSubsystem ds, ObjectTrackerSubsystem ots, boolean stopAtEnd, int... Id) {
     //initPID();
     checkUpdateObjectLabel(targetObjectLabel); 
     this.inTeleop = inTeleop;    
     m_drivetrainSubsystem = ds;
     m_objectTrackerSubsystem = ots;
     m_stopAtEnd = stopAtEnd;
+    aprilTagID = Id.length == 1 ? Id[0] : -1;   // Id parameter overrides value in label
+
+    if (DriverStation.getAlliance() == Alliance.Blue) {
+      aprilTagID += 3;
+    }
     addRequirements(m_drivetrainSubsystem);
   }
 
@@ -81,6 +81,10 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     } else if (label.equalsIgnoreCase("cube")) {
       this.targetObjectLabel = "cube"; 
       this.triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_CUBE;
+
+    } else if (label.equalsIgnoreCase("any")) {
+      this.targetObjectLabel = "any"; 
+      this.triggerDistance = Constants.TARGET_TRIGGER_DISTANCE_ANY;
 
     } else if (label.contains("tag16h5")) {
       this.targetObjectLabel = "tag";
@@ -120,9 +124,9 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // System.out.println("Initialized FCC");
 
     isClose = false;
+    m_lastDistanceSeen = 1000;              // Really big....
+    m_wrongObject = false;
 
-    // If we are going to an AprilTag:
-    //
     // Try to align with field.  Make our pose angle 0deg or 180deg; whichever is closest
 
     m_targetPoseAngle = m_drivetrainSubsystem.m_gyro.getAngle().getCos() > 0 ? 0 : 180;
@@ -130,6 +134,13 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     // SmartDashboard.putString("FCC Status", "FCC Init");
   }
 
+  private VisionObject getObjectOfInterest()
+  {
+    return targetObjectLabel == "tag" && aprilTagID != -1 ? 
+      m_objectTrackerSubsystem.getSpecificAprilTag(aprilTagID) :
+      (targetObjectLabel == "any" ? m_objectTrackerSubsystem.getClosestObject() : m_objectTrackerSubsystem.getClosestObject(targetObjectLabel));
+  }
+ 
   @Override
   public void execute() {
     m_objectTrackerSubsystem.data();
@@ -137,7 +148,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     double strafe = 0;
     double rotation = 0;
 
-    VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
+    VisionObject closestObject = getObjectOfInterest();
      
     if (closestObject == null || closestObject.z > 200) {
       // SmartDashboard.putNumber("driveRotation", 99);
@@ -145,7 +156,19 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       // SmartDashboard.putString("FCC Status", "No cargo in frame OR cargo out of range");
       return; // no object found
     }
+
+    // As we approach the object, if it suddenly gets much further away, it is probably a different
+    // object.  Since we don't want to accidentally chase an object on the wrong side of the field,
+    // treat this case as a lost object
+
+    if (closestObject.z > (m_lastDistanceSeen + 48))
+    {
+      m_wrongObject = true;
+      return;
+    }
     
+    m_lastDistanceSeen = closestObject.z;
+
     double v; // velocity? 3/14
     // System.out.println("Closest z: " + closestObject.z);
     // closestObject.motionCompensate(m_drivetrainSubsystem, true);
@@ -227,7 +250,12 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 @Override
 public boolean isFinished() {
   double tolerance = 4; // TODO units...? i think it's inches
-  VisionObject closestObject = m_objectTrackerSubsystem.getClosestObject(targetObjectLabel);
+  if (m_wrongObject)
+  {
+    System.out.println("Object switch");
+    return true;
+  }
+  VisionObject closestObject = getObjectOfInterest();
   if(closestObject == null) {
     if (lostObject)
     {

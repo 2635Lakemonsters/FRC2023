@@ -262,7 +262,7 @@ public class AutonomousCommands  {
                                                 // if we have it, april tag code goes here.
                                                 new ParallelCommandGroup(
                                                     new SequentialCommandGroup( new InstantCommand(()->m_dts.followPath()),
-                                                                                new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_dts, m_otsc, false),
+                                                                                new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_dts, m_otsc, false, 3),
                                                                                 // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, true),
                                                                                 // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, false),
                                                                                 new InstantCommand(()->m_dts.followJoystick())
@@ -333,7 +333,7 @@ public class AutonomousCommands  {
                                                 // if we have it, april tag code goes here.
                                                 new ParallelCommandGroup(
                                                     new SequentialCommandGroup( new InstantCommand(()->m_dts.followPath()),
-                                                                                new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_dts, m_otsc, false),
+                                                                                new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_dts, m_otsc, false, 1),
                                                                                 // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, true),
                                                                                 // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, false),
                                                                                 new InstantCommand(()->m_dts.followJoystick())

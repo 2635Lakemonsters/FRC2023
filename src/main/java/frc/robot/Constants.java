@@ -6,7 +6,7 @@ public final class Constants {
     public static final double LENGTH_OF_BOT = 35 / INCHES_PER_METER;
     public static final double FIELD_OFFSET_FROM_NODE_TO_APRILTAG = 0.36;
     public static final double FIELD_OFFSET_FROM_SUBSTATION_TO_APRILTAG = -15 / INCHES_PER_METER;
-    public static final double MID_SCORING_STANDOFF_DISTANCE = 25 / INCHES_PER_METER;
+    public static final double MID_SCORING_STANDOFF_DISTANCE = (25 - 4) / INCHES_PER_METER;
     public static final double BUMPER_THICKNESS = 3 / INCHES_PER_METER;
 
     // FRONT LEFT
@@ -60,59 +60,59 @@ public final class Constants {
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
     // buttons - left
-    public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
-    public static final int HOME_ARM_BUTTON = 4;
-    public static final int ALIGN_TO_APRILTAG_BUTTON = 5;
-    public static final int NORMAL_MODE = 7;
-    public static final int BALANCING_BUTTON = 8;
-    public static final int HOLD_STILL_BUTTON = 9;
-    public static final int RESET_DRIVE_BUTTON = 10;
-    public static final int DEATH_CUBE_BUTTON = 11;
-    public static final int DEATH_CONE_BUTTON = 12;
-
-    // new buttons - left
-    // public static final int ARM_PNEUMATIC_BUTTON = 1;
-    // public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
-    // public static final int NORMAL_BOTTOM_ARM_MOVEMENT = 3;
-    // public static final int NORMAL_MID_ARM_MOVEMENT = 4;
-    // public static final int ALIGN_GRIPPER = 5; //TODO: maybe
-    // public static final int NORMAL_TOP_ARM_MOVEMENT = 6;
+    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
+    // public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
+    // public static final int HOME_ARM_BUTTON = 4;
+    // public static final int ALIGN_TO_APRILTAG_BUTTON = 5;
     // public static final int NORMAL_MODE = 7;
     // public static final int BALANCING_BUTTON = 8;
     // public static final int HOLD_STILL_BUTTON = 9;
     // public static final int RESET_DRIVE_BUTTON = 10;
-    // public static final int DEATH_CUBE_BUTTON = 11; //TODO: maybe
-    // public static final int DEATH_CONE_BUTTON = 12; //TODO: maybe
+    // public static final int DEATH_CUBE_BUTTON = 11;
+    // public static final int DEATH_CONE_BUTTON = 12;
+
+    // new buttons - left
+    public static final int CLAW_PNEUMATIC_BUTTON = 1;
+    public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
+    public static final int NORMAL_BOTTOM_ARM_MOVEMENT = 3;
+    public static final int NORMAL_MID_ARM_MOVEMENT = 4;
+    public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 5;
+    public static final int NORMAL_TOP_ARM_MOVEMENT = 6;
+    public static final int NORMAL_MODE = 7;
+    public static final int BALANCING_BUTTON = 8;
+    public static final int HOLD_STILL_BUTTON = 9;
+    public static final int RESET_DRIVE_BUTTON = 10;
+    public static final int DEATH_CUBE_BUTTON = 11; //TODO: maybe
+    public static final int DEATH_CONE_BUTTON = 12; //TODO: maybe
 
     // new buttons - right
-    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    // public static final int SCORE_CENTER_BUTTON = 2;
-    // public static final int SUBSTATION_BUTTON = 3;
-    // public static final int PICKUP_FROM_FLOOR_BUTTON = 4;
-    // public static final int TRAVEL_BUTTON_ID = 5;
-    // public static final int HOME_ARM_BUTTON = 6;
-    // public static final int SCORE_TOP_LEFT = 7;
-    // public static final int SCORE_TOP_RIGHT = 8;
-    // public static final int SCORE_MID_LEFT = 9;
-    // public static final int SCORE_MID_RIGHT = 10;
-    // public static final int SCORE_BOTTOM_LEFT = 11;
-    // public static final int SCORE_BOTTOM_RIGHT = 12;
-
-
-    // buttons - right
     public static final int ARM_PNEUMATIC_BUTTON = 1;
     public static final int SCORE_CENTER_BUTTON = 2;
-    public static final int LEFT_SLIDER_BUTTON = 3;
-    public static final int RIGHT_SLIDER_BUTTON = 4;
-    public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
-    public static final int TRAVEL_BUTTON_ID = 6;
+    public static final int SUBSTATION_BUTTON = 3;
+    public static final int PICKUP_FROM_FLOOR_BUTTON = 4;
+    public static final int TRAVEL_BUTTON_ID = 5;
+    public static final int HOME_ARM_BUTTON = 6;
     public static final int SCORE_TOP_LEFT = 7;
     public static final int SCORE_TOP_RIGHT = 8;
     public static final int SCORE_MID_LEFT = 9;
     public static final int SCORE_MID_RIGHT = 10;
     public static final int SCORE_BOTTOM_LEFT = 11;
     public static final int SCORE_BOTTOM_RIGHT = 12;
+
+
+    // buttons - right
+    // public static final int ARM_PNEUMATIC_BUTTON = 1;
+    // public static final int SCORE_CENTER_BUTTON = 2;
+    // public static final int LEFT_SLIDER_BUTTON = 3;
+    // public static final int RIGHT_SLIDER_BUTTON = 4;
+    // public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
+    // public static final int TRAVEL_BUTTON_ID = 6;
+    // public static final int SCORE_TOP_LEFT = 7;
+    // public static final int SCORE_TOP_RIGHT = 8;
+    // public static final int SCORE_MID_LEFT = 9;
+    // public static final int SCORE_MID_RIGHT = 10;
+    // public static final int SCORE_BOTTOM_LEFT = 11;
+    // public static final int SCORE_BOTTOM_RIGHT = 12;
 
     // hat constants 
     public static final int HAT_JOYSTICK_TRIM_POSITION = RIGHT_JOYSTICK_CHANNEL;
@@ -146,7 +146,7 @@ public final class Constants {
     public static final int TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM = 295;
     public static final int TOP_SCORING_ANGLE = 207;
     public static final int TOP_TRANSITION_ANGLE = 210;
-    public static final int MID_SCORING_ANGLE = 228;
+    public static final int MID_SCORING_ANGLE = 228 + 5; // TODO 3/22 may need to be lower
     public static final int BOTTOM_SCORING_ANGLE = 326;
     public static final int SUBSTATION_ANGLE = 274;
     public static final boolean HOME_EXTEND = false;
@@ -199,7 +199,8 @@ public final class Constants {
     // TODO: figure out these distances
     public static final int TARGET_TRIGGER_DISTANCE_CONE = 10;       // cone is skinny
     public static final int TARGET_TRIGGER_DISTANCE_CUBE = 10;       // cube is not as skinny
-    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 0;  // april tag approach distance for score.  Can't see tag if closer
+    public static final int TARGET_TRIGGER_DISTANCE_ANY = 10;        // cube is not as skinny
+    public static final int TARGET_TRIGGER_DISTANCE_APRIL_TAG = 0;   // april tag approach distance for score.  Can't see tag if closer
 
 
     public enum ARM_STATE { Fplus, 
@@ -245,6 +246,7 @@ public final class Constants {
 
     public static final String TARGET_OBJECT_LABEL_CONE = "cone";
     public static final String TARGET_OBJECT_LABEL_CUBE = "cube";
+    public static final String TARGET_OBJECT_LABEL_ANY = "any";
     public static final String TARGET_OBJECT_LABEL_APRIL_TAG = "tag16h5";
 //Robot Gripper Motor States
     public enum GRIPPER_MOTOR_STATE { Off, 

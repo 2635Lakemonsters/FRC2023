@@ -54,7 +54,7 @@ public class AlignGripperToObjectCommand extends CommandBase {
     m_objectTrackerSubsystem.data();
 
     strafeController = new PIDController(2.0, 0.0, 0.0); // TODO update constants
-    forwardController = new PIDController(1.8, 0.00, 0.0); // TODO update constants   
+    forwardController = new PIDController(1.5, 0.00, 0.0); // TODO update constants   
     System.out.println("Strafe Tol:" + strafeController.getPositionTolerance() + "Forward Tol:" + forwardController.getPositionTolerance());
   }
 

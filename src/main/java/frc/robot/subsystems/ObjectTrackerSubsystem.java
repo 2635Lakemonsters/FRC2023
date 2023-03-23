@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +69,22 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         } catch (Exception e) {
             foundObjects = null; 
         }
+
+        // loop over list of visionobjects, deletes them from list if z=0
+        // this handles case found on 3/22 where a cone is (0, 0, 0) despite being far away
+        ArrayList<VisionObject> tmp = new ArrayList<VisionObject>(Arrays.asList(foundObjects));
+        for (int i = 0; i < tmp.size(); i++) {
+            VisionObject vo = tmp.get(i);
+            if (vo.z == 0) {
+                tmp.remove(vo);
+            }
+        }
+        // convert arraylist to array via for loop bc .toArray() is being uncooperative
+        VisionObject[] tmp2 = new VisionObject[tmp.size()];
+        for (int i = 0; i<tmp.size();i++){
+            tmp2[i] = tmp.get(i);
+        }
+        foundObjects = tmp2;
         
         if (foundObjects != null && source.contains("Chassis")) {
             applyRotationTranslationMatrix();
@@ -142,6 +159,16 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
         return object;
     }
 
+    public VisionObject getSpecificAprilTag(int id) {
+        String objectLabel = "tag16h5: " + id;
+        VisionObject[] objects = getObjectsOfType(objectLabel);
+        if (objects == null || objects.length == 0) {
+            return null; 
+        }
+        return objects[0];
+    }
+
+
     /** Returns whether closest cone/cube to the gripper if close enough to pick up 
      * @param isCube TRUE cube, FALSE cone
     */
@@ -178,10 +205,11 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
             return null;
         List<VisionObject> filteredResult = Arrays.asList(foundObjects)
             .stream()
-            .filter(vo -> vo.objectLabel.contains(objectLabel) && (objectLabel == "tag" || vo.confidence > .40))//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
+            .filter(vo -> vo.objectLabel.contains(objectLabel) && (objectLabel.contains("tag") || vo.confidence > .40))//Uses .contains because vo.ObjectLabel has ID, ObjectLabel does not
             .collect(Collectors.toList());
 
-        VisionObject filteredArray[] = new VisionObject[filteredResult.size()];
+
+            VisionObject filteredArray[] = new VisionObject[filteredResult.size()];
         return filteredResult.toArray(filteredArray);
 
     }

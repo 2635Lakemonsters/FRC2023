@@ -19,6 +19,7 @@ import frc.robot.models.VisionObject;
 import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 
+/** Uses AprilTags to generate trajectory. Open-loop / dead-reckoning */
 public class MoveToScore extends CommandBase {
 
   private final double moveCloserDistance = 60;

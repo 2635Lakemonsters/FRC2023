@@ -54,7 +54,7 @@ public class AlignGripperToObjectCommand extends CommandBase {
     m_objectTrackerSubsystem.data();
 
     strafeController = new PIDController(2.0, 0.0, 0.0); // TODO update constants
-    forwardController = new PIDController(1.5, 0.00, 0.0); // TODO update constants   
+    forwardController = new PIDController(0.8, 0.00, 0.0); // TODO update constants   
     System.out.println("Strafe Tol:" + strafeController.getPositionTolerance() + "Forward Tol:" + forwardController.getPositionTolerance());
   }
 
@@ -82,7 +82,7 @@ public class AlignGripperToObjectCommand extends CommandBase {
       return;
     }
     double strafe = MathUtils.clamp(-strafeController.calculate(closestObject.x, 0.5), -0.2, 0.2);
-    double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.5), -0.2, 0.2);
+    double forward = MathUtils.clamp(-forwardController.calculate(closestObject.y, 0.5), -0.15, 0.15);
     // SmartDashboard.putNumber("strafe", strafe);
     // SmartDashboard.putNumber("forward", forward);
     // System.out.println("strafe: " + strafe + "   forward: " + forward);

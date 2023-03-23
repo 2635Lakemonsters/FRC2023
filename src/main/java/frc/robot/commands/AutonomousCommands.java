@@ -204,22 +204,26 @@ public class AutonomousCommands  {
         Command s = new SequentialCommandGroup(scoreHigh(), new ParallelCommandGroup(c, backHome));
         return s;
     }
+    private double totalRotation = Math.PI + 0.6;
+    private double outDistance = 3.8;
+    private double returnDistance = 2.9;
 
     public Command scoreHighMobilityGrabScoreHighRight() {
         m_dts.zeroOdometry();
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI))),
-            new PathPoint(new Translation2d(3.8, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI)+1.1))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
+            
+            new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.0, -0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.3, -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.1))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(returnDistance/2., -0.15), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(returnDistance, -0.35), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),
@@ -229,17 +233,16 @@ public class AutonomousCommands  {
         Command pickUpMid = new SequentialCommandGroup(
             new ArmPneumaticCommand(m_aps, false),
             new ArmMovementCommand(m_ams, 190),
-            new WaitCommand(1
-            ), // this makes the arm not hit the ref
+            new WaitCommand(1.5), // this makes the arm not hit the ref
             // new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
             new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
         );
 
-        Command s = new SequentialCommandGroup( scoreHigh(), 
+        Command s = new SequentialCommandGroup( new ClawPneumaticCommand(m_cps, false), scoreHigh(), 
                                                 new ParallelCommandGroup(c, pickUpMid), 
                                                 new SequentialCommandGroup( new InstantCommand(() -> m_dts.followPath()),
-                                                                            new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc, true),
+                                                                            new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_dts, m_otsc, false),
                                                                             new PrintCommand("Reached the cube"),
                                                                             new AlignGripperToObjectCommand(m_dts, m_otsg, m_aps, m_cps),
                                                                             new InstantCommand(() -> m_dts.followJoystick())),

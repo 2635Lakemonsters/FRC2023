@@ -66,7 +66,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     aprilTagID = Id.length == 1 ? Id[0] : -1;   // Id parameter overrides value in label
 
     if (DriverStation.getAlliance() == Alliance.Blue) {
-      aprilTagID += 3;
+      aprilTagID += 5;
     }
     addRequirements(m_drivetrainSubsystem);
   }
@@ -131,7 +131,11 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
     m_targetPoseAngle = m_drivetrainSubsystem.m_gyro.getAngle().getCos() > 0 ? 0 : 180;
 
-    // SmartDashboard.putString("FCC Status", "FCC Init");
+    m_objectTrackerSubsystem.data();
+
+    try {
+      SmartDashboard.putNumber("FCC closest object z", getObjectOfInterest().z);
+    } catch (Exception e) {}
   }
 
   private VisionObject getObjectOfInterest()
@@ -234,7 +238,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       v = -1.2; // -0.7
     }
 
-    if (closestObject.z < 40 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
+    if (closestObject.z < 30 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
       v = -0.3;
     }
     //  if (closestObject.z < 60) {

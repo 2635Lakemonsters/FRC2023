@@ -164,7 +164,7 @@ public class RobotContainer extends TimedRobot {
 
     alignToObjectOnFloor.onTrue(new SequentialCommandGroup(
       new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_ANY, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true),
+      new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true),
       new PrintCommand("Reached the cube"),
       new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem),
       new InstantCommand(()->m_drivetrainSubsystem.followJoystick())

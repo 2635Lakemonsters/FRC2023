@@ -67,6 +67,9 @@ public class Robot extends TimedRobot {
 
     initialGravityZAccel = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRawAccelZ();
     initGyroRoll = RobotContainer.m_drivetrainSubsystem.getGyroscope().getRoll();
+    
+    // close claw so that you know for sure that the state of the pneumatic controller reflects the state of the pneumatic
+    RobotContainer.m_clawPneumaticSubsystem.grabberClose();
   }
 
   /**

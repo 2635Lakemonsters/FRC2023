@@ -282,20 +282,62 @@ public class AutonomousCommands  {
 
     public Command scoreHighMobilityGrabScoreHighLeft() {
         m_dts.zeroOdometry();
+        // In score right, due to robot rotating around battery, by commanding translating 0 m in y, the robot ends up in 
+        //    the correct place... so for score left, we need to shift the final segment over a bit to the right so the robot
+        //    aligns with cube to the right.  Also, changing the direction of rotation was tried early during tuning, but
+        //    when we turned clockwise instead, robot movement was not as expected.  This might have been before we understood
+        //    the "robot rotating about the battery" issue.  However, we have not completely tested that theory, so caution
+        //    against trusting that to make large changes to the auto sequence.
+        // robot natural drift to the left ~ 16" = 0.406 m, 
+        //    so should adjust the final y to the right by 0.406 m (+y field, -y path planner coordinates), do not change direction of rotation.
+        //    do this in the final segment so the robot remains in the channel.
+        // On the return...
+        //    take out that outbound offset in the first segment.
+        //      the robot is turned around, now so y to the left by 0.406 m (-y field, -y path planner)
+        //    in the second segment, adjust the final target lateral position to the right (+y field coordinates, +y robot/path planner coordinates)
+        //      by 1.066 m (42 inches, distance to translate laterally 2 stations since middle of cube score to middle of cone score is 21")
+        double outboundMirrorOffset = 0.406;
+        double returnMirrorOffset = 1.04;
         PathPlannerTrajectory traj = PathPlanner.generatePath(
+            // UNTESTED
+            // counter clock-wise rotation
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.5, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI))),
-            new PathPoint(new Translation2d(3.8, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians((1.0*Math.PI)+1.1))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(outDistance, 0 - outboundMirrorOffset), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
+            // UNTESTED
+            // counter clock-wise rotation
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(1.0, 0.1), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI))),
-            new PathPoint(new Translation2d(3.3, 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians((Math.PI)+1.1))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(returnDistance/2., -0.15 - outboundMirrorOffset), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(returnDistance, -0.35 - outboundMirrorOffset + returnMirrorOffset), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
+
+        // // CLOCKWISE ROTATION
+        // // UNTESTED
+        // PathPlannerTrajectory traj = PathPlanner.generatePath(
+        //     // UNTESTED
+        //     // Alternate method mirroring rotation and y-translation.
+        //     // this should work if understanding of the path planner and rotation is correct, but... untested.
+        //     // clockwise Rotation, negate y-translations w.r.t. right side
+        //     new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+        //     new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        //     new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation/2.)),
+        //     new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation))
+
+        // );
+       
+        // PathPlannerTrajectory traj2 = PathPlanner.generatePath(
+        //     // clockwise Rotation, negate y-translations w.r.t. right side
+        //     new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+        //     new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+        //     new PathPoint(new Translation2d(returnDistance/2., 0.15), Rotation2d.fromRadians(-1.0 * Math.PI/6), Rotation2d.fromRadians(-1.0 * totalRotation/2.)),
+        //     new PathPoint(new Translation2d(returnDistance, 0.35), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation))
+        // );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),
                                                 m_dts.followTrajectoryCommand(traj, true));

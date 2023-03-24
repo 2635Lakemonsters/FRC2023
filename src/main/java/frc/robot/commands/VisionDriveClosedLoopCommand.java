@@ -43,6 +43,10 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
   double m_targetPoseAngle;
   double m_lastDistanceSeen;
   boolean m_wrongObject;
+  boolean m_goSlow;                 // This is a true HACK!  For some reason, once we are about to
+                                    // reach the cube, we suddenly go back to full speed.
+                                    // The purpose of this variable is to make slow speed
+                                    // "sticky".  TODO: debug this after Salem.
 
   String targetObjectLabel; // cone, cube, or AprilTag
   int aprilTagID;
@@ -126,6 +130,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
     isClose = false;
     m_lastDistanceSeen = 1000;              // Really big....
     m_wrongObject = false;
+    m_goSlow = false;
 
     // Try to align with field.  Make our pose angle 0deg or 180deg; whichever is closest
 
@@ -238,8 +243,9 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
       v = -1.2; // -0.7
     }
 
-    if (closestObject.z < 30 && this.targetObjectLabel != "tag") {   // Slow down when close, unless AprilTag
+    if (m_goSlow || (closestObject.z < 30 && this.targetObjectLabel != "tag")) {   // Slow down when close, unless AprilTag
       v = -0.3;
+      m_goSlow = true;      // Once we slow down, don't speed up.  TODO: This is a HACK!
     }
     //  if (closestObject.z < 60) {
     //    isClose = true;

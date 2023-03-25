@@ -294,7 +294,7 @@ public class RobotContainer extends TimedRobot {
 
     substationPickup.onTrue( new SequentialCommandGroup(
                             new ClawPneumaticCommand(m_clawPneumaticSubsystem, true),
-                            new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE)),
+                            new SetTargetPoseCommand(new Pose(Constants.SUBSTATION_EXTEND, Constants.SUBSTATION_ANGLE + 4)),
                             new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
                             ));
     
@@ -318,7 +318,7 @@ public class RobotContainer extends TimedRobot {
                           ));
 
     travelButton.onTrue(new SequentialCommandGroup(
-      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM)),
+      new SetTargetPoseCommand(new Pose(false, Constants.TRAVELING_ARM_ANGLE_NOT_BLOCKING_CHASSIS_CAM + 40)),
       new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
     ));
   }
@@ -331,39 +331,31 @@ public class RobotContainer extends TimedRobot {
   public SendableChooser<Command> getAutonomousCommand() {
     SendableChooser<Command> m_autoChooser = new SendableChooser<>();
     m_autoChooser.addOption("Do Nothing", m_autonomousCommands.DoNothing());//establish default auto option
+    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh()));
+    m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
+    m_autoChooser.addOption("RIGHT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighRight());
+    m_autoChooser.addOption("LEFT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighLeft());
 
     // create other options in SmartDashBoard
-    m_autoChooser.addOption("Out", m_autonomousCommands.OutPath(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Rotation Testing", m_autonomousCommands.RotationTesting(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Swerve Auto Balance", m_autonomousCommands.SwerveAutoBalanceCommand(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Swerve Auto Balance", m_autonomousCommands.SwerveAutoBalanceCommand(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Left score twice engage", m_autonomousCommands.LeftScoreTwiceEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Mid score twice engage", m_autonomousCommands.MidScoreTwiceEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Right score twice engage", m_autonomousCommands.RightScoreTwiceEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Right score engage", m_autonomousCommands.RightScoreEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Mid score engage", m_autonomousCommands.MidScoreEngage(m_drivetrainSubsystem));
     // m_autoChooser.addOption("Left score engage", m_autonomousCommands.LeftScoreEngage(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Circle test", m_autonomousCommands.CircleTest(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
-    m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
-    m_autoChooser.addOption("PP score left out engage CONE", m_autonomousCommands.scoreHighOutEngageLeftCone());
-    m_autoChooser.addOption("Score high drive out", m_autonomousCommands.scoreHighDriveOut());
-    m_autoChooser.addOption("Near substation score high taxi out engage CONE", m_autonomousCommands.scoreHighOutScoreSustationSIDE());
-    m_autoChooser.addOption("SwerveAutoBalanceCommandFEEDBACK", new SwerveAutoBalanceCommand(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Drive Straight PP Traj WPI swerve controller", m_autonomousCommands.driveStraightPP(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("Drive Straight Normal Traj WPI swerve controller", m_autonomousCommands.driveStraight(m_drivetrainSubsystem));
+    // m_autoChooser.addOption("PP score left out engage CONE", m_autonomousCommands.scoreHighOutEngageLeftCone());
+    // m_autoChooser.addOption("Near substation score high taxi out engage CONE", m_autonomousCommands.scoreHighOutScoreSustationSIDE());
+    // m_autoChooser.addOption("SwerveAutoBalanceCommandFEEDBACK", new SwerveAutoBalanceCommand(m_drivetrainSubsystem));
 
-    m_autoChooser.addOption("SwerveAutoBalanceCommandJerkey", new SequentialCommandGroup(
-        new InstantCommand(()->m_drivetrainSubsystem.followPath()), 
-        new SwerveDriveBalanceJerky(m_drivetrainSubsystem), 
-        new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-    ));
+    // m_autoChooser.addOption("SwerveAutoBalanceCommandJerkey", new SequentialCommandGroup(
+    //     new InstantCommand(()->m_drivetrainSubsystem.followPath()), 
+    //     new SwerveDriveBalanceJerky(m_drivetrainSubsystem), 
+    //     new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
+    // ));
 
-    m_autoChooser.addOption("RIGHT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighRight());
-    m_autoChooser.addOption("LEFT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighLeft());
-
-    m_autoChooser.setDefaultOption("Score High", new SequentialCommandGroup(m_autonomousCommands.scoreHigh()
-    // , new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE))
-    // , new MoveArmToPoseCommand(m_armPneumaticSubsystem, m_armMotorSubsystem, m_getPose)
-    ));
-    
     SmartDashboard.putData("Auto Chooser", m_autoChooser);
 
     return m_autoChooser; 

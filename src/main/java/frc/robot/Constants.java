@@ -31,7 +31,7 @@ public final class Constants {
     public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR = 7;
     public static final int DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER = 3;
     public static final int DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR = 8; 
-    public static final double BACK_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(87 + 6.13); //3.0346
+    public static final double BACK_RIGHT_ANGLE_OFFSET_COMPETITION = Math.toRadians(109.43); //3.0346
 
     public static final double kMaxModuleAngularSpeedRadiansPerSecond = 2 * Math.PI;
     public static final double kMaxModuleAngularAccelerationRadiansPerSecondSquared = 2 * Math.PI;
@@ -59,18 +59,6 @@ public final class Constants {
     public static final int RIGHT_JOYSTICK_CHANNEL = 2;
     public static final int LEFT_JOYSTICK_CHANNEL = 0;
 
-    // buttons - left
-    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    // public static final int ALIGN_TO_OBJECT_ON_FLOOR_BUTTON = 3;
-    // public static final int HOME_ARM_BUTTON = 4;
-    // public static final int ALIGN_TO_APRILTAG_BUTTON = 5;
-    // public static final int NORMAL_MODE = 7;
-    // public static final int BALANCING_BUTTON = 8;
-    // public static final int HOLD_STILL_BUTTON = 9;
-    // public static final int RESET_DRIVE_BUTTON = 10;
-    // public static final int DEATH_CUBE_BUTTON = 11;
-    // public static final int DEATH_CONE_BUTTON = 12;
-
     // new buttons - left
     public static final int CLAW_PNEUMATIC_BUTTON = 1;
     public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
@@ -85,35 +73,6 @@ public final class Constants {
     public static final int DEATH_CUBE_BUTTON = 11;
     public static final int DEATH_CONE_BUTTON = 12;
 
-    // new buttons - left
-    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    // public static final int ARM_MANUAL_MOVEMENT_ACTIVATION_BUTTON = 2;
-    // public static final int NORMAL_BOTTOM_ARM_MOVEMENT = 3;
-    // public static final int NORMAL_MID_ARM_MOVEMENT = 4;
-    // public static final int ALIGN_GRIPPER = 5; //TODO: maybe
-    // public static final int NORMAL_TOP_ARM_MOVEMENT = 6;
-    // public static final int NORMAL_MODE = 7;
-    // public static final int BALANCING_BUTTON = 8;
-    // public static final int HOLD_STILL_BUTTON = 9;
-    // public static final int RESET_DRIVE_BUTTON = 10;
-    // public static final int DEATH_CUBE_BUTTON = 11; //TODO: maybe
-    // public static final int DEATH_CONE_BUTTON = 12; //TODO: maybe
-
-    // new buttons - right
-    // public static final int CLAW_PNEUMATIC_BUTTON = 1;
-    // public static final int SCORE_CENTER_BUTTON = 2;
-    // public static final int SUBSTATION_BUTTON = 3;
-    // public static final int PICKUP_FROM_FLOOR_BUTTON = 4;
-    // public static final int TRAVEL_BUTTON_ID = 5;
-    // public static final int HOME_ARM_BUTTON = 6;
-    // public static final int SCORE_TOP_LEFT = 7;
-    // public static final int SCORE_TOP_RIGHT = 8;
-    // public static final int SCORE_MID_LEFT = 9;
-    // public static final int SCORE_MID_RIGHT = 10;
-    // public static final int SCORE_BOTTOM_LEFT = 11;
-    // public static final int SCORE_BOTTOM_RIGHT = 12;
-
-
     // buttons - right
     public static final int ARM_PNEUMATIC_BUTTON = 1;
     public static final int SCORE_CENTER_BUTTON = 2;
@@ -127,21 +86,6 @@ public final class Constants {
     public static final int SCORE_MID_RIGHT = 10;
     public static final int SCORE_BOTTOM_LEFT = 11;
     public static final int SCORE_BOTTOM_RIGHT = 12;
-
-
-    // buttons - right
-    // public static final int ARM_PNEUMATIC_BUTTON = 1;
-    // public static final int SCORE_CENTER_BUTTON = 2;
-    // public static final int LEFT_SLIDER_BUTTON = 3;
-    // public static final int RIGHT_SLIDER_BUTTON = 4;
-    // public static final int PICKUP_FROM_FLOOR_BUTTON = 5;
-    // public static final int TRAVEL_BUTTON_ID = 6;
-    // public static final int SCORE_TOP_LEFT = 7;
-    // public static final int SCORE_TOP_RIGHT = 8;
-    // public static final int SCORE_MID_LEFT = 9;
-    // public static final int SCORE_MID_RIGHT = 10;
-    // public static final int SCORE_BOTTOM_LEFT = 11;
-    // public static final int SCORE_BOTTOM_RIGHT = 12;
 
     // hat constants 
     public static final int HAT_JOYSTICK_TRIM_POSITION = RIGHT_JOYSTICK_CHANNEL;
@@ -160,8 +104,6 @@ public final class Constants {
     public static final int HAT_POV_ARM_DOWN = 180;
     public static final int HAT_POV_ROTATE_LEFT = 270;
     public static final int HAT_POV_ROTATE_RIGHT = 90;
-
-
 
     // pneumatic channels
     public static final int PNEUMATIC_HUB_CANID = 15;

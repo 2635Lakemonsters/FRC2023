@@ -72,19 +72,23 @@ public class ObjectTrackerSubsystem extends SubsystemBase {
 
         // loop over list of visionobjects, deletes them from list if z=0
         // this handles case found on 3/22 where a cone is (0, 0, 0) despite being far away
-        ArrayList<VisionObject> tmp = new ArrayList<VisionObject>(Arrays.asList(foundObjects));
-        for (int i = 0; i < tmp.size(); i++) {
-            VisionObject vo = tmp.get(i);
-            if (vo.z == 0) {
-                tmp.remove(vo);
+        try {
+            ArrayList<VisionObject> tmp = new ArrayList<VisionObject>(Arrays.asList(foundObjects));
+            for (int i = 0; i < tmp.size(); i++) {
+                VisionObject vo = tmp.get(i);
+                if (vo.z == 0) {
+                    tmp.remove(vo);
+                }
             }
+            // convert arraylist to array via for loop bc .toArray() is being uncooperative
+            VisionObject[] tmp2 = new VisionObject[tmp.size()];
+            for (int i = 0; i<tmp.size();i++){
+                tmp2[i] = tmp.get(i);
+            }
+            foundObjects = tmp2;
+        } catch (Exception e) {
+            foundObjects = null;
         }
-        // convert arraylist to array via for loop bc .toArray() is being uncooperative
-        VisionObject[] tmp2 = new VisionObject[tmp.size()];
-        for (int i = 0; i<tmp.size();i++){
-            tmp2[i] = tmp.get(i);
-        }
-        foundObjects = tmp2;
         
         if (foundObjects != null && source.contains("Chassis")) {
             applyRotationTranslationMatrix();

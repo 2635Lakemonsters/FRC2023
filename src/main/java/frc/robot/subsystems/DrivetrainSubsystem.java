@@ -184,7 +184,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
     
     updateOdometry();
-    putDTSToSmartDashboard();
+
+    // prints to SmartDashboard
+    // putDTSToSmartDashboard();
+    // tuneAngleOffsetPutToDTS();
   }
 
   public void recalibrateGyro() {
@@ -410,11 +413,6 @@ public ChassisSpeeds getChassisSpeeds() {
     // 0.81 at 30 deg
     // 0.94 at level
 
-    SmartDashboard.putNumber("FL encoder pos", Math.toDegrees(m_frontLeft.getTurningEncoderRadians()));
-    SmartDashboard.putNumber("FR encoder pos", Math.toDegrees(m_frontRight.getTurningEncoderRadians()));
-    SmartDashboard.putNumber("BL encoder pos", Math.toDegrees(m_backLeft.getTurningEncoderRadians()));
-    SmartDashboard.putNumber("BR encoder pos", Math.toDegrees(m_backRight.getTurningEncoderRadians())); 
-
 
     double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
     double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
@@ -423,6 +421,20 @@ public ChassisSpeeds getChassisSpeeds() {
     // SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
     // SmartDashboard.putNumber("x ff sine", sin);
     // SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
+  }
+
+  /**
+   * Procedure for tuning:
+   * </p>   1. Put tuneAngleOffsetPutToDTS() in periodic(). 
+   * </p>   2. Read the angles when the wheels are lined up. 
+   * </p>   3. Add/subtract degrees from the angle offsets in Constants until they all read 0/pi/2pi when perfectly lined up
+   */
+  public void tuneAngleOffsetPutToDTS() {
+    // TUNE ANGLE OFFSETS
+    SmartDashboard.putNumber("FL encoder pos", Math.toDegrees(m_frontLeft.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("FR encoder pos", Math.toDegrees(m_frontRight.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("BL encoder pos", Math.toDegrees(m_backLeft.getTurningEncoderRadians()));
+    SmartDashboard.putNumber("BR encoder pos", Math.toDegrees(m_backRight.getTurningEncoderRadians())); 
   }
 
   /** camera end up returns a negative number

@@ -204,9 +204,47 @@ public class AutonomousCommands  {
         Command s = new SequentialCommandGroup(scoreHigh(), new ParallelCommandGroup(c, backHome));
         return s;
     }
-    private double totalRotation = Math.PI + 0.6;
+    // private double totalRotation = Math.PI + 0.6;
+    private double totalRotation = Math.PI;
     private double outDistance = 3.8;
     private double returnDistance = 2.9;
+
+    public Command trajectoryTest() {
+        m_dts.zeroOdometry();
+        PathPlannerTrajectory traj = PathPlanner.generatePath(
+            // new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
+            // new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+        );
+       
+
+        PathPlannerTrajectory traj2 = PathPlanner.generatePath(
+            // new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(returnDistance/2., -0.15), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(totalRotation/2.)),
+            // new PathPoint(new Translation2d(returnDistance, -0.35 - 0.05), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+        );
+
+        Command c = m_dts.followTrajectoryCommand(traj, true);
+        Command c2 = m_dts.followTrajectoryCommand(traj2, false);
+
+        Command s = new SequentialCommandGroup(
+            c,
+            new WaitCommand(2.0),
+            c2
+         );
+        return s;
+
+    }
 
     public Command scoreHighMobilityGrabScoreHighRight() {
         m_dts.zeroOdometry();

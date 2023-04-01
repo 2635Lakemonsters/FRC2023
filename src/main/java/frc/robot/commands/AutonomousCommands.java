@@ -32,7 +32,7 @@ import frc.robot.subsystems.ObjectTrackerSubsystem;
 /** Add your docs here. */
 public class AutonomousCommands  {
     public HashMap<String, Command> eventMap = new HashMap<>();
-    public final double AUTO_MAX_VEL = 4.0; //4.0; 
+    public final double AUTO_MAX_VEL = 10. * 12. / Constants.INCHES_PER_METER; //4.0; 
     public final double AUTO_MAX_ACCEL = 3.0; //3.0;
 
     DrivetrainSubsystem m_dts;
@@ -205,7 +205,7 @@ public class AutonomousCommands  {
         return s;
     }
     // private double totalRotation = Math.PI + 0.6;
-    private double totalRotation = Math.PI;
+    private double totalRotation = Math.PI/2;
     private double outDistance = 3.8;
     private double returnDistance = 2.9;
 
@@ -216,7 +216,7 @@ public class AutonomousCommands  {
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
             // new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
-            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            new PathConstraints(AUTO_MAX_VEL/2., AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
             new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
@@ -228,10 +228,10 @@ public class AutonomousCommands  {
             // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             // new PathPoint(new Translation2d(returnDistance/2., -0.15), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(totalRotation/2.)),
             // new PathPoint(new Translation2d(returnDistance, -0.35 - 0.05), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
-            new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(totalRotation/2.)),
-            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+            new PathConstraints(AUTO_MAX_VEL/2., AUTO_MAX_ACCEL), 
+            new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(totalRotation)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance-outDistance/2., 0.), Rotation2d.fromRadians(0.), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(outDistance-outDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0.))
         );
 
         Command c = m_dts.followTrajectoryCommand(traj, true);
@@ -240,7 +240,8 @@ public class AutonomousCommands  {
         Command s = new SequentialCommandGroup(
             c,
             new WaitCommand(2.0),
-            c2
+            c2,
+            new WaitCommand(2.0)
          );
         return s;
 

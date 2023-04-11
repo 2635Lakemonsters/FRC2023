@@ -336,6 +336,7 @@ public class RobotContainer extends TimedRobot {
     m_autoChooser.addOption("RIGHT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighRight());
     m_autoChooser.addOption("LEFT!!scoreHighMobilityGrabScoreHigh", m_autonomousCommands.scoreHighMobilityGrabScoreHighLeft());
     m_autoChooser.addOption("Trajectory Test", m_autonomousCommands.trajectoryTest());
+    m_autoChooser.addOption("Trajectory Test Negative", m_autonomousCommands.trajectoryTestNegative());
 
     // create other options in SmartDashBoard
     // m_autoChooser.addOption("Swerve Auto Balance", m_autonomousCommands.SwerveAutoBalanceCommand(m_drivetrainSubsystem));

@@ -358,9 +358,12 @@ public class AutonomousCommands  {
                                                                             ),
                                                     // new MoveToScore(m_dts, m_otsc, 0, 0, false),
                                                     new ArmPneumaticCommand(m_aps, true)
-                                                ), 
-                                                // release and score
-                                                new ClawPneumaticCommand(m_cps, true)
+                                                )
+                                                
+                                                // , 
+                                                // // No Time to tune lining up for release and score
+                                                // // release and score
+                                                // new ClawPneumaticCommand(m_cps, true)
                                             
                                             );
         return s;

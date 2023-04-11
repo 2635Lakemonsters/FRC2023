@@ -61,19 +61,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_frontRight = new SwerveModule(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backLeft = new SwerveModule(Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER, 
-                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backRight = new SwerveModule(Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
   
     public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 

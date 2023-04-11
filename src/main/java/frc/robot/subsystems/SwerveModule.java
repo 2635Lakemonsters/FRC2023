@@ -35,6 +35,7 @@ public class SwerveModule {
 
   public NetworkTableEntry t_turningEncoder;
 
+  private double m_driveMotorGain;
   /**
    * Constructs a SwerveModule.
    *
@@ -45,12 +46,15 @@ public class SwerveModule {
       int driveMotorChannel,
       int turningMotorChannel,
       int analogEncoderPort,
-      double turningMotorOffset
+      double turningMotorOffset,
+      double driveMotorGain // tuning motor module
       ) {
 
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     this.turningMotorOffset = turningMotorOffset;
+
+    m_driveMotorGain = driveMotorGain;
 
     /**
      * Parameters can be set by calling the appropriate Set method on the CANSparkMax object
@@ -166,7 +170,7 @@ public class SwerveModule {
     // SmartDashboard.putNumber(str2, driveFeedForward);
 
     // Calculate the turning motor output from the turning PID controller.
-    m_driveMotor.set(MathUtils.clamp(driveOutput + driveFeedForward, -1.0, 1.0));
+    m_driveMotor.set(MathUtils.clamp((driveOutput + driveFeedForward)*m_driveMotorGain, -1.0, 1.0));
     m_turningMotor.set(turnOutput);
   }
 }

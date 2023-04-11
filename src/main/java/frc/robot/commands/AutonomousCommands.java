@@ -32,8 +32,8 @@ import frc.robot.subsystems.ObjectTrackerSubsystem;
 /** Add your docs here. */
 public class AutonomousCommands  {
     public HashMap<String, Command> eventMap = new HashMap<>();
-    public final double AUTO_MAX_VEL = 10. * 12. / Constants.INCHES_PER_METER; //4.0; 
-    public final double AUTO_MAX_ACCEL = 3.0; //3.0;
+    public final double AUTO_MAX_VEL = 10. * 12. / Constants.INCHES_PER_METER * 0.75; //4.0; 
+    public final double AUTO_MAX_ACCEL = 3.0 * 0.75; //3.0;
 
     DrivetrainSubsystem m_dts;
     ArmPneumaticSubsystem m_aps;
@@ -207,8 +207,8 @@ public class AutonomousCommands  {
     }
     // private double totalRotation = Math.PI + 0.6;
     private double totalRotation = Math.PI + 0.65;
-    private double outDistance = 3.8;
-    private double returnDistance = 2.9;
+    private double outDistance = 4.0;
+    private double returnDistance = 3.5;
     
 
     public Command trajectoryTest() {
@@ -293,7 +293,7 @@ public class AutonomousCommands  {
 
     public Command scoreHighMobilityGrabScoreHighRight() {
         // rotate in towards field by negative rotation
-        totalRotation = Math.PI + 0.85;
+        totalRotation = Math.PI + 0.75;
 
         m_dts.zeroOdometry();
         PathPlannerTrajectory traj = PathPlanner.generatePath(
@@ -301,15 +301,15 @@ public class AutonomousCommands  {
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
             new PathPoint(new Translation2d(outDistance/2., 0.50), Rotation2d.fromRadians(Math.PI / 12.), Rotation2d.fromRadians(totalRotation/2.)),
             
-            new PathPoint(new Translation2d(outDistance+0.2, 0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+            new PathPoint(new Translation2d(outDistance, 0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(totalRotation)), // position, heading(direction of travel)
             new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
-            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))
+            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0.))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),

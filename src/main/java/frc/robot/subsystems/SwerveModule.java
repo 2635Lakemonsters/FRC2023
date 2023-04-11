@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -15,6 +17,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.legacymath2910.MathUtils;
 
@@ -49,7 +52,22 @@ public class SwerveModule {
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
     this.turningMotorOffset = turningMotorOffset;
 
-  
+    /**
+     * Parameters can be set by calling the appropriate Set method on the CANSparkMax object
+     * whose properties you want to change
+     * 
+     * Set methods will return one of three REVLibError values which will let you know if the 
+     * parameter was successfully set:
+     *  REVLibError.kOk
+     *  REVLibError.kError
+     *  REVLibError.kTimeout
+     * https://github.com/REVrobotics/SPARK-MAX-Examples/blob/master/Java/Get%20and%20Set%20Parameters/src/main/java/frc/robot/Robot.java
+     */
+    if(m_driveMotor.setIdleMode(IdleMode.kBrake) != REVLibError.kOk){
+      SmartDashboard.putString("Idle Mode", "Error");
+    }
+
+    
     m_turningEncoder = new AnalogInput(analogEncoderPort);
 
     m_driveEncoder = m_driveMotor.getEncoder();

@@ -184,7 +184,7 @@ public class VisionDriveClosedLoopCommand extends CommandBase {
 
     rotation = 0;
 
-    // if (this.targetObjectLabel == "tag")
+    if (this.targetObjectLabel == "tag")
     {
       // Get current pose, normalized to 0-360deg
 

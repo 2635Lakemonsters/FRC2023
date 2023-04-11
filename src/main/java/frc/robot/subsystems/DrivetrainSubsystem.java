@@ -193,7 +193,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     updateOdometry();
 
     // prints to SmartDashboard
-    // putDTSToSmartDashboard();
+    putDTSToSmartDashboard();
     // tuneAngleOffsetPutToDTS();
   }
 
@@ -405,10 +405,10 @@ public ChassisSpeeds getChassisSpeeds() {
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
 
-    // SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+    SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians() * (180 / Math.PI)); 
 
     // SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
     // SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());

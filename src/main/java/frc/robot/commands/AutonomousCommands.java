@@ -32,8 +32,8 @@ import frc.robot.subsystems.ObjectTrackerSubsystem;
 /** Add your docs here. */
 public class AutonomousCommands  {
     public HashMap<String, Command> eventMap = new HashMap<>();
-    public final double AUTO_MAX_VEL = 10. * 12. / Constants.INCHES_PER_METER * 0.75; //4.0; 
-    public final double AUTO_MAX_ACCEL = 3.0 * 0.75; //3.0;
+    public final double AUTO_MAX_VEL = 10. * 12. / Constants.INCHES_PER_METER * 0.6; //4.0; 
+    public final double AUTO_MAX_ACCEL = 3.0 * 0.6; //3.0;
 
     DrivetrainSubsystem m_dts;
     ArmPneumaticSubsystem m_aps;
@@ -299,17 +299,17 @@ public class AutonomousCommands  {
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(outDistance/2., 0.50), Rotation2d.fromRadians(Math.PI / 12.), Rotation2d.fromRadians(totalRotation/2.)),
+            new PathPoint(new Translation2d(outDistance/2., 0.35), Rotation2d.fromRadians(Math.PI / 12. * 0.), Rotation2d.fromRadians(totalRotation/2.)),
             
-            new PathPoint(new Translation2d(outDistance, 0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
+            new PathPoint(new Translation2d(outDistance, 0.55), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
             new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(totalRotation)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
-            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0.))
+            new PathPoint(new Translation2d(returnDistance/2., -0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.+Math.PI/16)),
+            new PathPoint(new Translation2d(returnDistance, -0.4), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0. + Math.PI/8))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),
@@ -336,7 +336,7 @@ public class AutonomousCommands  {
                                                 // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
                                                 new ArmPneumaticCommand(m_aps, false),
-                                                new WaitCommand(0.5),
+                                                new WaitCommand(1.5),
                                                 // put the arm in a scoring position
                                                 // should change this to upper
                                                 new SetTargetPoseCommand(new Pose(false, Constants.TOP_SCORING_ANGLE)),
@@ -370,62 +370,24 @@ public class AutonomousCommands  {
     }
 
     public Command scoreHighMobilityGrabScoreHighLeft() {
+        // rotate in towards field by negative rotation
+        totalRotation = Math.PI + 0.75;
+
         m_dts.zeroOdometry();
-        // In score right, due to robot rotating around battery, by commanding translating 0 m in y, the robot ends up in 
-        //    the correct place... so for score left, we need to shift the final segment over a bit to the right so the robot
-        //    aligns with cube to the right.  Also, changing the direction of rotation was tried early during tuning, but
-        //    when we turned clockwise instead, robot movement was not as expected.  This might have been before we understood
-        //    the "robot rotating about the battery" issue.  However, we have not completely tested that theory, so caution
-        //    against trusting that to make large changes to the auto sequence.
-        // robot natural drift to the left ~ 16" = 0.406 m, 
-        //    so should adjust the final y to the right by 0.406 m (+y field, -y path planner coordinates), do not change direction of rotation.
-        //    do this in the final segment so the robot remains in the channel.
-        // On the return...
-        //    take out that outbound offset in the first segment.
-        //      the robot is turned around, now so y to the left by 0.406 m (-y field, -y path planner)
-        //    in the second segment, adjust the final target lateral position to the right (+y field coordinates, +y robot/path planner coordinates)
-        //      by 1.066 m (42 inches, distance to translate laterally 2 stations since middle of cube score to middle of cone score is 21")
-        // double outboundMirrorOffset = 0.406;
-        // double returnMirrorOffset = 1.04;
-        // PathPlannerTrajectory traj = PathPlanner.generatePath(
-        //     // UNTESTED
-        //     // counter clock-wise rotation
-        //     new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-        //     new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        //     new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation/2.)),
-        //     new PathPoint(new Translation2d(outDistance, 0 - outboundMirrorOffset), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
-        // );
-       
-
-        // PathPlannerTrajectory traj2 = PathPlanner.generatePath(
-        //     // UNTESTED
-        //     // counter clock-wise rotation
-        //     new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-        //     new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        //     new PathPoint(new Translation2d(returnDistance/2., -0.15 - outboundMirrorOffset), Rotation2d.fromRadians(Math.PI/6), Rotation2d.fromRadians(totalRotation/2.)),
-        //     new PathPoint(new Translation2d(returnDistance, -0.35 - outboundMirrorOffset + returnMirrorOffset), Rotation2d.fromRadians(0), Rotation2d.fromRadians(totalRotation))
-        // );
-
-        // // CLOCKWISE ROTATION
-        // // UNTESTED
         PathPlannerTrajectory traj = PathPlanner.generatePath(
-            // UNTESTED
-            // Alternate method mirroring rotation and y-translation.
-            // this should work if understanding of the path planner and rotation is correct, but... untested.
-            // clockwise Rotation, negate y-translations w.r.t. right side
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI/4), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(outDistance/2., 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation/2.)),
-            new PathPoint(new Translation2d(outDistance, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation))
-
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance/2., -0.50), Rotation2d.fromRadians(Math.PI / 12.), Rotation2d.fromRadians(-totalRotation/2.)),
+            
+            new PathPoint(new Translation2d(outDistance, -0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation))
         );
        
+
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
-            // clockwise Rotation, negate y-translations w.r.t. right side
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI/6), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(returnDistance/2., 0.15), Rotation2d.fromRadians(-1.0 * Math.PI/6), Rotation2d.fromRadians(-1.0 * totalRotation/2.)),
-            new PathPoint(new Translation2d(returnDistance, 0.35 + 0.05), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-1.0 * totalRotation))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(-totalRotation)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation/2.)),
+            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0.))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),
@@ -474,9 +436,12 @@ public class AutonomousCommands  {
                                                                             ),
                                                     // new MoveToScore(m_dts, m_otsc, 0, 0, false),
                                                     new ArmPneumaticCommand(m_aps, true)
-                                                ), 
-                                                // release and score
-                                                new ClawPneumaticCommand(m_cps, true)
+                                                )
+                                                
+                                                // , 
+                                                // // No Time to tune lining up for release and score
+                                                // // release and score
+                                                // new ClawPneumaticCommand(m_cps, true)
                                             
                                             );
         return s;

@@ -31,6 +31,8 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.I2C.Port;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     private static final double FIELD_WIDTH_METERS = 8.02;    // TODO: Check this value.  I got it from 
@@ -111,8 +113,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     
   private static SerialPort m_serialPort;
   /** Creates a new DrivetrianSubsystem. */
-  public DrivetrainSubsystem(SerialPort serialPort) {
-    m_serialPort = serialPort;
+  public DrivetrainSubsystem(I2C serialPort) {
+    Wire = serialPort;
     m_gyro.calibrate();
     getPose();
   }
@@ -134,9 +136,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
     rotCommanded = rot;
   }
 
+  public static void write(String input) {
+    char[] charArray = input.toCharArray();
+    byte[] writeData = new byte[charArray.length];
+    for (int i = 0; i < charArray.length; i++) {
+      writeData[i] = (byte) charArray[i];
+
+    }
+    Wire.transaction(writeData, writeData.length, null, 0);
+  }
+
   @Override
   public void periodic() {
     // putDTSToSmartDashboard();
+    xPowerCommanded = 10;
+    yPowerCommanded = 10;
+    rotCommanded = 10;
     String blingString =(int)Math.round(xPowerCommanded*100)+" "
         +(int)Math.round(yPowerCommanded*100)+" "
         +(int)Math.round(rotCommanded*100); 

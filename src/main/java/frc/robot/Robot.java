@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
@@ -106,23 +102,8 @@ public class Robot extends TimedRobot {
     // print camera values to log
     RobotContainer.m_objectTrackerSubsystemChassis.data();
     RobotContainer.m_objectTrackerSubsystemGripper.data();
-    // chassis_z and grip_r not working 2/13
-    // double chassis_z = RobotContainer.m_objectTrackerSubsystemChassis.getClosestObject("cube").z;
-    // double grip_r = RobotContainer.m_objectTrackerSubsystemGripper.getClosestObject("cone").r;
-    // double april_x = RobotContainer.m_objectTrackerSubsystemChassis.getClosestAprilTag().x;
-    // int april_id = RobotContainer.m_objectTrackerSubsystemChassis.getClosestAprilTag().getAprilTagID();
-    
-    // System.out.println(chassis_z);
-    // System.out.println(grip_r);
-    // System.out.println(RobotContainer.m_objectTrackerSubsystemChassis.foundObjects[0].toString());
-    // System.out.println(RobotContainer.m_objectTrackerSubsystemGripper.foundObjects);
-
-    // System.out.println(april_x);
-    // System.out.println(april_id);
 
     System.out.println("AUTO INIT");
-
-    // m_autonomousCommand = new AutonomousTrajectoryCommand(RobotContainer.m_drivetrainSubsystem).runAutonomousCommand();
     
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -150,8 +131,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    // TODO add something to put arm in default state - may not need this in autoinit because arm starts in known pos before auto
-    
+    // TODO add something to put arm in default state - may not need this in autoinit because arm starts in known pos before auto 
   }
 
   /** This function is called periodically during operator control. */
@@ -185,25 +165,6 @@ public class Robot extends TimedRobot {
     // boolean isViolating = false;
     // boolean isExtended = RobotContainer.m_armPneumaticSubsystem.getIsExtended();
     // double theta = RobotContainer.m_armMotorSubsystem.getTheta();
-
-    // if (!isExtended && (theta > 172 && theta < 208)) { // vertical
-    //   isViolating = true;
-    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-    //   m_didViolate = true;
-
-    // } else if (isExtended && theta < 270 && theta > 218) { // horizontal
-    //   isViolating = true;
-    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-    //   m_didViolate = true;
-
-    // } else {
-    //   SmartDashboard.putNumber("violated vertical", isViolating ? 1 : 0);
-    //   SmartDashboard.putNumber("violated horizontal", isViolating ? 1 : 0);
-    //   SmartDashboard.putNumber("DIDNT VIOLATE WHOO", isViolating ? 1 : 0);
-    // }
-    
-    // SmartDashboard.putNumber("isViolating", (isViolating ? 1 : 0));
-    // SmartDashboard.putBoolean("didViolate at some point", m_didViolate);
 
     NavX.updateXAccelFiltered();
   }

@@ -18,8 +18,6 @@ import frc.robot.RobotContainer;
 public class ArmMotorSubsystem extends SubsystemBase {
 
   public TalonFX armMotor = new TalonFX(Constants.TALON_CHANNEL);
-  // private  final double kFilterArm = 0.1;
-  // private  double armPOFiltered = 0;
   private  long loopCtr = 0;
   private PIDController pid = new PIDController(0.012, 0.0, 0.001); //added a little bit of kd to damp out velocity
   private  double theta;
@@ -68,14 +66,14 @@ public class ArmMotorSubsystem extends SubsystemBase {
 
     theta = 360.0 * (RobotContainer.encoder.getValue() - Constants.ARM_ENCODER_OFFSET) / 4096.0;
     theta %= 360.0;
-    if (theta < 0)
+    if (theta < 0){
       theta += 360.0;
-
+    }
     fPO = (theta + alpha - 90.0);
     fPO %= 360.0;
-    if (fPO < 0)
+    if (fPO < 0){
       fPO += 360.0;
-
+    }
     final double gain = Constants.ARM_MOTOR_FF_GAIN;
     double ffMotorPower = gain * Math.sin(Math.toRadians(fPO));
 
@@ -83,8 +81,6 @@ public class ArmMotorSubsystem extends SubsystemBase {
     double upperLimitFB = cns.getIsClosed() ? Constants.FB_UPPER_LIMIT_CLOSED : Constants.FB_UPPER_LIMIT_OPEN;
     double fbMotorPower = MathUtil.clamp(pid.calculate(theta, m_poseTarget), lowerLimitFB, upperLimitFB);
 
-    // armPOFiltered = kFilterArm * motorPower + (1.0 - kFilterArm) * armPOFiltered;
-    // System.out.println(armPOFiltered);
     if (loopCtr % 50 == 0) {
     //   System.out.println("theta=" + theta + "   Target = " + m_poseTarget);
     //   System.out.print("FF Motor Power = " + ffMotorPower);
@@ -93,9 +89,6 @@ public class ArmMotorSubsystem extends SubsystemBase {
     }
     double motorPower = fbMotorPower - ffMotorPower;
     armMotor.set(ControlMode.PercentOutput, motorPower);
-    // SmartDashboard.putNumber("arm motor power", motorPower);
-    // SmartDashboard.putNumber("arm ff motorpower", ffMotorPower);
-    // SmartDashboard.putNumber("arm fb", fbMotorPower);
     // putToSDB();
   }
 

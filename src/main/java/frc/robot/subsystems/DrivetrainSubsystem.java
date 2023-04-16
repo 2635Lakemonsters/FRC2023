@@ -137,7 +137,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     if (followJoysticks) {
       //Hat Power Overides for Trimming Position and Rotation
       Joystick hatJoystickTrimPosition = (Constants.HAT_JOYSTICK_TRIM_POSITION == Constants.LEFT_JOYSTICK_CHANNEL)

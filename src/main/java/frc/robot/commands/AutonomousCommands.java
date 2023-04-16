@@ -50,14 +50,6 @@ public class AutonomousCommands  {
         Command c = new SequentialCommandGroup(
             new SetTargetPoseCommand(new Pose(Constants.TOP_SCORING_EXTEND, Constants.TOP_SCORING_ANGLE + 20)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose),
-
-            // // TODO: @Darren / @Megan, with the new transitions and the shorter arm,
-            // // we may need to wait for a bit of time here for the pneumatics to stop moving
-            // // in MoveArmToPoseCommand, or else while the pneumatics are still moving, it could
-            // // open up the claw... this really only applies to chained autonomous commands
-            // // where you move the arm and then score immediately without the human in the loop.
-            // // If the human in the loop commands the actual gripper release, then won't need 
-            // // a wait after MoveArmToPoseCommand()
             new WaitCommand(0.5),
             // new ArmMovementCommand(m_ams, Constants.TOP_SCORING_ANGLE + 20),
             new ParallelCommandGroup(

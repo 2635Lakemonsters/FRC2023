@@ -5,15 +5,9 @@
 package frc.robot;
 
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -31,12 +25,10 @@ import frc.robot.Constants.ARM_TRANSITION;
 import frc.robot.commands.AlignGripperToObjectCommand;
 import frc.robot.commands.AutonomousCommands;
 import frc.robot.commands.ClawPneumaticCommand;
-import frc.robot.commands.ManualArmMotorCommand;
 import frc.robot.commands.MoveArmToPoseCommand;
 import frc.robot.commands.MoveToScore;
 import frc.robot.commands.ResetSwerveGyroCommand;
 import frc.robot.commands.SetTargetPoseCommand;
-import frc.robot.commands.SwerveAutoBalanceCommand;
 import frc.robot.commands.SwerveAutoBalanceCommandFEEDBACK;
 import frc.robot.commands.SwerveDriveCommand;
 import frc.robot.commands.SwerveNoMoveCommand;
@@ -49,7 +41,6 @@ import frc.robot.subsystems.DrivetrainSubsystem;
 import frc.robot.subsystems.ObjectTrackerSubsystem;
 
 public class RobotContainer extends TimedRobot {
-  public static PathPlannerTrajectory traj;
   // Joysticks
   public static final Joystick rightJoystick = new Joystick(Constants.RIGHT_JOYSTICK_CHANNEL);
   public static final Joystick leftJoystick = new Joystick(Constants.LEFT_JOYSTICK_CHANNEL);
@@ -73,13 +64,11 @@ public class RobotContainer extends TimedRobot {
   // Commands
   public final ResetSwerveGyroCommand m_resetSwerveGyroCommand = new ResetSwerveGyroCommand(m_drivetrainSubsystem);
   private final SwerveDriveCommand m_swerveDriveCommand = new SwerveDriveCommand(m_drivetrainSubsystem);
-  private final SwerveAutoBalanceCommand m_swerveDriveBalanceCommand = new SwerveAutoBalanceCommand(m_drivetrainSubsystem);
   private final SwerveAutoBalanceCommandFEEDBACK m_swerveAutoBalanceCommandFEEDBACK = new SwerveAutoBalanceCommandFEEDBACK(m_drivetrainSubsystem);
   private final SwerveNoMoveCommand m_swerveNoMoveCommand = new SwerveNoMoveCommand(m_drivetrainSubsystem);
   private final AutonomousCommands m_autonomousCommands = new AutonomousCommands(m_drivetrainSubsystem, m_armPneumaticSubsystem, m_armMotorSubsystem, m_clawPneumaticSubsystem, m_objectTrackerSubsystemGripper, m_objectTrackerSubsystemChassis, m_getPose);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCONE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CONE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true);
   private final VisionDriveClosedLoopCommand m_visionDriveClosedLoopCommandCUBE = new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_CUBE, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, true);
-  private final ManualArmMotorCommand m_manualArmMotorCommand = new ManualArmMotorCommand(m_armMotorSubsystem);
 
   // TODO: This probably isn't the best way to do this.  However, it'll do
   // for now and allow re-thinking later.  Use the set/getTargetPose functions
@@ -151,15 +140,7 @@ public class RobotContainer extends TimedRobot {
     Trigger scoreBottomLeft = centerButton.negate().and(bottomLeftButton);
     Trigger scoreBottomCenter = centerButton.and(bottomLeftButton);
 
-
     PPSwerveControllerCommand.setLoggingCallbacks(PPLogging::logActiveTrajectory, PPLogging::logTargetPose, PPLogging::logSetpoint, PPLogging::logError);
-
-    traj = PathPlanner.generatePath(
-      new PathConstraints(2, 0.5), 
-      new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-        new PathPoint(new Translation2d(-2.022, 0.78), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
-    );
-
 
     alignToObjectOnFloor.onTrue(new SequentialCommandGroup(
       new InstantCommand(()->m_drivetrainSubsystem.followPath()),
@@ -168,16 +149,6 @@ public class RobotContainer extends TimedRobot {
       new AlignGripperToObjectCommand(m_drivetrainSubsystem, m_objectTrackerSubsystemGripper, m_armPneumaticSubsystem, m_clawPneumaticSubsystem),
       new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
       ));
-
-
-    // alignToAPRILTAG.onTrue(new SequentialCommandGroup(
-    //   new InstantCommand(()->m_drivetrainSubsystem.followPath()),
-    //   new VisionDriveClosedLoopCommand(Constants.TARGET_OBJECT_LABEL_APRIL_TAG, true, m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, false, 1),
-    //   // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, true),
-    //   // new MoveToScore(m_drivetrainSubsystem, m_objectTrackerSubsystemChassis, Constants.offsetFromAprilTagToCenter, Constants.FIELD_OFFSET_FROM_NODE_TO_APRILTAG, false),
-    //   new InstantCommand(()->m_drivetrainSubsystem.followJoystick())
-    // ));
-  
   
     clawPneumaticButton.onTrue(new ToggleClawPneumaticsCommand(m_clawPneumaticSubsystem));
 

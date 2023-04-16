@@ -139,34 +139,31 @@ public class DrivetrainSubsystem extends SubsystemBase {
   public void periodic() {
     if (followJoysticks) {
       //Hat Power Overides for Trimming Position and Rotation
-      Joystick hatJoystickTrimPosition = (Constants.HAT_JOYSTICK_TRIM_POSITION == Constants.LEFT_JOYSTICK_CHANNEL)
-        ? RobotContainer.leftJoystick
-        : RobotContainer.rightJoystick;
-      Joystick hatJoystickTrimRotationArm = (Constants.HAT_JOYSTICK_TRIM_ROTATION_ARM == Constants.LEFT_JOYSTICK_CHANNEL)
-        ? RobotContainer.leftJoystick
-        : RobotContainer.rightJoystick;
-      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_FORWARD){
+      Joystick hatJoystickTrimPosition = RobotContainer.rightJoystick;
+      Joystick hatJoystickTrimRotationArm = RobotContainer.leftJoystick;
+
+      if (hatJoystickTrimPosition.getPOV() == Constants.HAT_POV_MOVE_FORWARD){
         xPowerCommanded = Constants.HAT_POWER_MOVE;
       }
-      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_BACK){
-        xPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      if (hatJoystickTrimPosition.getPOV() == Constants.HAT_POV_MOVE_BACK){
+        xPowerCommanded = Constants.HAT_POWER_MOVE * (-1.0);
       }
-      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_RIGHT){
-        yPowerCommanded = Constants.HAT_POWER_MOVE*-1.0;
+      if (hatJoystickTrimPosition.getPOV() == Constants.HAT_POV_MOVE_RIGHT){
+        yPowerCommanded = Constants.HAT_POWER_MOVE * (-1.0);
       }
-      if(hatJoystickTrimPosition.getPOV()==Constants.HAT_POV_MOVE_LEFT){
+      if (hatJoystickTrimPosition.getPOV() == Constants.HAT_POV_MOVE_LEFT){
         yPowerCommanded = Constants.HAT_POWER_MOVE;
       }
-      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_RIGHT){
-        rotCommanded = Constants.HAT_POWER_ROTATE*-1.0;
+      if (hatJoystickTrimRotationArm.getPOV() == Constants.HAT_POV_ROTATE_RIGHT){
+        rotCommanded = Constants.HAT_POWER_ROTATE * (-1.0);
       }
-      if(hatJoystickTrimRotationArm.getPOV()==Constants.HAT_POV_ROTATE_LEFT){
+      if (hatJoystickTrimRotationArm.getPOV() == Constants.HAT_POV_ROTATE_LEFT){
         rotCommanded = Constants.HAT_POWER_ROTATE;
       }
       
-      this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
-                 yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
-                 MathUtil.applyDeadband(-rotCommanded*this.kMaxAngularSpeed, 0.2), 
+      this.drive(xPowerCommanded * DrivetrainSubsystem.kMaxSpeed, 
+                 yPowerCommanded * DrivetrainSubsystem.kMaxSpeed,
+                 MathUtil.applyDeadband(-rotCommanded * this.kMaxAngularSpeed, 0.2), 
                  true);
     }
     
@@ -297,6 +294,7 @@ public ChassisSpeeds getChassisSpeeds() {
    * @param isFirstPath Whether this is the first path in the sequence. If this is TRUE, the odometry will be 
    * set to be the starting point of the GUI path. Makes it field oriented (kindof...?)
   **/
+  
   public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath) {
     InstantCommand stopFollowingJoy = new InstantCommand(()->this.followPath());
 
@@ -326,6 +324,7 @@ public ChassisSpeeds getChassisSpeeds() {
 
     return new SequentialCommandGroup(stopFollowingJoy, ic, c, followJoyAgain);
   }
+
   // have a followTrajectoryCommand() which waits at the end.
   public Command followTrajectoryCommand(PathPlannerTrajectory traj, Boolean isFirstPath, double seconds) {
     return new SequentialCommandGroup(

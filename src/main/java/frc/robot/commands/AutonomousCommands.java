@@ -87,104 +87,9 @@ public class AutonomousCommands  {
         return null;
     }
 
-    public Command SwerveAutoBalanceCommand(DrivetrainSubsystem drivetrainSubsystem) {
-        return new SequentialCommandGroup(
-            new InstantCommand(() -> drivetrainSubsystem.followPath()),
-            new SwerveAutoBalanceCommandFEEDBACK(drivetrainSubsystem),
-            new PrintCommand("IN SABC"),
-            new InstantCommand(() -> drivetrainSubsystem.followJoystick())
-        );
-    }
-
     public void PrintNTDataString(){
         RobotContainer.m_objectTrackerSubsystemChassis.data();
         RobotContainer.m_objectTrackerSubsystemGripper.data();
-    }
-
-    public Command OutPath(DrivetrainSubsystem drivetrainSubsystem) {
-        m_dts.zeroOdometry();
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Out Path", new PathConstraints(0.5, 0.1));
-        Command c = drivetrainSubsystem.followTrajectoryCommand(traj, true);
-        return c;
-    }
-
-    public Command RotationTesting(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Rotation Testing", new PathConstraints(0.02, 0.05));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
-
-    // public Command LeftScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Left score twice engage", new PathConstraints(0.02, 0.05));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    // public Command MidScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score twice engage", new PathConstraints(0.02, 0.05));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    // public Command RightScoreTwiceEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Right score twice engage", new PathConstraints(0.02, 0.05));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    // public Command RightScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Right score engage", new PathConstraints(0.02, 0.05));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    // public Command MidScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Mid score engage", new PathConstraints(0.02, 0.05));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    // public Command LeftScoreEngage(DrivetrainSubsystem drivetrainSubsystem) {
-    //     PathPlannerTrajectory traj = PathPlanner.loadPath("Left score engage", new PathConstraints(2, 1));
-    //     return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    // }
-
-    public Command CircleTest(DrivetrainSubsystem drivetrainSubsystem) {
-        PathPlannerTrajectory traj = PathPlanner.loadPath("Circle test", new PathConstraints(2, 1));
-        return drivetrainSubsystem.followTrajectoryCommand(traj, true);
-    }
-
-    /** Drive straight with AutonomousTrajectoryCommand and path planner traj */
-    public Command driveStraightPP(DrivetrainSubsystem ds) {
-        PathPlannerTrajectory traj = PathPlanner.generatePath(
-            new PathConstraints(0.5, 0.5), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0))//6 * Math.PI / 3.09)) // position, heading(direction of travel)
-            // new PathPoint(new Translation2d(0, 1), Rotation2d.fromRadians(0) // position, heading(direction of travel)
-        );
-
-        AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(ds, traj);
-        return atc.runAutonomousCommand();
-    }
-
-    /** Drive straight with AutonomousTrajectoryCommand and normal traj */
-    public Command driveStraight(DrivetrainSubsystem ds) {
-        AutonomousTrajectoryCommand atc = new AutonomousTrajectoryCommand(ds);
-        return atc.runAutonomousCommand();
-    }
-
-    public Command scoreHighOutEngageLeftCone() {
-        PathPlannerTrajectory path = PathPlanner.loadPath("Score left out engage cone", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
-        
-        Command backHome = new SequentialCommandGroup(
-            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
-            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
-        );
-
-        Command c = new SequentialCommandGroup(
-            m_highScoreCommand,
-            new ParallelCommandGroup(
-                m_dts.followTrajectoryCommand(path, true),
-                backHome
-            ),
-            new SwerveAutoBalanceCommand(m_dts)
-        );
-
-        return c;   
     }
 
     public Command scoreHighDriveOut() { // with on the fly generated paths
@@ -205,7 +110,7 @@ public class AutonomousCommands  {
                                                 new ParallelCommandGroup(c, backHome));
         return s;
     }
-    // private double totalRotation = Math.PI + 0.6;
+    
     private double totalRotation = Math.PI + 0.65;
     private double outDistance = 4.0;
     private double returnDistance = 3.5;
@@ -446,35 +351,4 @@ public class AutonomousCommands  {
                                             );
         return s;
     }
-
-    /**
-     * PATHS WE NEED
-     * score high out engage left - cone and cube
-     * score high out engage right - cone and cube
-     * score high engage, no leaving the field, cone and cube in co-op grid
-     */
-    
-     public Command scoreHighOutScoreSustationSIDE() { 
-        PathPlannerTrajectory path = PathPlanner.loadPath("Score right out engage", new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL));
-        
-        Command backHome = new SequentialCommandGroup(
-            new SetTargetPoseCommand(new Pose(Constants.HOME_EXTEND, Constants.HOME_ARM_ANGLE)),
-            new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
-        );
-
-        Command c = new SequentialCommandGroup(
-            scoreHigh(),
-            new ParallelCommandGroup(
-                m_dts.followTrajectoryCommand(path, true),
-                backHome
-            ),
-            new SwerveAutoBalanceCommand(m_dts)
-        );
-
-        return c;   
-
-     }
-
-
-
 }

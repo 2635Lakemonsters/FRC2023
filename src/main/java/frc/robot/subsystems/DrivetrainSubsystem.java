@@ -42,31 +42,42 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
     public final double m_drivetrainWheelbaseLength = 28.5 / Constants.INCHES_PER_METER;
 
+    // x is forward       robot is long in the x-direction, i.e. wheelbase length
+    // y is to the left   robot is short in the y-direction, i.e. wheelbase width
+    // robot front as currently labled on the motors (requires -x trajectory to go out into the +x field direction)
     public final Translation2d m_frontLeftLocation = 
-            new Translation2d(-m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            // new Translation2d(-m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            new Translation2d(m_drivetrainWheelbaseLength/2, m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_frontRightLocation = 
-            new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            // new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            new Translation2d(m_drivetrainWheelbaseLength/2, -m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_backLeftLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            // new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            new Translation2d(-m_drivetrainWheelbaseLength/2, m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_backRightLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            // new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            new Translation2d(-m_drivetrainWheelbaseLength/2, -m_drivetrainWheelbaseWidth/2);
 
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_frontRight = new SwerveModule(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backLeft = new SwerveModule(Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER, 
-                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backRight = new SwerveModule(Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
   
     public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 
@@ -179,14 +190,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
       
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
                  yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
-                 MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 
+                 MathUtil.applyDeadband(-rotCommanded*this.kMaxAngularSpeed, 0.2), 
                  true);
     }
     
     updateOdometry();
 
     // prints to SmartDashboard
-    // putDTSToSmartDashboard();
+    putDTSToSmartDashboard();
     // tuneAngleOffsetPutToDTS();
   }
 
@@ -398,10 +409,10 @@ public ChassisSpeeds getChassisSpeeds() {
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
 
-    // SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+    SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians() * (180 / Math.PI)); 
 
     // SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
     // SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());

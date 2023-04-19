@@ -273,18 +273,26 @@ public class AutonomousCommands  {
         m_dts.zeroOdometry();
         PathPlannerTrajectory traj = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(outDistance/2., -0.50), Rotation2d.fromRadians(Math.PI / 12.), Rotation2d.fromRadians(-totalRotation/2.)),
-            
-            new PathPoint(new Translation2d(outDistance, -0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1. * Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(outDistance/2., -0.35), Rotation2d.fromRadians(-1. * Math.PI / 12.), Rotation2d.fromRadians(-totalRotation/2.)),
+            new PathPoint(new Translation2d(outDistance, -0.55), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation))
+
+            // new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1. * Math.PI / 6.), Rotation2d.fromRadians(0)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(outDistance/2., -0.50), Rotation2d.fromRadians(-1. * Math.PI / 12.), Rotation2d.fromRadians(-totalRotation/2.)),
+            // new PathPoint(new Translation2d(outDistance, -0.65), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation))
         );
        
 
         PathPlannerTrajectory traj2 = PathPlanner.generatePath(
             new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
-            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(Math.PI / 6.), Rotation2d.fromRadians(-totalRotation)), // position, heading(direction of travel)
-            new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation/2.)),
-            new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0.))
+            new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI / 6.), Rotation2d.fromRadians(-totalRotation)), // position, heading(direction of travel)
+            new PathPoint(new Translation2d(returnDistance/2., 0.2), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation/2. - Math.PI/16)),
+            new PathPoint(new Translation2d(returnDistance, 0.4), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0. - Math.PI/8))
+            // new PathConstraints(AUTO_MAX_VEL, AUTO_MAX_ACCEL), 
+            // new PathPoint(new Translation2d(0, 0), Rotation2d.fromRadians(-1.0 * Math.PI / 6.), Rotation2d.fromRadians(-totalRotation)), // position, heading(direction of travel)
+            // new PathPoint(new Translation2d(returnDistance/2., 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(-totalRotation/2. - Math.PI/16)),
+            // new PathPoint(new Translation2d(returnDistance, 0.), Rotation2d.fromRadians(0), Rotation2d.fromRadians(0. - Math.PI/8))
         );
 
         Command c = new SequentialCommandGroup( new WaitCommand(0.5),

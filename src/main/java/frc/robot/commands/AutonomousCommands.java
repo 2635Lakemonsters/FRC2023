@@ -302,7 +302,7 @@ public class AutonomousCommands  {
         Command pickUpMid = new SequentialCommandGroup(
             new ArmPneumaticCommand(m_aps, false),
             new ArmMovementCommand(m_ams, 190),
-            new WaitCommand(1), // this makes the arm not hit the ref
+            new WaitCommand(1.5), // this makes the arm not hit the ref
             // new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
             new SetTargetPoseCommand(new Pose(Constants.ARM_EXTEND_PICKUP_FLOOR, Constants.ARM_ANGLE_PICKUP_FLOOR)),
             new MoveArmToPoseCommand(m_aps, m_ams, RobotContainer.m_getPose)
@@ -319,7 +319,7 @@ public class AutonomousCommands  {
                                                 // we may be able to take that wait down abit
                                                 new ClawPneumaticCommand(m_cps, false),
                                                 new ArmPneumaticCommand(m_aps, false),
-                                                new WaitCommand(0.5),
+                                                new WaitCommand(1.5),
                                                 // put the arm in a scoring position
                                                 // should change this to upper
                                                 new SetTargetPoseCommand(new Pose(false, Constants.TOP_SCORING_ANGLE)),

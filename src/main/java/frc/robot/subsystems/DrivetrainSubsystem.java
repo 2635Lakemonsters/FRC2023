@@ -27,7 +27,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
-import frc.robot.Robot;
 import frc.robot.RobotContainer;
 import frc.robot.drivers.NavX;
 
@@ -42,31 +41,38 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;
     public final double m_drivetrainWheelbaseLength = 28.5 / Constants.INCHES_PER_METER;
 
+    // x is forward       robot is long in the x-direction, i.e. wheelbase length
+    // y is to the left   robot is short in the y-direction, i.e. wheelbase width
+    // robot front as currently labled on the motors (requires -x trajectory to go out into the +x field direction)
     public final Translation2d m_frontLeftLocation = 
-            new Translation2d(-m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            new Translation2d(m_drivetrainWheelbaseLength/2, m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_frontRightLocation = 
-            new Translation2d(-m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            new Translation2d(m_drivetrainWheelbaseLength/2, -m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_backLeftLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, -m_drivetrainWheelbaseLength/2);
+            new Translation2d(-m_drivetrainWheelbaseLength/2, m_drivetrainWheelbaseWidth/2);
     public final Translation2d m_backRightLocation = 
-            new Translation2d(m_drivetrainWheelbaseWidth/2, m_drivetrainWheelbaseLength/2);
+            new Translation2d(-m_drivetrainWheelbaseLength/2, -m_drivetrainWheelbaseWidth/2);
 
     public final SwerveModule m_frontLeft = new SwerveModule(Constants.DRIVETRAIN_FRONT_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_LEFT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_frontRight = new SwerveModule(Constants.DRIVETRAIN_FRONT_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_FRONT_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.FRONT_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backLeft = new SwerveModule(Constants.DRIVETRAIN_BACK_LEFT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_LEFT_ANGLE_ENCODER, 
-                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_LEFT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
     public final SwerveModule m_backRight = new SwerveModule(Constants.DRIVETRAIN_BACK_RIGHT_DRIVE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_MOTOR, 
                                                               Constants.DRIVETRAIN_BACK_RIGHT_ANGLE_ENCODER, 
-                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION);
+                                                              Constants.BACK_RIGHT_ANGLE_OFFSET_COMPETITION,
+                                                              1.0);
   
     public final NavX m_gyro = new NavX(SPI.Port.kMXP);
 
@@ -131,26 +137,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
     if (followJoysticks) {
-
-      // // Get the x speed
-      // final var xPower =
-      //   RobotContainer.m_xspeedLimiter.calculate(MathUtil.applyDeadband(xPowerCommanded, 0.1))
-      //     * DrivetrainSubsystem.kMaxSpeed;
-
-      // // Get the y speed or sideways/strafe speed
-      // final var yPower =
-      //   RobotContainer.m_yspeedLimiter.calculate(MathUtil.applyDeadband(yPowerCommanded, 0.1))
-      //     * DrivetrainSubsystem.kMaxSpeed;
-
-      // // Get the rate of angular rotation
-      // final var rot =
-      // //must be positive to read accuate joystick yaw
-      //   RobotContainer.m_rotLimiter.calculate(MathUtil.applyDeadband(rotCommanded, 0.2))
-      //     * this.kMaxAngularSpeed;
-
-      // this.drive(xPower, yPower, rot, true);
       //Hat Power Overides for Trimming Position and Rotation
       Joystick hatJoystickTrimPosition = (Constants.HAT_JOYSTICK_TRIM_POSITION == Constants.LEFT_JOYSTICK_CHANNEL)
         ? RobotContainer.leftJoystick
@@ -179,14 +166,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
       
       this.drive(xPowerCommanded*DrivetrainSubsystem.kMaxSpeed, 
                  yPowerCommanded*DrivetrainSubsystem.kMaxSpeed,
-                 MathUtil.applyDeadband(rotCommanded*this.kMaxAngularSpeed, 0.2), 
+                 MathUtil.applyDeadband(-rotCommanded*this.kMaxAngularSpeed, 0.2), 
                  true);
     }
     
     updateOdometry();
 
     // prints to SmartDashboard
-    // putDTSToSmartDashboard();
+    putDTSToSmartDashboard();
     // tuneAngleOffsetPutToDTS();
   }
 
@@ -266,11 +253,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
    * @param cs The desired SwerveModule states as a ChassisSpeeds object
    */
   private void setDesiredStates(ChassisSpeeds cs) {
-    // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs);
 
     SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, 4); //TODO: Constants.kMaxSpeedMetersPerSecond);
+        desiredStates, 4);
 
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
@@ -287,8 +273,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // System.out.println("vX: " + Math.round(cs.vxMetersPerSecond*100.0)/100.0 + "  vY: " + Math.round(cs.vyMetersPerSecond));
     SwerveModuleState[] desiredStates = m_kinematics.toSwerveModuleStates(cs, centerOfRotation);
 
-    SwerveDriveKinematics.desaturateWheelSpeeds(
-        desiredStates, 4); //TODO: Constants.kMaxSpeedMetersPerSecond);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, 4);
 
     m_frontLeft.setDesiredState(desiredStates[0]);
     m_frontRight.setDesiredState(desiredStates[1]);
@@ -349,27 +334,6 @@ public ChassisSpeeds getChassisSpeeds() {
     );
   }
 
-  /** Follows PathPlanner trajectory. Used in auto sequences.
-   * <p> https://github.com/mjansen4857/pathplanner/wiki/PathPlannerLib:-Java-Usage#ppswervecontrollercommand
-   * <p> "Forward" when following the GUI-generated sequences is battery being further from you
-   *      and robot traveling away from you.
-   * <p> "Forward" in auto is opposite of "forward" in teleop
-   * @param traj Trajectory. Need to first load trajectory from PathPlanner traj. That trajectory goes in here.
-  **/
-  // public Command followTrajectoryCommand(PathPlannerTrajectory traj) {
-  //   PPSwerveControllerCommand c = new PPSwerveControllerCommand(
-  //     traj, 
-  //     this::getPose, 
-  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-  //     new PIDController(TRANSLATION_P, TRANSLATION_I, TRANSLATION_D), 
-  //     new PIDController(ROTATION_P, ROTATION_I, ROTATION_D), 
-  //     this::setDesiredStates, 
-  //     this
-  //   );
-
-  //   return c;
-  // }
-
   public NavX getGyroscope() {
     return m_gyro; 
   }
@@ -390,37 +354,24 @@ public ChassisSpeeds getChassisSpeeds() {
    * </p> For debugging
    */
   public void putDTSToSmartDashboard() {
-    // SmartDashboard.putNumber("Front Left Pos", m_frontLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Front Right Pos", m_frontRight.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Left Pos", m_backLeft.m_driveEncoder.getPosition());
-    // SmartDashboard.putNumber("Back Right Pos", m_backRight.m_driveEncoder.getPosition()); 
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Gyro reading", m_gyro.getRotation2d().getDegrees());
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose X", getPose().getTranslation().getX());
     // // SmartDashboard.putNumber("DriveTrainSubsystem/Drive Pose Y", getPose().getTranslation().getY());
 
-    // SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians());
-    // SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians()); 
+    // SmartDashboard.putNumber("FL encoder pos", m_frontLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    // SmartDashboard.putNumber("FR encoder pos", m_frontRight.getTurningEncoderRadians() * (180 / Math.PI));
+    // SmartDashboard.putNumber("BL encoder pos", m_backLeft.getTurningEncoderRadians() * (180 / Math.PI));
+    // SmartDashboard.putNumber("BR encoder pos", m_backRight.getTurningEncoderRadians() * (180 / Math.PI)); 
 
-    // SmartDashboard.putNumber("gyro pitch", m_gyro.getPitch());
-    // SmartDashboard.putNumber("gyro roll", m_gyro.getRoll());
-    // SmartDashboard.putNumber("gyro yaw", m_gyro.getYaw());
-    // SmartDashboard.putNumber("gyro z accel comp", m_gyro.getRawAccelZ());
     // roll right is pitch negative
     // camera end up is roll negative
 
     // 0.81 at 30 deg
     // 0.94 at level
 
-
-    double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
-    double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
-    double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());
-
-    // SmartDashboard.putNumber("x ff cos unsigned", x_feedforward);
-    // SmartDashboard.putNumber("x ff sine", sin);
-    // SmartDashboard.putNumber("xff final signed sine", x_feedforward_final);
+    // double x_feedforward = getGyroscope().getRawAccelZ() / Robot.init_gyro_z_accel; 
+    // double sin = Math.sqrt(1 - x_feedforward * x_feedforward);
+    // double x_feedforward_final = Math.copySign(sin, getGyroscope().getRoll());
   }
 
   /**
@@ -440,8 +391,6 @@ public ChassisSpeeds getChassisSpeeds() {
   /** camera end up returns a negative number
    * </p> This is technically "roll" on the gyro due to the way it's oriented on the bot*/
   public double getPitch() {
-    return m_gyro.getPitch();
-  } 
-
-  
+    return NavX.getPitch();
+  }
 }

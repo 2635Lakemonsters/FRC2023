@@ -20,4 +20,4 @@ public class IntakeCubeCommand extends SequentialCommandGroup {
       // keep flywheels on at idle on power
     );
   }
-}
+} 

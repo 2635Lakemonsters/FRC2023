@@ -45,7 +45,7 @@ public final class Constants {
         (kWheelDiameterMeters * Math.PI) * (1.0 / (60.0 / 15.0) / (20.0 / 24.0) / (40.0 / 16.0));
 
     // put into manual mode, manually read position and rotate wheel
-
+    
     public static final double kTurningEncoderDistancePerPulse =
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
         (2 * Math.PI) / (double) kEncoderCPR;
@@ -121,7 +121,7 @@ public final class Constants {
     public static final int TOP_TRANSITION_ANGLE = 210;
     public static final int MID_SCORING_ANGLE = 233;
     public static final int BOTTOM_SCORING_ANGLE = 326;
-    public static final int SUBSTATION_ANGLE = 279;
+    public static final int SUBSTATION_ANGLE = 277;
     public static final boolean HOME_EXTEND = false;
     public static final boolean TRAVELING_ARM_EXTEND = false;
     public static final boolean TOP_SCORING_EXTEND = true;

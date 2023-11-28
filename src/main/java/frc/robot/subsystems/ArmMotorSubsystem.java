@@ -98,9 +98,7 @@ public class ArmMotorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("pneumatic state", (RobotContainer.m_armPneumaticSubsystem.getIsExtended() == true ? 1 : 0));
   }
 
-  public double getTheta() { // arm angle with respect to the lower arm
-    return theta;
-  }
+  
 
   public void setPose(double poseTarget) {
     m_poseTarget = poseTarget;

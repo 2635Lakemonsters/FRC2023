@@ -35,7 +35,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                                                               // PathPlannerTrajectory.class, but I think
                                                               // it should be 8.23 (27 feet).
 
-    public static final double kMaxSpeed = 3.63; // 3.63 meters per second
+    public static final double kMaxSpeed = 3.8; // 3.63 meters per second
     public final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
   
     public final double m_drivetrainWheelbaseWidth = 18.5 / Constants.INCHES_PER_METER;

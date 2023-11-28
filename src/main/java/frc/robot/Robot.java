@@ -2,6 +2,8 @@ package frc.robot;
 
 import com.pathplanner.lib.server.PathPlannerServer;
 
+import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -66,6 +68,10 @@ public class Robot extends TimedRobot {
     
     // close claw so that you know for sure that the state of the pneumatic controller reflects the state of the pneumatic
     RobotContainer.m_clawPneumaticSubsystem.grabberClose();
+
+    // DataLogger
+    DataLogManager.start();
+    DriverStation.startDataLog(DataLogManager.getLog());
   }
 
   /**
